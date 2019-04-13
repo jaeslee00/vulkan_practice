@@ -6,24 +6,11 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/13 14:11:16 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/13 19:33:13 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
-
-
-void	free_resource(t_visualizer *vis, t_vulkan *vulkan)
-{
-	/* Order of free_resources important */
-	vkDestroySurfaceKHR(vulkan->instance, vulkan->surf, NULL);
-	vkDestroyDevice(vulkan->device, NULL);
-	vkDestroyInstance(vulkan->instance, NULL);
-	free(vulkan->gpu);
-	free(vulkan->queue_props);
-	glfwDestroyWindow(vis->window);
-	glfwTerminate();
-}
 
 void	swapchain_create(t_visualizer *vis, t_vulkan *vulkan)
 {
@@ -57,31 +44,6 @@ void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan)
 
 }
 
-void	surface_support_check(t_vulkan *vulkan)
-{
-	uint32_t	index;
-	VkBool32	surface_support;
-
-	surface_support = VK_FALSE;
-	index = 0;
-	while (index < vulkan->queue_count)
-	{
-		vkGetPhysicalDeviceSurfaceSupportKHR(vulkan->gpu[0], index, vulkan->surf, &surface_support);
-		if (surface_support != VK_FALSE)
-		{
-			printf("good surface is supported in the queue of the device\n");
-			vulkan->present_queue_node_index = index;
-			break ;
-		}
-		index++;
-	}
-	printf("index of present queue fimaly : %u\n", index);
-
-	/* retrieve handle of the the queue */
-	vkGetDeviceQueue(vulkan->device, vulkan->graphics_queue_node_index, 0, &vulkan->graphics_queue);
-	vkGetDeviceQueue(vulkan->device, vulkan->present_queue_node_index, 0, &vulkan->present_queue);
-}
-
 void	create_surface(t_visualizer *vis, t_vulkan *vulkan)
 {
 	VkBool32	surfaceSupport;
@@ -89,84 +51,28 @@ void	create_surface(t_visualizer *vis, t_vulkan *vulkan)
 		printf("failed to crate window surface!\n");
 }
 
-void	create_logical_device(t_vulkan *vulkan)
+void	enabled_extensions_setting(t_vulkan *vulkan)
 {
-	float						queue_priority;
-	VkPhysicalDeviceFeatures	features;
-	VkDeviceQueueCreateInfo		queue = {};
-	VkDeviceCreateInfo			device;
+	uint32_t	required_extension_count;
+	const char	**required_extension;
+	uint32_t	i;
 
-	queue_priority = 1.0f;
-	queue.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	queue.pNext = NULL;
-	queue.queueFamilyIndex = vulkan->graphics_queue_node_index;
-	queue.queueCount = 1;
-	queue.pQueuePriorities = &queue_priority;
+	required_extension_count = 0; /*TODO loading extensions. needs to change */
+	required_extension = glfwGetRequiredInstanceExtensions(&required_extension_count);
+	i = 0;
 
-
-	ft_memset(&features, VK_FALSE, sizeof(features));
-
-	device.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	device.pNext = NULL;
-	device.queueCreateInfoCount = 1;
-	device.pQueueCreateInfos = &queue;
-	device.pEnabledFeatures = &features;
-	device.enabledExtensionCount = 0;
-
-	if (vkCreateDevice(vulkan->gpu[0], &device, NULL, &vulkan->device) != VK_SUCCESS)
-		printf("failed to create logical device!\n");
-	printf("createDevice Success\n");
-}
-
-void	check_devices(t_vulkan *vulkan)
-{
-	uint32_t	index;
-	int			score;
-
-	score = 0;
-	index = 0;
-	while(index < vulkan->gpu_count)
+	vulkan->enabled_extension_count = 0;
+	while (i < required_extension_count)
 	{
-		vkGetPhysicalDeviceProperties(vulkan->gpu[index], &vulkan->dv_props);
-		vkGetPhysicalDeviceFeatures(vulkan->gpu[index], &vulkan->dv_feats);
-		printf("%s\n", vulkan->dv_props.deviceName);
-		index++;
-	}
-	if (vulkan->dv_props.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-		printf("good it's a GPU!!\n");
-	if (!vulkan->dv_feats.tessellationShader)
-		printf("doesn't support tessellation shader... bad..\n");
-	score += vulkan->dv_props.limits.maxImageDimension2D;
-	printf("score: %d\n", score);
-	if (!vulkan->dv_feats.geometryShader)
-		printf("doesn't support geometry shader... bad..\n");
-}
-
-void	get_queue_node_index(t_vulkan *vulkan)
-{
-	VkBool32	present_support;
-	uint32_t	index;
-
-	vulkan->queue_count = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(vulkan->gpu[0], &vulkan->queue_count, NULL);
-	vulkan->queue_props = (VkQueueFamilyProperties*)malloc(vulkan->queue_count * sizeof(VkQueueFamilyProperties));
-	vkGetPhysicalDeviceQueueFamilyProperties(vulkan->gpu[0], &vulkan->queue_count, vulkan->queue_props);
-
-	present_support = 0;
-	index = 0;
-	while (index < vulkan->queue_count)
-	{
-		if (vulkan->queue_props[index].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-		{
-			vulkan->graphics_queue_node_index = index;
-			break ;
-		}
-		index++;
+		vulkan->extension_name[vulkan->enabled_extension_count] = required_extension[i];
+		vulkan->enabled_extension_count++;
+		i++;
 	}
 }
 
 int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 {
+
 	vulkan->appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	vulkan->appInfo.pApplicationName = "TRIANGLE BITCH!";
 	vulkan->appInfo.applicationVersion = VK_MAKE_VERSION(1, 1, 101);
@@ -179,10 +85,10 @@ int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 	vulkan->createInfo.flags = 0;
 	vulkan->createInfo.pApplicationInfo = &vulkan->appInfo;
 
-	vis->glfwExtensionCount = 0; /*TODO loading glfw extensions needs to change */
-	vis->glfwExtensions = glfwGetRequiredInstanceExtensions(&vis->glfwExtensionCount);
-	vulkan->createInfo.enabledExtensionCount = vis->glfwExtensionCount;
-	vulkan->createInfo.ppEnabledExtensionNames = vis->glfwExtensions;
+	enabled_extensions_setting(vulkan);
+
+	vulkan->createInfo.enabledExtensionCount = vulkan->enabled_extension_count;
+	vulkan->createInfo.ppEnabledExtensionNames = (const char *const *)vulkan->extension_name;
 	vulkan->createInfo.enabledLayerCount = 0;
 
 	if (vkCreateInstance(&(vulkan->createInfo), NULL, &(vulkan->instance)) != VK_SUCCESS)
@@ -191,22 +97,9 @@ int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 		return (0);
 	}
 
-	/*TODO physical_devices */
-	vulkan->gpu_count = 0;
-	vkEnumeratePhysicalDevices(vulkan->instance, &vulkan->gpu_count, NULL);
-	printf("FOUND %u\n", vulkan->gpu_count);
-
-	vulkan->gpu = (VkPhysicalDevice*)malloc(sizeof(VkPhysicalDevice) * vulkan->gpu_count); /*TODO replace vector */
-	vkEnumeratePhysicalDevices(vulkan->instance, &vulkan->gpu_count, vulkan->gpu);
-
-	/*TODO recieve properties and features of the vulkan->gpu */
-	check_devices(vulkan);
-
-	/*TODO physical_devices queue_family */
-	get_queue_node_index(vulkan);
-
 	/*TODO initialize device*/
-	create_logical_device(vulkan);
+	physical_device_select(vulkan);
+	create_logical_devices(vulkan);
 	create_surface(vis, vulkan);
 	surface_support_check(vulkan);
 	swapchain_query(vis, vulkan);
@@ -264,8 +157,3 @@ int		main()
 //   vkEnumerateInstanceExtensionProperties(NULL, &extensionCount, NULL);
 	return 0;
 }
-/*	 $(CC) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
-          -Wl,-rpath, $(VULKAN_SDK_PATH)/lib ./glfw/src/libglfw3.a \
-         ${VULKAN_SDK_PATH}/lib/libvulkan.1.dylib -framework Cocoa -framework IOKit \
-		  -framework CoreFoundation -framework CoreVideo
-*/
