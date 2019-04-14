@@ -6,50 +6,11 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/13 19:33:13 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 02:06:20 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
-
-void	swapchain_create(t_visualizer *vis, t_vulkan *vulkan)
-{
-
-}
-
-void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan)
-{
-	VkSurfaceCapabilitiesKHR	surf_capabilities;
-	VkSurfaceFormatKHR			*surf_formats;
-	uint32_t					format_count;
-	VkPresentModeKHR			*present_modes;
-	uint32_t					present_mode_count;
-
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkan->gpu[0], vulkan->surf, &surf_capabilities);
-	vkGetPhysicalDeviceSurfaceFormatsKHR(vulkan->gpu[0], vulkan->surf, &format_count, NULL);
-	if (format_count == 0)
-	{
-		printf("surface formats missing\n");
-		exit(0);
-	}
-	surf_formats = (VkSurfaceFormatKHR*)malloc(format_count * sizeof(VkSurfaceFormatKHR)); /*TODO replace vector */
-	vkGetPhysicalDeviceSurfaceFormatsKHR(vulkan->gpu[0], vulkan->surf, &format_count, surf_formats);
-	vulkan->format = surf_formats[0].format;
-	vulkan->color_space = surf_formats[0].colorSpace;
-
-	vkGetPhysicalDeviceSurfacePresentModesKHR(vulkan->gpu[0], vulkan->surf, &present_mode_count, NULL);
-	present_modes = (VkPresentModeKHR*)malloc(present_mode_count * sizeof(VkPresentModeKHR)); /*TODO replace vector */
-	vkGetPhysicalDeviceSurfacePresentModesKHR(vulkan->gpu[0], vulkan->surf, &present_mode_count, present_modes);
-	vulkan->present_mode = present_modes[0];
-
-}
-
-void	create_surface(t_visualizer *vis, t_vulkan *vulkan)
-{
-	VkBool32	surfaceSupport;
-	if (glfwCreateWindowSurface(vulkan->instance, vis->window, NULL, &vulkan->surf) != VK_SUCCESS)
-		printf("failed to crate window surface!\n");
-}
 
 void	enabled_extensions_setting(t_vulkan *vulkan)
 {
@@ -101,9 +62,8 @@ int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 	physical_device_select(vulkan);
 	create_logical_devices(vulkan);
 	create_surface(vis, vulkan);
-	surface_support_check(vulkan);
 	swapchain_query(vis, vulkan);
-	swapchain_create(vis, vulkan);
+
 	return (1);
 
 }

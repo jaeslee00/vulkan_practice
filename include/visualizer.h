@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/13 18:22:48 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 03:21:32 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,15 @@ Queue
 typedef struct	s_visualizer
 {
 	GLFWwindow	*window;
-	uint32_t	glfwExtensionCount;
-	const char	**glfwExtensions;
+
 }				t_visualizer;
+
+typedef struct	s_swapchain_buffer
+{
+	VkImage			swapchain_image;
+	VkCommandBuffer	cmd;
+	VkImageView		view;
+}				t_swapchain_buffer;
 
 typedef struct	s_vulkan
 {
@@ -64,10 +70,12 @@ typedef struct	s_vulkan
 	VkQueue						graphics_queue;
 	VkQueue						present_queue;
 	VkSurfaceKHR				surf;
-
+	/* Instance extensions */
 	uint32_t					enabled_extension_count;
-	const char*					extension_name[64];
-
+	const char					*extension_name[64];
+	/* Device extensions */
+	uint32_t					device_extension_count;
+	const char					*device_extension_name[64];
 	/* Physical device */
 	VkPhysicalDevice			*gpu;
 	uint32_t					gpu_count;
@@ -80,13 +88,20 @@ typedef struct	s_vulkan
 	uint32_t					graphics_queue_family_index;
 	uint32_t					present_queue_family_index;
 
+	/* details of the swapchain support */
+	VkSwapchainKHR 				swapchain;
+	VkSurfaceCapabilitiesKHR	surf_capabilities;
+	VkSurfaceFormatKHR			*surf_formats; /* MALLOC */
+	VkPresentModeKHR			*present_modes; /* MALLOC */
 	VkFormat 					format;
 	VkColorSpaceKHR				color_space;
 	VkPresentModeKHR			present_mode;
+	VkExtent2D					swapchain_extent;
 
-	VkExtent2D					swapchainExtent;
+	/* details of swapchain imageviews */
+	uint32_t					swapchain_image_count;
+	t_swapchain_buffer			*buffer;
 	VkFramebuffer				*framebuffers;
-	VkCommandBuffer				*commandBuffers;
 }				t_vulkan;
 
 int		physical_device_select(t_vulkan *vulkan);
@@ -94,5 +109,8 @@ void	check_devices(t_vulkan *vulkan);
 void	find_graphics_queue_family(t_vulkan *vulkan);
 void	create_logical_devices(t_vulkan *vulkan);
 void	surface_support_check(t_vulkan *vulkan);
+void	create_surface(t_visualizer *vis, t_vulkan *vulkan);
+void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan);
+void	swapchain_create(t_vulkan *vulkan);
 void	free_resource(t_visualizer *vis, t_vulkan *vulkan);
 #endif

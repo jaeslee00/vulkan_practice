@@ -6,37 +6,11 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 14:47:58 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/13 19:33:11 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 00:49:07 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
-
-void	surface_support_check(t_vulkan *vulkan)
-{
-	uint32_t	index;
-	VkBool32	surface_support;
-
-	surface_support = VK_FALSE;
-	index = 0;
-
-	while (index < 10000000) //vulkan->queue_family_count)
-	{
-		vkGetPhysicalDeviceSurfaceSupportKHR(vulkan->gpu[0], index, vulkan->surf, &surface_support);
-		if (surface_support != VK_FALSE)
-		{
-			printf("good surface is supported in the queue of the device\nindex: %u\n", index);
-			vulkan->present_queue_family_index = index;
-			break ;
-		}
-		index++;
-	}
-	printf("index of present queue fimaly : %u\n", index);
-
-	/* retrieve handle of the queue */
-	vkGetDeviceQueue(vulkan->logical_device, vulkan->graphics_queue_family_index, 0, &vulkan->graphics_queue);
-	vkGetDeviceQueue(vulkan->logical_device, vulkan->present_queue_family_index, 0, &vulkan->present_queue);
-}
 
 void	find_graphics_queue_family(t_vulkan *vulkan)
 {
@@ -70,6 +44,33 @@ void	find_graphics_queue_family(t_vulkan *vulkan)
 	printf("index of graphics queue fimaly : %u\n", index);
 }
 
+int		check_device_extension_support(t_vulkan *vulkan)
+{
+	VkExtensionProperties	*device_extension;
+	uint32_t				device_extension_count;
+	uint32_t				i;
+
+	vkEnumerateDeviceExtensionProperties(vulkan->gpu[0], NULL, &device_extension_count, NULL);
+	device_extension = (VkExtensionProperties*)malloc(device_extension_count * sizeof(VkExtensionProperties));
+	vkEnumerateDeviceExtensionProperties(vulkan->gpu[0], NULL, &device_extension_count, device_extension);
+	i = 0;
+	while (i < device_extension_count)
+	{
+		if (!ft_strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, device_extension[i].extensionName))
+		{
+			vulkan->device_extension_name[0] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+			vulkan->device_extension_count++;
+		}
+		i++;
+	}
+	free(device_extension);
+	printf("device extension : %s\n", vulkan->device_extension_name[0]);
+	printf("device_extension_count : %u\n", vulkan->device_extension_count);
+	if (vulkan->device_extension_count > 0)
+		return (1);
+	return (0);
+}
+
 void	check_devices(t_vulkan *vulkan)
 {
 	uint32_t	index;
@@ -92,40 +93,19 @@ void	check_devices(t_vulkan *vulkan)
 	printf("score: %d\n", score);
 	if (!vulkan->dv_feats.geometryShader)
 		printf("doesn't support geometry shader... bad..\n");
+	if (check_device_extension_support(vulkan) == 1)
+		printf("swapchain extension is supported in the device\n");
+	else
+		printf("swapchain extension is not supported!! abort!!\n");
 }
 
 int		physical_device_select(t_vulkan *vulkan)
 {
-	VkExtensionProperties	*device_extension;
-	uint32_t				device_extension_count;
-	uint32_t				i;
-
 	vulkan->gpu_count = 0;
 	vkEnumeratePhysicalDevices(vulkan->instance, &vulkan->gpu_count, NULL);
 	printf("FOUND %u GPUs\n", vulkan->gpu_count);
 	vulkan->gpu = (VkPhysicalDevice*)malloc(sizeof(VkPhysicalDevice) * vulkan->gpu_count); /*TODO replace vector */
 	vkEnumeratePhysicalDevices(vulkan->instance, &vulkan->gpu_count, vulkan->gpu);
-
-	vkEnumerateDeviceExtensionProperties(vulkan->gpu[0], NULL, &device_extension_count, NULL);
-	device_extension = (VkExtensionProperties*)malloc(device_extension_count * sizeof(VkExtensionProperties));
-	vkEnumerateDeviceExtensionProperties(vulkan->gpu[0], NULL, &device_extension_count, device_extension);
-
-	i = 0;
-	while(i < device_extension_count)
-	{
-		if (!ft_strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, device_extension[i].extensionName))
-		{
-			vulkan->extension_name[vulkan->enabled_extension_count] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
-			vulkan->enabled_extension_count++;
-			printf("Swapchain extension is added to extension lists\n");
-		}
-		i++;
-	}
-	free(device_extension);
-
-	printf("extension count : %d\n", vulkan->enabled_extension_count);
-	for(i=0; i < vulkan->enabled_extension_count; i++)
-		printf("extension_name : %s\n", vulkan->extension_name[i]);
 
 	/*TODO recieve properties and features of the vulkan->gpu */
 	check_devices(vulkan);
