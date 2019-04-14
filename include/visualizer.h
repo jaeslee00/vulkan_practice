@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/14 03:21:32 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 22:44:18 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct	s_swapchain_buffer
 	VkImage			swapchain_image;
 	VkCommandBuffer	cmd;
 	VkImageView		view;
+
 }				t_swapchain_buffer;
 
 typedef struct	s_vulkan
@@ -77,13 +78,13 @@ typedef struct	s_vulkan
 	uint32_t					device_extension_count;
 	const char					*device_extension_name[64];
 	/* Physical device */
-	VkPhysicalDevice			*gpu;
+	VkPhysicalDevice			*gpu; /* MALLOC */
 	uint32_t					gpu_count;
 	VkPhysicalDeviceProperties 	dv_props;
 	VkPhysicalDeviceFeatures	dv_feats;
 
 	/* Queue */
-	VkQueueFamilyProperties		*queue_props;
+	VkQueueFamilyProperties		*queue_props; /* MALLOC */
 	uint32_t					queue_family_count;
 	uint32_t					graphics_queue_family_index;
 	uint32_t					present_queue_family_index;
@@ -101,7 +102,12 @@ typedef struct	s_vulkan
 	/* details of swapchain imageviews */
 	uint32_t					swapchain_image_count;
 	t_swapchain_buffer			*buffer;
-	VkFramebuffer				*framebuffers;
+	VkFramebuffer				*frame_buffers;
+
+	/* pipeline */
+	VkPipelineLayout			pipeline_layout;
+	VkPipeline					graphics_pipeline;
+	VkRenderPass				render_pass;
 }				t_vulkan;
 
 int		physical_device_select(t_vulkan *vulkan);
@@ -112,5 +118,8 @@ void	surface_support_check(t_vulkan *vulkan);
 void	create_surface(t_visualizer *vis, t_vulkan *vulkan);
 void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan);
 void	swapchain_create(t_vulkan *vulkan);
+void	create_graphics_pipeline(t_vulkan *vulkan);
+void	create_render_pass(t_vulkan *vulkan);
+void	create_framebuffers(t_vulkan *vulkan);
 void	free_resource(t_visualizer *vis, t_vulkan *vulkan);
 #endif

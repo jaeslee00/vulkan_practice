@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:17:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/14 00:22:03 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 18:11:08 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	create_logical_devices(t_vulkan *vulkan)
 {
 	float						queue_priority;
-	VkPhysicalDeviceFeatures	features;
+	VkPhysicalDeviceFeatures	features; /*TODO must be modified to add functionalities in rasterizer */
 	VkDeviceQueueCreateInfo		queue_info = {};
 	VkDeviceCreateInfo			logical_device_info = {};
 

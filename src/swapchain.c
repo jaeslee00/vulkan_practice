@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 00:48:02 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/14 04:39:06 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 22:33:49 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,5 +128,4 @@ void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan)
 	vulkan->swapchain_extent.height = HEIGHT;
 	swapchain_create(vulkan);
 	imageview_create(vulkan);
-	create_graphics_pipeline(vulkan);
 }

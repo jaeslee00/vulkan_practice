@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/04/14 05:47:24 by jaelee           ###   ########.fr        #
+#    Updated: 2019/04/14 22:33:40 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,8 @@ SRCS = example.c \
 		surface_create.c \
 		swapchain.c \
 		graphics_pipeline.c \
+		render_pass.c \
+		create_framebuffers.c \
 		free_resources.c
 
 OBJS = $(patsubst %.c, obj/%.o, $(SRCS))

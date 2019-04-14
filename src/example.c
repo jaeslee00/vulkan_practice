@@ -6,11 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/14 02:06:20 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/14 22:43:31 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
+
+
 
 void	enabled_extensions_setting(t_vulkan *vulkan)
 {
@@ -63,7 +65,9 @@ int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 	create_logical_devices(vulkan);
 	create_surface(vis, vulkan);
 	swapchain_query(vis, vulkan);
-
+	create_render_pass(vulkan);
+	create_graphics_pipeline(vulkan);
+	create_framebuffers(vulkan);
 	return (1);
 
 }
