@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 14:06:21 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 15:44:25 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ int		main()
 	create_framebuffers(&vulkan);
 
 	get_triangle_info(&vulkan);
-
+//	create_descriptor_set_layout(&vulkan);
 	create_graphics_pipeline(&vulkan);
 
 	create_command_pools(&vulkan);

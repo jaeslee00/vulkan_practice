@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 14:06:27 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 15:41:32 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,13 @@ typedef struct	s_renderer
 	t_array		frag_buffer;
 }				t_renderer;
 
+typedef struct	s_ubo
+{
+	float	model[16];
+	float	view[16];
+	float	proj[16];
+}				t_ubo;
+
 typedef struct	s_vulkan
 {
 	/*global_scale... in C++ */
@@ -124,6 +131,7 @@ typedef struct	s_vulkan
 	VkCommandBuffer				*command_buffers; //same number
 
 	/* pipeline */
+	VkDescriptorSetLayout		descriptor_set_layout;
 	VkPipelineLayout			pipeline_layout;
 	VkPipeline					graphics_pipeline;
 	VkRenderPass				renderpass;
@@ -140,6 +148,7 @@ typedef struct	s_vulkan
 	VkBuffer					index_buffer;
 	VkDeviceMemory 				index_buffer_memory;
 
+
 }				t_vulkan;
 
 int		physical_device_select(t_vulkan *vulkan);
@@ -151,6 +160,8 @@ void	create_surface(t_visualizer *vis, t_vulkan *vulkan);
 void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan);
 void	swapchain_create(t_vulkan *vulkan);
 VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path);
+
+void	create_descriptor_set_layout(t_vulkan *vulkan);
 void	create_graphics_pipeline(t_vulkan *vulkan);
 void	create_renderpass(t_vulkan *vulkan);
 void	create_framebuffers(t_vulkan *vulkan);
