@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 00:02:22 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 14:06:21 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ const char* g_debug_layers[] =
 {
 	"VK_LAYER_LUNARG_standard_validation"
 };
+
+
 
 void	create_imageviews(t_vulkan *vulkan)
 {
@@ -44,10 +46,8 @@ void	create_imageviews(t_vulkan *vulkan)
 		imageview_info.subresourceRange.levelCount = 1;
 		imageview_info.subresourceRange.baseArrayLayer = 0;
 		imageview_info.subresourceRange.layerCount = 1;
-		if (vkCreateImageView(vulkan->logical_device, &imageview_info, NULL, &vulkan->image_views[i]) != VK_SUCCESS)
-			printf("creating swapchain_imageview failed.\n");
-		else
-			printf("swapchain_imageview %u successfully created.\n", i);
+		ft_assert((vkCreateImageView(vulkan->logical_device, &imageview_info, NULL, &vulkan->image_views[i]) == VK_SUCCESS),
+			"creating swapchain_imageview failed.\n", "example.c", 48);
 		i++;
 	}
 }
@@ -69,20 +69,10 @@ void	create_framebuffers(t_vulkan *vulkan)
 		create_info.width = vulkan->swapchain_extent.width;
 		create_info.height = vulkan->swapchain_extent.height;
 		create_info.layers = 1;
-		if (vkCreateFramebuffer(vulkan->logical_device, &create_info, NULL, &vulkan->frame_buffers[index]) != VK_SUCCESS)
-			printf("failed to create frame buffers");
+		ft_assert((vkCreateFramebuffer(vulkan->logical_device, &create_info, NULL, &vulkan->frame_buffers[index]) == VK_SUCCESS),
+			"failed to create frame buffers", "example.c", 73);
 		index++;
 	}
-}
-
-void	create_semaphores(t_vulkan *vulkan)
-{
-	VkSemaphoreCreateInfo as_create_info = {};
-	as_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-	vkCreateSemaphore(vulkan->logical_device, &as_create_info, 0, &vulkan->acquire_semaphore);
-	VkSemaphoreCreateInfo rs_create_info = {};
-	rs_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-	vkCreateSemaphore(vulkan->logical_device, &rs_create_info, 0, &vulkan->release_semaphore);
 }
 
 void	enabled_extensions_setting(t_vulkan *vulkan)
@@ -102,9 +92,13 @@ void	enabled_extensions_setting(t_vulkan *vulkan)
 		vulkan->enabled_extension_count++;
 		i++;
 	}
+	vulkan->extension_name[vulkan->enabled_extension_count] = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
+	vulkan->enabled_extension_count++;
+	for (int j=0; j < vulkan->enabled_extension_count; j++)
+	printf("[%d] : %s\n", j, vulkan->extension_name[j]);
 }
 
-int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
+void	init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 {
 	VkApplicationInfo		app_info = {};
 	VkInstanceCreateInfo	instance_info = {};
@@ -128,13 +122,8 @@ int		init_vulkan(t_visualizer *vis, t_vulkan *vulkan)
 	instance_info.enabledLayerCount = sizeof(g_debug_layers) / sizeof(g_debug_layers[0]);
 	instance_info.ppEnabledLayerNames = g_debug_layers;
 
-	if (vkCreateInstance(&instance_info, NULL, &(vulkan->instance)) != VK_SUCCESS)
-	{
-		printf("initializing instance failed.\n");
-		return (0);
-	}
-	return (1);
-
+	ft_assert((vkCreateInstance(&instance_info, NULL, &(vulkan->instance)) == VK_SUCCESS),
+			"create instance failed", "example.c", 125);
 }
 
 int		init_glfw(t_visualizer *vis)
@@ -158,38 +147,86 @@ int		init_glfw(t_visualizer *vis)
 	return (1);
 }
 
+VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
+		uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
+{
+	if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+	{
+		printf("%s\n", pMessage);
+		return (VK_FALSE);
+	}
+	if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+	{
+		printf("%s\n", pMessage);
+		return (VK_FALSE);
+	}
+	return (VK_FALSE);
+}
+
+VkDebugReportCallbackEXT	register_debug_callback(VkInstance instance)
+{
+	VkDebugReportCallbackCreateInfoEXT	create_info= {};
+
+	create_info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+	create_info.flags = VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_ERROR_BIT_EXT;
+	create_info.pfnCallback = debug_report_callback;
+
+	PFN_vkCreateDebugReportCallbackEXT	vkCreateDebugReportCallbackEXT =
+		(PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
+
+	VkDebugReportCallbackEXT callback = 0;
+	vkCreateDebugReportCallbackEXT(instance, &create_info, 0, &callback);
+
+	return (callback);
+}
+
 int		main()
 {
 	t_visualizer	vis;
 	t_vulkan		vulkan;
+	VkDebugReportCallbackEXT	debug_callback;
+
+
+
 	if (!init_glfw(&vis))
 	{
 		printf("initializing GLFW failed.\n");
 		return (0);
 	}
-	else if (!init_vulkan(&vis, &vulkan))
-	{
-		printf("initializing Vulkan failed.\n");
-		return (0);
-	}
+
+	init_vulkan(&vis, &vulkan);
+
+
+	debug_callback = register_debug_callback(vulkan.instance);
+
 	physical_device_select(&vulkan);
 	create_logical_devices(&vulkan);
+
 	create_surface(&vis, &vulkan);
 	swapchain_query(&vis, &vulkan);
-	create_semaphores(&vulkan);
+	create_sync(&vulkan);
 	create_imageviews(&vulkan);
 	create_renderpass(&vulkan);
 	create_framebuffers(&vulkan);
+
+	get_triangle_info(&vulkan);
+
 	create_graphics_pipeline(&vulkan);
+
+	create_command_pools(&vulkan);
+	create_command_pool_transfer(&vulkan);
 
 	vkGetDeviceQueue(vulkan.logical_device, vulkan.graphics_queue_family_index, 0, &vulkan.graphics_queue);
 	vkGetDeviceQueue(vulkan.logical_device, vulkan.present_queue_family_index, 0, &vulkan.present_queue);
+	vkGetDeviceQueue(vulkan.logical_device, vulkan.transfer_queue_family_index, 0, &vulkan.transfer_queue);
 
-	create_command_pools(&vulkan);
+	create_vertex_buffer(&vulkan);
+	create_index_buffer(&vulkan);
+
 	create_command_buffers(&vulkan);
 // 	vulkan.command_buffers = (VkCommandBuffer*)malloc(vulkan.swapchain_image_count * sizeof(VkCommandBuffer));
 // 	VkCommandBufferAllocateInfo	allocate_info = {};
-// 	allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+// 	allocate_info.sType = VK_SsTRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 // 	allocate_info.commandPool = vulkan.command_pool;
 // 	allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 // 	allocate_info.commandBufferCount = vulkan.swapchain_image_count;
@@ -223,7 +260,6 @@ int		main()
 
 	while (!glfwWindowShouldClose(vis.window))
 	{
-		uint32_t		image_index = 0;
 		glfwPollEvents();
 		draw_frame(&vulkan);
 		vkDeviceWaitIdle(vulkan.logical_device);

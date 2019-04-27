@@ -6,47 +6,40 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/26 19:31:23 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 11:25:15 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 #include "vulkan.h"
 
-size_t			load_file(char **code, const char *path)
+VkVertexInputBindingDescription get_binding_description(void)
 {
-	FILE	*file;
-	long	file_size;
-	char	*spv_code;
+	VkVertexInputBindingDescription binding_descriptions = {};
 
-	file = fopen(path, "rb");
-	fseek(file, 0, SEEK_END);
-	file_size = ftell(file);
-	fseek(file, 0, SEEK_SET);
-	printf("%s file_size : %ld\n", path, file_size);
-	spv_code = (char *)malloc(file_size + 1);
-	fread(spv_code, file_size, 1, file);
-	fclose(file);
-	spv_code[file_size] = 0;
-	*code = spv_code;
-	return ((size_t)file_size);
+	binding_descriptions.binding = 0;
+	binding_descriptions.stride = sizeof(t_vertex);
+	binding_descriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+	return (binding_descriptions);
 }
 
-VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path)
+VkVertexInputAttributeDescription *get_attr_description(void)
 {
-	char						*spv_code;
-	size_t						size;
-	VkShaderModuleCreateInfo	shader_module_info = {};
-	VkShaderModule				module;
+	VkVertexInputAttributeDescription	*attr_descriptions;
 
-	size = load_file(&spv_code, path);
-	shader_module_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	shader_module_info.codeSize = size;
-	shader_module_info.pCode = (uint32_t*)spv_code;
-	if (vkCreateShaderModule(vulkan->logical_device, &shader_module_info, NULL, &module))
-		printf("shader module %s successfully created.\n", path);
-	free(spv_code);
-	return (module);
+	attr_descriptions =
+		(VkVertexInputAttributeDescription*)malloc(2 * sizeof(VkVertexInputAttributeDescription));
+
+	attr_descriptions[0].binding = 0;
+	attr_descriptions[0].location = 0;
+	attr_descriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+	attr_descriptions[0].offset = offsetof(t_vertex, pos);
+
+	attr_descriptions[1].binding = 0;
+	attr_descriptions[1].location = 1;
+	attr_descriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+	attr_descriptions[1].offset = offsetof(t_vertex, color);
+	return (attr_descriptions);
 }
 
 void	create_graphics_pipeline(t_vulkan *vulkan)
@@ -73,12 +66,19 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 	shader_stages[0] = vtx_shader_info;
 	shader_stages[1] = frag_shader_info;
 
+
+
 	VkPipelineVertexInputStateCreateInfo	vertex_input_info = {};
+	VkVertexInputBindingDescription			binding_descriptions;
+	VkVertexInputAttributeDescription		*attr_descriptions;
+
+	binding_descriptions = get_binding_description();
+	attr_descriptions = get_attr_description();
 	vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertex_input_info.vertexBindingDescriptionCount = 0;
-	vertex_input_info.pVertexBindingDescriptions = NULL;
-	vertex_input_info.vertexAttributeDescriptionCount = 0;
-	vertex_input_info.pVertexAttributeDescriptions = NULL;
+	vertex_input_info.vertexBindingDescriptionCount = 1;
+	vertex_input_info.pVertexBindingDescriptions = &binding_descriptions;
+	vertex_input_info.vertexAttributeDescriptionCount = 2;
+	vertex_input_info.pVertexAttributeDescriptions = attr_descriptions;
 
 	VkPipelineInputAssemblyStateCreateInfo	input_assembley_info = {};
 	input_assembley_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -162,9 +162,9 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 	pipeline_layout_info.pushConstantRangeCount = 0;
 	pipeline_layout_info.pPushConstantRanges = NULL;
 
-	if (vkCreatePipelineLayout(vulkan->logical_device,
-		&pipeline_layout_info, NULL, &vulkan->pipeline_layout) != VK_SUCCESS)
-		printf("create pipeline_layout failed... T_T\n");
+	ft_assert((vkCreatePipelineLayout(vulkan->logical_device,
+		&pipeline_layout_info, NULL, &vulkan->pipeline_layout) == VK_SUCCESS),
+			"create pipeline_layout failed... T_T", "graphics_pipeline.c", 169);
 
 	VkGraphicsPipelineCreateInfo	pipeline_info = {};
 	pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -183,9 +183,9 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 	pipeline_info.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipeline_info.basePipelineIndex = -1; // Optional
 
-	if (vkCreateGraphicsPipelines(vulkan->logical_device, VK_NULL_HANDLE, 1,
-		&pipeline_info, NULL, &vulkan->graphics_pipeline) != VK_SUCCESS)
-		printf("create graphics pipeline failed.!\n");
+	ft_assert((vkCreateGraphicsPipelines(vulkan->logical_device, VK_NULL_HANDLE, 1,
+		&pipeline_info, NULL, &vulkan->graphics_pipeline) == VK_SUCCESS),
+			"create graphics pipeline failed.!", "graphics_pipeline.c", 189);
 
 	vkDestroyShaderModule(vulkan->logical_device, vertex_shader, NULL);
 	vkDestroyShaderModule(vulkan->logical_device, fragment_shader, NULL);

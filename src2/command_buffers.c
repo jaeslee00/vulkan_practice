@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 11:21:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 00:03:42 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 14:15:27 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,16 @@ void	create_command_buffers(t_vulkan *vulkan)
 			vkCmdBeginRenderPass(vulkan->command_buffers[i], &begin_pass, VK_SUBPASS_CONTENTS_INLINE);
 
 				vkCmdBindPipeline(vulkan->command_buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, vulkan->graphics_pipeline);
-				vkCmdDraw(vulkan->command_buffers[i], 3, 1, 0, 0);
+				VkDeviceSize	offsets[] = {0};
+				vkCmdBindVertexBuffers(vulkan->command_buffers[i], 0, 1, &vulkan->vertex_buffer, offsets);
+				vkCmdBindIndexBuffer(vulkan->command_buffers[i], vulkan->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+				//vkCmdDraw(vulkan->command_buffers[i], vulkan->triangle.length, 1, 0, 0);
+				vkCmdDrawIndexed(vulkan->command_buffers[i], 6, 1, 0, 0, 0);
 
 			vkCmdEndRenderPass(vulkan->command_buffers[i]);
 
-		vkEndCommandBuffer(vulkan->command_buffers[i]);
+		ft_assert((vkEndCommandBuffer(vulkan->command_buffers[i]) == VK_SUCCESS),
+					"failed to recod cmd buffer", "command_buffers", 53);
 		i++;
 	}
 }
@@ -63,8 +68,19 @@ void	create_command_pools(t_vulkan *vulkan)
 	cmd_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	cmd_pool_info.queueFamilyIndex = vulkan->graphics_queue_family_index;
 	cmd_pool_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-	if (vkCreateCommandPool(vulkan->logical_device, &cmd_pool_info, NULL, &vulkan->command_pool) != VK_SUCCESS)
-	{
-		printf("failed to create command pool!\n");
-	}
+	ft_assert((vkCreateCommandPool(vulkan->logical_device, &cmd_pool_info, NULL, &vulkan->command_pool) == VK_SUCCESS),
+				"failed to create command pool!", "command_buffers", 67);
+}
+
+void	create_command_pool_transfer(t_vulkan *vulkan)
+{
+	VkCommandPool command_pool;
+	VkCommandPoolCreateInfo cmd_pool_info = {};
+
+	cmd_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	cmd_pool_info.queueFamilyIndex = vulkan->transfer_queue_family_index;
+	cmd_pool_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+	ft_assert((vkCreateCommandPool(vulkan->logical_device, &cmd_pool_info, NULL, &vulkan->command_pool_transfer) == VK_SUCCESS),
+				"failed to create command pool!", "command_buffers", 67);
+
 }

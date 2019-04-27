@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 14:47:58 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/26 00:27:43 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 12:58:02 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,19 @@ void	find_graphics_queue_family(t_vulkan *vulkan)
 		index++;
 	}
 	printf("index of graphics queue fimaly : %u\n", index);
+	index = 0;
+	while (index < vulkan->queue_family_count)
+	{
+		if (vulkan->queue_props[index].queueFlags & VK_QUEUE_TRANSFER_BIT &&
+			index != vulkan->graphics_queue_family_index)
+		{
+			vulkan->transfer_queue_family_index = index;
+			printf("right queueFamily selected!\n");
+			break ;
+		}
+		index++;
+	}
+	printf("index of transfer queue fimaly : %u\n", index);
 }
 
 int		check_device_extension_support(t_vulkan *vulkan)
@@ -108,5 +121,6 @@ int		physical_device_select(t_vulkan *vulkan)
 	/*TODO recieve properties and features of the vulkan->gpu */
 	check_devices(vulkan);
 	find_graphics_queue_family(vulkan); /*TODO check if the chosen device supports queue family */
+	printf("after queuefamilycheck : %u\n", vulkan->transfer_queue_family_index);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 22:29:11 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/26 22:29:54 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 05:42:58 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ void	create_renderpass(t_vulkan *vulkan)
 	subpass.colorAttachmentCount = 1;
 	subpass.pColorAttachments = &color_attachments_ref;
 
-	VkSubpassDependency dependency = {};
-	dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-	dependency.dstSubpass = 0;
-	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.srcAccessMask = 0;
-	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
-									VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	// VkSubpassDependency dependency = {};
+	// dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+	// dependency.dstSubpass = 0;
+	// dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	// dependency.srcAccessMask = 0;
+	// dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	// dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+	// 								VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
 	VkRenderPassCreateInfo	create_info = {};
 	create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -49,9 +49,9 @@ void	create_renderpass(t_vulkan *vulkan)
 	create_info.pAttachments = attachments;
 	create_info.subpassCount = 1;
 	create_info.pSubpasses = &subpass;
-	create_info.dependencyCount = 1;
-	create_info.pDependencies = &dependency;
+	// create_info.dependencyCount = 1;
+	// create_info.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(vulkan->logical_device, &create_info, NULL, &vulkan->renderpass) != VK_SUCCESS)
-		printf("failed to create renderpass\n");
+	ft_assert((vkCreateRenderPass(vulkan->logical_device, &create_info, NULL, &vulkan->renderpass) == VK_SUCCESS),
+				"failed to create renderpass", "create_renderpass.c", 55);
 }

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 00:48:02 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/26 18:59:16 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/27 13:07:20 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	swapchain_create(t_vulkan *vulkan)
 
 	printf("max imagecount : %u\n", vulkan->surf_capabilities.maxImageCount);
 	printf("min imagecount : %u\n", vulkan->surf_capabilities.minImageCount);
-
+	printf("suppored composite alpha in surface : %d\n", vulkan->surf_capabilities.supportedCompositeAlpha);
 	swapchain_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	swapchain_info.surface = vulkan->surf;
 	swapchain_info.minImageCount = 2;
@@ -36,11 +36,8 @@ void	swapchain_create(t_vulkan *vulkan)
 	swapchain_info.presentMode = vulkan->present_mode;
 	swapchain_info.clipped = VK_TRUE;
 	swapchain_info.oldSwapchain = VK_NULL_HANDLE;
-	if (vkCreateSwapchainKHR(vulkan->logical_device, &swapchain_info, NULL, &vulkan->swapchain) != VK_SUCCESS)
-		printf("failed to create swapchain!!\n");
-	else
-		printf("successfully created swapchain!!\n");
-
+	ft_assert((vkCreateSwapchainKHR(vulkan->logical_device, &swapchain_info, NULL, &vulkan->swapchain) == VK_SUCCESS),
+		"failed to create swapchain!!", "swapchain.c", 39);
 }
 
 void	check_available_format_colorspace(t_vulkan *vulkan)
