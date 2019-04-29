@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 22:50:32 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/29 22:54:18 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	get_triangle_info(vulkan);
 	create_graphics_pipeline(vulkan);
 	create_framebuffers(vulkan);
-	create_ubo(vulkan);
+//	create_ubo(vulkan);
 	create_command_buffers(vulkan);
 }
 

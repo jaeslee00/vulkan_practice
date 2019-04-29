@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 22:50:31 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/29 22:53:43 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ typedef struct	s_ubo
 	float	transform[16];
 	float	perspective[16];
 
-	mvp = projection * view * model //inverted!!!!
+	//mvp = projection * view * model //inverted!!!!
 }				t_ubo;
 
 typedef struct	s_vulkan
