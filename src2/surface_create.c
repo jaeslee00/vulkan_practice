@@ -6,13 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 00:45:21 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 13:19:49 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/29 19:34:21 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
-void	surface_support_check(t_vulkan *vulkan)
+static void		surface_support_check(t_vulkan *vulkan)
 {
 	uint32_t	index;
 	VkBool32	surface_support;
@@ -31,16 +31,12 @@ void	surface_support_check(t_vulkan *vulkan)
 		index++;
 	}
 	printf("index of present queue fimaly : %u\n", index);
-
-	/* retrieve handle of the queue */
-	vkGetDeviceQueue(vulkan->logical_device, vulkan->graphics_queue_family_index, 0, &vulkan->graphics_queue);
-	vkGetDeviceQueue(vulkan->logical_device, vulkan->present_queue_family_index, 0, &vulkan->present_queue);
 }
 
-void	create_surface(t_visualizer *vis, t_vulkan *vulkan)
+void	create_surface(t_vulkan *vulkan)
 {
 	vulkan->surf = NULL;
-	if (glfwCreateWindowSurface(vulkan->instance, vis->window, NULL, &vulkan->surf) != VK_SUCCESS)
+	if (glfwCreateWindowSurface(vulkan->instance, vulkan->window, NULL, &vulkan->surf) != VK_SUCCESS)
 		printf("failed to crate window surface!\n");
 	surface_support_check(vulkan);
 }

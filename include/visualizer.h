@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 15:41:32 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/29 22:50:31 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ LOGICAL DEVICE
 		4) create LOGICAL DEVICE
 
 Queue
-	- Most of the commands in VULKAN (drawing, texturing, memory transfer and etc)
+	- Most of the commands i./n VULKAN (drawing, texturing, memory transfer and etc)
 		are saved in the command buffer and then submitted to QUEUE to execute
 
 
@@ -53,6 +53,8 @@ Queue
 
 # define DIMENSION 2
 # define COLOR_FORMAT 3
+# define FT_FALSE 0
+# define FT_TRUE 1
 
 typedef struct	s_visualizer
 {
@@ -74,19 +76,25 @@ typedef struct	s_renderer
 
 typedef struct	s_ubo
 {
-	float	model[16];
-	float	view[16];
-	float	proj[16];
+	float	model[16]; /* translation * rotation * scale */
+	float	view[16]; /* rotate camera poition and adds translation */
+	float	proj[16]; /* perspective distortion, FOV, clipping */
+
+	float	rotation[16];
+	float	transform[16];
+	float	perspective[16];
+
+	mvp = projection * view * model //inverted!!!!
 }				t_ubo;
 
 typedef struct	s_vulkan
 {
 	/*global_scale... in C++ */
+	GLFWwindow					*window;
+	void						*window_ptr;
 	VkInstance					instance;
+	VkDebugReportCallbackEXT	debug_callback; /*TODO Erase when finished */
 	VkDevice					logical_device; /* logical device */
-	VkQueue						graphics_queue;
-	VkQueue						present_queue;
-	VkQueue						transfer_queue;
 	VkSurfaceKHR				surf;
 
 	/* Instance extensions */
@@ -98,13 +106,16 @@ typedef struct	s_vulkan
 	const char					*device_extension_name[64];
 
 	/* Physical device */
-	VkPhysicalDevice			*gpu; /* MALLOC */
+	VkPhysicalDevice			*gpu; /*TODO MALLOC */
 	uint32_t					gpu_count;
 	VkPhysicalDeviceProperties 	dv_props;
 	VkPhysicalDeviceFeatures	dv_feats;
 
 	/* Queue */
-	VkQueueFamilyProperties		*queue_props; /* MALLOC */
+	VkQueueFamilyProperties		*queue_props; /*TODO MALLOC */
+	VkQueue						graphics_queue;
+	VkQueue						present_queue;
+	VkQueue						transfer_queue;
 	uint32_t					queue_family_count;
 	uint32_t					graphics_queue_family_index;
 	uint32_t					present_queue_family_index;
@@ -114,8 +125,8 @@ typedef struct	s_vulkan
 	/* details of the swapchain support */
 	VkSwapchainKHR 				swapchain;
 	VkSurfaceCapabilitiesKHR	surf_capabilities;
-	VkSurfaceFormatKHR			*surf_formats; /* MALLOC */
-	VkPresentModeKHR			*present_modes; /* MALLOC */
+	VkSurfaceFormatKHR			*surf_formats; /*TODO MALLOC */
+	VkPresentModeKHR			*present_modes; /*TODO MALLOC */
 	VkFormat 					format;
 	VkColorSpaceKHR				color_space;
 	VkPresentModeKHR			present_mode;
@@ -129,6 +140,8 @@ typedef struct	s_vulkan
 	VkCommandPool				command_pool;
 	VkCommandPool				command_pool_transfer;
 	VkCommandBuffer				*command_buffers; //same number
+	/* command_buffers for 'stage_buffer' is created and destroyed separately in
+	copy_buffer() function */
 
 	/* pipeline */
 	VkDescriptorSetLayout		descriptor_set_layout;
@@ -147,33 +160,45 @@ typedef struct	s_vulkan
 	VkDeviceMemory				vertex_buffer_memory;
 	VkBuffer					index_buffer;
 	VkDeviceMemory 				index_buffer_memory;
+	t_ubo						ubo;
+	VkBuffer					*uniform_buffers; /* needs uniform buffers for each frame_buffers */
+	VkDeviceMemory				*uniform_buffers_memory;
+
 
 
 }				t_vulkan;
 
-int		physical_device_select(t_vulkan *vulkan);
-void	check_devices(t_vulkan *vulkan);
-void	find_graphics_queue_family(t_vulkan *vulkan);
-void	create_logical_devices(t_vulkan *vulkan);
-void	surface_support_check(t_vulkan *vulkan);
-void	create_surface(t_visualizer *vis, t_vulkan *vulkan);
-void	swapchain_query(t_visualizer *vis, t_vulkan *vulkan);
-void	swapchain_create(t_vulkan *vulkan);
+int				init_glfw(t_vulkan *vulkan);
+void			init_vulkan(t_vulkan *vulkan);
+int				physical_device_select(t_vulkan *vulkan);
+void			check_devices(t_vulkan *vulkan);
+void			find_graphics_queue_family(t_vulkan *vulkan);
+void			create_logical_devices(t_vulkan *vulkan);
+void			create_surface(t_vulkan *vulkan);
+void			swapchain_query(t_vulkan *vulkan);
+void			swapchain_create(t_vulkan *vulkan);
+void			create_imageviews(t_vulkan *vulkan);
 VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path);
 
-void	create_descriptor_set_layout(t_vulkan *vulkan);
-void	create_graphics_pipeline(t_vulkan *vulkan);
-void	create_renderpass(t_vulkan *vulkan);
-void	create_framebuffers(t_vulkan *vulkan);
-void	create_command_pools(t_vulkan *vulkan);
-void	create_command_pool_transfer(t_vulkan *vulkan);
-void	create_command_buffers(t_vulkan *vulkan);
-void	create_sync(t_vulkan *vulkan);
-void	draw_frame(t_vulkan *vulkan);
+void			recreate_swapchain(t_vulkan *vulkan);
 
-void	get_triangle_info(t_vulkan *vulkan);
-void	get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float r, float g, float b);
-void	create_vertex_buffer(t_vulkan *vulkan);
-void	create_index_buffer(t_vulkan *vulkan);
-void	free_resource(t_visualizer *vis, t_vulkan *vulkan);
+void			create_descriptor_set_layout(t_vulkan *vulkan);
+void			create_graphics_pipeline(t_vulkan *vulkan);
+void			create_renderpass(t_vulkan *vulkan);
+void			create_framebuffers(t_vulkan *vulkan);
+void			create_command_pools(t_vulkan *vulkan);
+void			create_command_pool_transfer(t_vulkan *vulkan);
+void			create_command_buffers(t_vulkan *vulkan);
+void			create_sync(t_vulkan *vulkan);
+void			draw_frame(t_vulkan *vulkan);
+
+void			get_triangle_info(t_vulkan *vulkan);
+void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float r, float g, float b);
+void			create_vertex_buffer(t_vulkan *vulkan);
+void			create_index_buffer(t_vulkan *vulkan);
+
+
+void			clear_swapchain_objects(t_vulkan *vulkan);
+void			free_resource(t_vulkan *vulkan);
+
 #endif

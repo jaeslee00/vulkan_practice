@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 14:47:58 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 12:58:02 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/04/29 10:51:03 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ void	check_devices(t_vulkan *vulkan)
 	printf("score: %d\n", score);
 	if (!vulkan->dv_feats.geometryShader)
 		printf("doesn't support geometry shader... bad..\n");
+	printf("fillModeNonSolid : %d\n", vulkan->dv_feats.fillModeNonSolid);
 	if (check_device_extension_support(vulkan) == 1)
 		printf("swapchain extension is supported in the device\n");
 	else

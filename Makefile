@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/04/27 15:41:46 by jaelee           ###   ########.fr        #
+#    Updated: 2019/04/29 19:19:27 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,20 +14,23 @@
 
 NAME = triangle
 
-SRCS = example.c \
+SRCS = main.c \
+		initialization.c \
 		phy_devices.c \
 		create_logical_devices.c \
-		swapchain.c \
+		swapchain_query.c \
+		swapchain_create.c \
 		create_renderpass.c \
 		surface_create.c \
-		command_buffers.c \
+		graphics_command_buffers.c \
 		descriptor_set_layout.c \
-		graphics_pipeline.c \
+		graphics_pipeline_framebuffers.c \
 		get_shader_module.c \
 		draw_frame.c \
 		free_resources.c \
 		get_triangle.c \
-		create_vertex_buffer.c \
+		vtx_buffers_handler.c \
+		ubo_handler.c \
 		sync.c
 
 OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
@@ -41,7 +44,7 @@ GLFW_FLAGS = -framework Cocoa -framework IOKit \
 
 VK_SDK_PATH = /Users/jaelee/42/vv/vulkansdk/macOS
 
-GLFW_PATH = /sgoinfre/goinfre/Perso/jaelee/glfw
+GLFW_PATH = /Users/jaelee/42/vv/glfw
 
 INCLUDES = ./include/visualizer.h \
 	./libft/includes/libft.h
