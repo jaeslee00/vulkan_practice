@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vtx_buffers_handler.c                              :+:      :+:    :+:   */
+/*   buffer_handlers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 18:48:12 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 19:24:21 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,13 @@ static uint32_t	find_memory_type(t_vulkan *vulkan, uint32_t type_filter, VkMemor
 			return (i);
 		i++;
 	}
+	printf("couldn't find proper memory type!\n");
 	exit(0);
 }
 
-void	create_buffer(t_vulkan *vulkan, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
-							VkBuffer *buffer, VkDeviceMemory *buffer_memory)
+void	create_buffer(t_vulkan *vulkan, VkDeviceSize size,
+					VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+								VkBuffer *buffer, VkDeviceMemory *buffer_memory)
 {
 	VkBufferCreateInfo		create_info = {};
 	create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;

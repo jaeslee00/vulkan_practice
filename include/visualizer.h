@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 19:09:33 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 22:26:10 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ typedef struct	s_ubo
 
 typedef struct	s_view
 {
-	float	velocity[3];
 	float	position[3];
 
 	float	rotation[16];
@@ -87,6 +86,8 @@ typedef struct	s_view
 
 	float	perspective[16];
 }				t_view;
+
+float		g_camera[3];
 
 typedef struct	s_vulkan
 {
@@ -167,6 +168,8 @@ typedef struct	s_vulkan
 }				t_vulkan;
 
 int				init_glfw(t_vulkan *vulkan);
+void 			key_callback(GLFWwindow *window, int key, int scancode,
+								int action, int mods);
 void			init_vulkan(t_vulkan *vulkan);
 int				physical_device_select(t_vulkan *vulkan);
 void			check_devices(t_vulkan *vulkan);

@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/05/08 17:39:25 by jaelee           ###   ########.fr        #
+#    Updated: 2019/05/08 19:25:38 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,8 @@ SRCS = main.c \
 		draw_frame.c \
 		free_resources.c \
 		get_triangle.c \
-		vtx_buffers_handler.c \
+		buffer_handlers.c \
+		buffer_objects.c \
 		ubo_handler.c \
 		vertex_buffer.c \
 		sync.c

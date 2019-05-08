@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 19:09:32 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 22:25:56 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,32 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 	vkCreateDebugReportCallbackEXT(instance, &create_info, 0, &vulkan->debug_callback);
 }
 
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+
+	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
+		g_camera[0] = 0.5f;
+	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+		g_camera[0] = 0.0f;
+	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
+		g_camera[0] = -0.5f;
+	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
+		g_camera[0] = 0.0f;
+	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
+		g_camera[2] = -0.5f;
+	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+		g_camera[2] = 0.0f;
+	if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
+		g_camera[2] = 0.5f;
+	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
+		g_camera[2] = 0.0f;
+}
+
 int		main()
 {
 	t_vulkan		vulkan;
 
+	ft_bzero(&g_camera, sizeof(g_camera));
 	if (!init_glfw(&vulkan))
 	{
 		printf("initializing GLFW failed.\n");
@@ -104,6 +126,16 @@ int		main()
 	{
 		glfwPollEvents();
 		draw_frame(&vulkan);
+		if (g_camera[0] == -0.5f)
+			printf("A pressed\n");
+		if (g_camera[0] == 0.5f)
+			printf("D pressed\n");
+		if (g_camera[2] == -0.5f)
+			printf("W pressed\n");
+		if (g_camera[2] == 0.5f)
+			printf("S pressed\n");
+		if (g_camera[0] == 0.0f && g_camera[2] == 0.0f)
+			printf("nothing pressed\n");
 		vkDeviceWaitIdle(vulkan.logical_device);
 	}
 	free_resource(&vulkan);
