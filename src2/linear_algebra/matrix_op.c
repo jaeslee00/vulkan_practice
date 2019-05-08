@@ -6,13 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 01:05:53 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/30 15:35:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 14:13:18 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 
-void	mat4_mul(float *dst, float *mat1, float *mat2)
+void	mat4_multiply(float *dst, float *mat1, float *mat2)
 {
 	int	row_dst;
 	int	row;
@@ -36,16 +36,16 @@ void	mat4_mul(float *dst, float *mat1, float *mat2)
 	}
 }
 
-void	identity_mat4(float *mat)
+void	mat4_identity(float *mat)
 {
 	ft_bzero(mat, sizeof(float) * 16);
-	mat[0] = 1;
-	mat[5] = 1;
-	mat[10] = 1;
-	mat[15] = 1;
+	mat[0] = 1.0f;
+	mat[5] = 1.0f;
+	mat[10] = 1.0f;
+	mat[15] = 1.0f;
 }
 
-void	translation_mat4(float *mat, float x_axis, float y_axis, float z_axis)
+void	mat4_translation(float *mat, float x_axis, float y_axis, float z_axis)
 {
 	identity_mat4(mat);
 	mat[0 + 3 * 1] += x_axis;
@@ -53,22 +53,32 @@ void	translation_mat4(float *mat, float x_axis, float y_axis, float z_axis)
 	mat[2 + 3 * 3] += z_axis;
 }
 
-void	rotation_mat4(float *mat, float x_axis, float y_axis)
+void	mat4_rotation(float *mat, float x_axis, float y_axis)
 {
+	float rot[16];
+	float tmp[16];
 
+	mat4_identity(tmp);
+	mat4_identity(rot);
+	rot[0 * 4 + 0] = cos(y_axis);
+	rot[0 * 4 + 2] = -sin(y_axis);
+	rot[2 * 4 + 0] = sin(y_axis);
+	rot[2 * 4 + 2] = cos(x_axis);
+	mat4_multiply(tmp, rot, mat);
+	mat4_identity(rot);
+	rot[1 * 4 + 1] = cos(x_axis);
+	rot[1 * 4 + 2] = sin(x_axis);
+	rot[2 * 4 + 1] = -sin(x_axis);
+	rot[2 * 4 + 2] = cos(x_axis);
+	mat4_multiply(mat, rot, tmp);
 }
 
 void	scaling_mat4(float *mat, float scale)
 {
-	identity_mat4(mat);
+	mat4_identity(mat);
 	mat[0] *= scale;
 	mat[5] *= scale;
 	mat[10] *= scale;
-}
-
-void	rotation_vec3(float *vec)
-{
-
 }
 
 int main()
@@ -92,7 +102,6 @@ int main()
 	printf("%f %f %f %f\n", c[4], c[5], c[6], c[7]);
 	printf("%f %f %f %f\n", c[8], c[9], c[10], c[11]);
 	printf("%f %f %f %f\n", c[12], c[13], c[14], c[15]);
-
 }
 
 //void	rotate_x_axis(); // order?

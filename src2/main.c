@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/30 15:35:50 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 19:09:32 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,14 @@ void	recreate_swapchain(t_vulkan *vulkan)
 {
 	vkDeviceWaitIdle(vulkan->logical_device);
 	clear_swapchain_objects(vulkan); /*TODO free resources of rendering related resources */
-
 	swapchain_create(vulkan);
 	create_imageviews(vulkan);
 	create_renderpass(vulkan);
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vulkan);
+	create_ubo(vulkan);
 	create_graphics_pipeline(vulkan);
 	create_framebuffers(vulkan);
-//	create_ubo(vulkan);
 	create_command_buffers(vulkan);
 }
 
@@ -89,7 +88,7 @@ int		main()
 
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(&vulkan);  // re-create swapchains
-	//create_descriptor_set_layout(&vulkan);
+	create_descriptor_set_layout(&vulkan);
 	create_graphics_pipeline(&vulkan);  // re-create swapchains
 	create_framebuffers(&vulkan);  // re-create swapchains
 	/////////////////////////////////////////////////////////////////////////
@@ -98,7 +97,7 @@ int		main()
 
 	create_vertex_buffer(&vulkan);
 	create_index_buffer(&vulkan);
-
+	create_ubo(&vulkan); // FUCKING SEGFAULTS
 	create_command_buffers(&vulkan);
 
 	while (!glfwWindowShouldClose(vulkan.window))

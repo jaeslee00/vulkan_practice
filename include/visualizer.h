@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 22:53:43 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 19:09:33 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,6 @@ Queue
 # define FT_FALSE 0
 # define FT_TRUE 1
 
-typedef struct	s_visualizer
-{
-	GLFWwindow	*window;
-
-}				t_visualizer;
-
 typedef struct	s_vertex
 {
 	float	pos[DIMENSION];
@@ -79,13 +73,20 @@ typedef struct	s_ubo
 	float	model[16]; /* translation * rotation * scale */
 	float	view[16]; /* rotate camera poition and adds translation */
 	float	proj[16]; /* perspective distortion, FOV, clipping */
+	//mvp = projection * view * model //inverted!!!!
+}				t_ubo;
+
+typedef struct	s_view
+{
+	float	velocity[3];
+	float	position[3];
 
 	float	rotation[16];
 	float	transform[16];
-	float	perspective[16];
+	float	scale[16];
 
-	//mvp = projection * view * model //inverted!!!!
-}				t_ubo;
+	float	perspective[16];
+}				t_view;
 
 typedef struct	s_vulkan
 {
@@ -163,9 +164,6 @@ typedef struct	s_vulkan
 	t_ubo						ubo;
 	VkBuffer					*uniform_buffers; /* needs uniform buffers for each frame_buffers */
 	VkDeviceMemory				*uniform_buffers_memory;
-
-
-
 }				t_vulkan;
 
 int				init_glfw(t_vulkan *vulkan);
@@ -193,10 +191,17 @@ void			create_sync(t_vulkan *vulkan);
 void			draw_frame(t_vulkan *vulkan);
 
 void			get_triangle_info(t_vulkan *vulkan);
+void			create_buffer(t_vulkan *vulkan, VkDeviceSize size, VkBufferUsageFlags usage,
+								VkMemoryPropertyFlags properties,
+									VkBuffer *buffer, VkDeviceMemory *buffer_memory);
 void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float r, float g, float b);
 void			create_vertex_buffer(t_vulkan *vulkan);
 void			create_index_buffer(t_vulkan *vulkan);
 
+VkVertexInputBindingDescription get_binding_description(void);
+VkVertexInputAttributeDescription *get_attr_description(void);
+
+void			create_ubo(t_vulkan *vulkan);
 
 void			clear_swapchain_objects(t_vulkan *vulkan);
 void			free_resource(t_vulkan *vulkan);

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 18:36:20 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 18:36:16 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,39 +30,11 @@ void	create_framebuffers(t_vulkan *vulkan)
 		create_info.width = vulkan->swapchain_extent.width;
 		create_info.height = vulkan->swapchain_extent.height;
 		create_info.layers = 1;
-		ft_assert((vkCreateFramebuffer(vulkan->logical_device, &create_info, NULL, &vulkan->frame_buffers[index]) == VK_SUCCESS),
+		ft_assert((vkCreateFramebuffer(vulkan->logical_device,
+			&create_info, NULL, &vulkan->frame_buffers[index]) == VK_SUCCESS),
 			"failed to create frame buffers", "example.c", 73);
 		index++;
 	}
-}
-
-VkVertexInputBindingDescription get_binding_description(void)
-{
-	VkVertexInputBindingDescription binding_descriptions = {};
-
-	binding_descriptions.binding = 0;
-	binding_descriptions.stride = sizeof(t_vertex);
-	binding_descriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-	return (binding_descriptions);
-}
-
-VkVertexInputAttributeDescription *get_attr_description(void)
-{
-	VkVertexInputAttributeDescription	*attr_descriptions;
-
-	attr_descriptions =
-		(VkVertexInputAttributeDescription*)malloc(2 * sizeof(VkVertexInputAttributeDescription)); /*TODO erase hard-coded numbers */
-
-	attr_descriptions[0].binding = 0;
-	attr_descriptions[0].location = 0;
-	attr_descriptions[0].format = VK_FORMAT_R32G32_SFLOAT; /* vertex_buffer input of vec2 info */
-	attr_descriptions[0].offset = offsetof(t_vertex, pos);
-
-	attr_descriptions[1].binding = 0;
-	attr_descriptions[1].location = 1;
-	attr_descriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; /* vertex_buffer input of vec3 info */
-	attr_descriptions[1].offset = offsetof(t_vertex, color);
-	return (attr_descriptions);
 }
 
 void	create_graphics_pipeline(t_vulkan *vulkan)
@@ -178,8 +150,8 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 
 	VkPipelineLayoutCreateInfo		pipeline_layout_info = {};
 	pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipeline_layout_info.setLayoutCount = 0;//1;
-	pipeline_layout_info.pSetLayouts = NULL;//&vulkan->descriptor_set_layout;
+	pipeline_layout_info.setLayoutCount = 1;
+	pipeline_layout_info.pSetLayouts = &vulkan->descriptor_set_layout;
 	pipeline_layout_info.pushConstantRangeCount = 0;
 	pipeline_layout_info.pPushConstantRanges = NULL;
 

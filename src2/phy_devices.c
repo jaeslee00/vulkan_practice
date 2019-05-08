@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 14:47:58 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 10:51:03 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/02 13:44:30 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int		check_device_extension_support(t_vulkan *vulkan)
 	device_extension = (VkExtensionProperties*)malloc(device_extension_count * sizeof(VkExtensionProperties));
 	vkEnumerateDeviceExtensionProperties(vulkan->gpu[0], NULL, &device_extension_count, device_extension);
 	i = 0;
+	vulkan->device_extension_count = 0;
 	while (i < device_extension_count)
 	{
 		if (!ft_strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, device_extension[i].extensionName))

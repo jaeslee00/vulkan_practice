@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:09:17 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 21:15:25 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 19:09:32 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	clear_swapchain_objects(t_vulkan *vulkan)
 	}
 	vkFreeCommandBuffers(vulkan->logical_device, vulkan->command_pool,
 		vulkan->swapchain_image_count, vulkan->command_buffers);
-	vkDestroyDescriptorSetLayout(vulkan->logical_device, vulkan->descriptor_set_layout, NULL); //order
 	vkDestroyPipeline(vulkan->logical_device, vulkan->graphics_pipeline, NULL); //order
 	vkDestroyPipelineLayout(vulkan->logical_device, vulkan->pipeline_layout, NULL); //order
 	vkDestroyRenderPass(vulkan->logical_device, vulkan->renderpass, NULL);
@@ -35,10 +34,12 @@ void	clear_swapchain_objects(t_vulkan *vulkan)
 		i++;
 	}
 	vkDestroySwapchainKHR(vulkan->logical_device, vulkan->swapchain, NULL);
+	i = 0;
 	while (i < vulkan->swapchain_image_count)
 	{
 		vkDestroyBuffer(vulkan->logical_device, vulkan->uniform_buffers[i], NULL);
 		vkFreeMemory(vulkan->logical_device, vulkan->uniform_buffers_memory[i], NULL);
+		i++;
 	}
 }
 
@@ -56,6 +57,7 @@ void	free_resource(t_vulkan *vulkan)
 		vkDestroyFence(vulkan->logical_device, vulkan->fence[i], NULL);
 		i++;
 	}
+	vkDestroyDescriptorSetLayout(vulkan->logical_device, vulkan->descriptor_set_layout, NULL);
 	vkDestroyCommandPool(vulkan->logical_device, vulkan->command_pool_transfer, NULL);
 	vkDestroyCommandPool(vulkan->logical_device, vulkan->command_pool, NULL);
 	vkDestroyBuffer(vulkan->logical_device, vulkan->index_buffer, NULL);

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 12:08:27 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 14:26:26 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/08 18:48:11 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	create_ubo(t_vulkan *vulkan)
 	{
 		create_buffer(vulkan, buffer_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-				vulkan->uniform_buffers[i], vulkan->uniform_buffers_memory[i]);
+				&vulkan->uniform_buffers[i], &vulkan->uniform_buffers_memory[i]);
 		i++;
 	}
 }
