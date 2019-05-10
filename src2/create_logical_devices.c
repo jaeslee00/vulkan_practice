@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:17:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 15:31:09 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 16:26:05 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	create_logical_devices(t_vulkan *vulkan)
 	queue_info[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	queue_info[0].pNext = NULL;
 	queue_info[0].queueFamilyIndex = vulkan->graphics_queue_family_index;
-	printf("trns qu : %u\n", queue_info[0].queueFamilyIndex);
 	queue_info[0].queueCount = 1;
 	queue_info[0].pQueuePriorities = &queue_priority;
 	queue_info[0].flags = 0;
@@ -33,7 +32,6 @@ void	create_logical_devices(t_vulkan *vulkan)
 	queue_info[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	queue_info[1].pNext = NULL;
 	queue_info[1].queueFamilyIndex = vulkan->transfer_queue_family_index;
-	printf("trns qu : %u\n", queue_info[1].queueFamilyIndex);
 	queue_info[1].queueCount = 1;
 	queue_info[1].pQueuePriorities = &queue_priority;
 	queue_info[1].flags = 0;

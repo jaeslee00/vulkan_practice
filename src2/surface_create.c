@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 00:45:21 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 19:34:21 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 16:34:19 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void		surface_support_check(t_vulkan *vulkan)
 void	create_surface(t_vulkan *vulkan)
 {
 	vulkan->surf = NULL;
-	if (glfwCreateWindowSurface(vulkan->instance, vulkan->window, NULL, &vulkan->surf) != VK_SUCCESS)
-		printf("failed to crate window surface!\n");
+	ft_assert((glfwCreateWindowSurface(vulkan->instance, vulkan->window, NULL, &vulkan->surf) == VK_SUCCESS),
+		"failed to crate window surface!", "surface_create.c", 40);
 	surface_support_check(vulkan);
 }

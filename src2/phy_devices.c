@@ -6,13 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 14:47:58 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/02 13:44:30 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 16:32:28 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
-void	find_graphics_queue_family(t_vulkan *vulkan)
+void	find_queue_family(t_vulkan *vulkan)
 {
 	uint32_t	index;
 
@@ -122,7 +122,6 @@ int		physical_device_select(t_vulkan *vulkan)
 
 	/*TODO recieve properties and features of the vulkan->gpu */
 	check_devices(vulkan);
-	find_graphics_queue_family(vulkan); /*TODO check if the chosen device supports queue family */
-	printf("after queuefamilycheck : %u\n", vulkan->transfer_queue_family_index);
+	find_queue_family(vulkan); /*TODO check if the chosen device supports queue family */
 	return (1);
 }

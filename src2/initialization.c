@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 18:24:56 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 21:30:54 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 18:24:26 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	init_vulkan(t_vulkan *vulkan)
 			"create instance failed", "example.c", 125);
 }
 
-int		init_glfw(t_vulkan *vulkan)
+int		init_glfw(t_vulkan *vulkan, GLFWwindow **window)
 {
 	if (!glfwInit())
 	{
@@ -78,13 +78,13 @@ int		init_glfw(t_vulkan *vulkan)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		if (!(vulkan->window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN!", NULL, NULL)))
+		if (!(*window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN!", NULL, NULL)))
 		{
 			printf("creating GLFW window failed.\n");
 			return (0);
 		}
-		glfwSetKeyCallback(vulkan->window, key_callback);
-		glfwSetWindowUserPointer(vulkan->window, vulkan->window_ptr);
+		glfwSetKeyCallback(*window, key_callback);
+		glfwSetCursorPosCallback(*window, mouse_callback);
 	}
 	return (1);
 }

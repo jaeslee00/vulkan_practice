@@ -6,11 +6,19 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 22:25:56 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 18:47:52 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
+
+void	reset_cursor(uint32_t width, uint32_t height)
+{
+	ft_bzero(&g_cam_info, sizeof(t_camera));
+	g_cam_info.last_x = width / 2;
+	g_cam_info.last_y = height / 2;
+	g_cam_info.first_move = 0;
+}
 
 void	recreate_swapchain(t_vulkan *vulkan)
 {
@@ -18,6 +26,7 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	clear_swapchain_objects(vulkan); /*TODO free resources of rendering related resources */
 	swapchain_create(vulkan);
 	create_imageviews(vulkan);
+	reset_cursor(vulkan->swapchain_extent.width, vulkan->swapchain_extent.height);
 	create_renderpass(vulkan);
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vulkan);
@@ -27,8 +36,10 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	create_command_buffers(vulkan);
 }
 
-static VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
-		uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
+static	VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags,
+			VkDebugReportObjectTypeEXT objectType, uint64_t object,
+				size_t location, int32_t messageCode, const char* pLayerPrefix,
+					const char* pMessage, void* pUserData)
 {
 	if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
 	{
@@ -52,7 +63,8 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 	create_info.pfnCallback = debug_report_callback;
 
 	PFN_vkCreateDebugReportCallbackEXT	vkCreateDebugReportCallbackEXT =
-		(PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
+		(PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance,
+			"vkCreateDebugReportCallbackEXT");
 
 	vulkan->debug_callback = 0;
 	vkCreateDebugReportCallbackEXT(instance, &create_info, 0, &vulkan->debug_callback);
@@ -60,46 +72,74 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+	float	camera_speed;
 
+	camera_speed = 0.5f;
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[0] = 0.5f;
+		g_cam_info.velocity[0] = camera_speed;
 	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		g_camera[0] = 0.0f;
+		g_cam_info.velocity[0] = 0.0f;
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[0] = -0.5f;
+		g_cam_info.velocity[0] = -camera_speed;
 	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		g_camera[0] = 0.0f;
+		g_cam_info.velocity[0] = 0.0f;
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[2] = -0.5f;
+		g_cam_info.velocity[2] = -camera_speed;
 	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		g_camera[2] = 0.0f;
+		g_cam_info.velocity[2] = 0.0f;
 	if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[2] = 0.5f;
+		g_cam_info.velocity[2] = camera_speed;
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		g_camera[2] = 0.0f;
+		g_cam_info.velocity[2] = 0.0f;
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	float	x_offset;
+	float	y_offset;
+	float	sensitivity;
+
+	sensitivity = 0.1f;
+	x_offset = xpos - g_cam_info.last_x;
+	y_offset = g_cam_info.last_y - ypos;
+	g_cam_info.last_x = xpos;
+	g_cam_info.last_y = ypos;
+	g_cam_info.yaw += x_offset * sensitivity;
+	g_cam_info.pitch += y_offset * sensitivity;
+	if (g_cam_info.pitch > 89.0f)
+		g_cam_info.pitch = 89.0f;
+	if (g_cam_info.pitch < -89.0f)
+		g_cam_info.pitch = -89.0f;
+}
+
+void	get_device_queue(t_vulkan *vulkan)
+{
+	vkGetDeviceQueue(vulkan->logical_device,
+		vulkan->graphics_queue_family_index, 0, &vulkan->graphics_queue);
+	vkGetDeviceQueue(vulkan->logical_device,
+		vulkan->present_queue_family_index, 0, &vulkan->present_queue);
+	vkGetDeviceQueue(vulkan->logical_device,
+		vulkan->transfer_queue_family_index, 0, &vulkan->transfer_queue);
 }
 
 int		main()
 {
 	t_vulkan		vulkan;
 
-	ft_bzero(&g_camera, sizeof(g_camera));
-	if (!init_glfw(&vulkan))
+	if (!init_glfw(&vulkan, &vulkan.window))
 	{
 		printf("initializing GLFW failed.\n");
 		return (0);
 	}
-
+	reset_cursor(WIDTH, HEIGHT);
 	init_vulkan(&vulkan);
 	register_debug_callback(&vulkan, vulkan.instance);
 
 	physical_device_select(&vulkan);
 	create_logical_devices(&vulkan);
 	create_surface(&vulkan);
-	/* retrieve handles for each queues */
-	vkGetDeviceQueue(vulkan.logical_device, vulkan.graphics_queue_family_index, 0, &vulkan.graphics_queue);
-	vkGetDeviceQueue(vulkan.logical_device, vulkan.present_queue_family_index, 0, &vulkan.present_queue);
-	vkGetDeviceQueue(vulkan.logical_device, vulkan.transfer_queue_family_index, 0, &vulkan.transfer_queue);
+
+	get_device_queue(&vulkan);
 	create_sync(&vulkan);
 
 	/* swapchain recreation objects */
@@ -119,23 +159,25 @@ int		main()
 
 	create_vertex_buffer(&vulkan);
 	create_index_buffer(&vulkan);
-	create_ubo(&vulkan); // FUCKING SEGFAULTS
+	create_ubo(&vulkan); // FUCKING SEGFAULTS needs to be included in swapchain recreation
 	create_command_buffers(&vulkan);
 
 	while (!glfwWindowShouldClose(vulkan.window))
 	{
 		glfwPollEvents();
 		draw_frame(&vulkan);
-		if (g_camera[0] == -0.5f)
-			printf("A pressed\n");
-		if (g_camera[0] == 0.5f)
-			printf("D pressed\n");
-		if (g_camera[2] == -0.5f)
-			printf("W pressed\n");
-		if (g_camera[2] == 0.5f)
-			printf("S pressed\n");
-		if (g_camera[0] == 0.0f && g_camera[2] == 0.0f)
-			printf("nothing pressed\n");
+		// if (g_cam_info.velocity[0] == -0.5f)
+		// 	printf("A pressed\n");
+		// if (g_cam_info.velocity[0] == 0.5f)
+		// 	printf("D pressed\n");
+		// if (g_cam_info.velocity[2] == -0.5f)
+		// 	printf("W pressed\n");
+		// if (g_cam_info.velocity[2] == 0.5f)
+		// 	printf("S pressed\n");
+		// if (g_cam_info.velocity[0] == 0.0f && g_cam_info.velocity[2] == 0.0f)
+		// 	printf("nothing pressed\n");
+		printf("yaw : %lf && pitch : %lf\n", g_cam_info.yaw, g_cam_info.pitch);
+		//printf("xpos : %lf %lf\n", g_cam_info.last_x, g_cam_info.last_y);
 		vkDeviceWaitIdle(vulkan.logical_device);
 	}
 	free_resource(&vulkan);
