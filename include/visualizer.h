@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 22:26:10 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 18:53:35 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,24 +76,29 @@ typedef struct	s_ubo
 	//mvp = projection * view * model //inverted!!!!
 }				t_ubo;
 
-typedef struct	s_view
+typedef struct	s_camera
 {
+	float	velocity[3];
+	int		first_move;
+	float	last_x;
+	float	last_y;
+	float	yaw;
+	float	pitch;
+	float	cam_pos[3];
+	float	cam_front[3];
 	float	position[3];
-
 	float	rotation[16];
 	float	transform[16];
 	float	scale[16];
-
 	float	perspective[16];
-}				t_view;
+}				t_camera;
 
-float		g_camera[3];
+t_camera	g_cam_info;
 
 typedef struct	s_vulkan
 {
 	/*global_scale... in C++ */
 	GLFWwindow					*window;
-	void						*window_ptr;
 	VkInstance					instance;
 	VkDebugReportCallbackEXT	debug_callback; /*TODO Erase when finished */
 	VkDevice					logical_device; /* logical device */
@@ -167,9 +172,10 @@ typedef struct	s_vulkan
 	VkDeviceMemory				*uniform_buffers_memory;
 }				t_vulkan;
 
-int				init_glfw(t_vulkan *vulkan);
+int				init_glfw(t_vulkan *vulkan, GLFWwindow **window);
 void 			key_callback(GLFWwindow *window, int key, int scancode,
 								int action, int mods);
+void 			mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void			init_vulkan(t_vulkan *vulkan);
 int				physical_device_select(t_vulkan *vulkan);
 void			check_devices(t_vulkan *vulkan);

@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/05/08 19:25:38 by jaelee           ###   ########.fr        #
+#    Updated: 2019/05/10 17:53:15 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ GLFW_FLAGS = -framework Cocoa -framework IOKit \
 
 VK_SDK_PATH = /Users/jaelee/42/vv/vulkansdk/macOS
 
-GLFW_PATH = /Users/jaelee/42/vv/glfw
+GLFW_PATH = /sgoinfre/goinfre/Perso/jaelee/glfw
 
 INCLUDES = ./include/visualizer.h \
 	./libft/includes/libft.h
@@ -60,7 +60,7 @@ all: $(NAME)
 $(NAME): $(OBJS) libft/libft.a
 	$(CC) $(CLFAGS) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
 	-Wl,-rpath, $(VK_SDK_PATH)/lib $(GLFW_PATH)/src/libglfw3.a \
-	${VK_SDK_PATH}/lib/libvulkan.1.dylib -I /Users/jaelee/42/vv/volk $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
+	${VK_SDK_PATH}/lib/libvulkan.1.dylib $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
 
 obj:
 	mkdir -p obj

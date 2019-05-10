@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/10 18:47:52 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 18:57:51 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@ void	reset_cursor(uint32_t width, uint32_t height)
 	g_cam_info.last_x = width / 2;
 	g_cam_info.last_y = height / 2;
 	g_cam_info.first_move = 0;
+
+	g_cam_info.cam_pos[0] = 0.0f;
+	g_cam_info.cam_pos[1] = 0.0f;
+	g_cam_info.cam_pos[2] = 5.0f;
+
+	g_cam_info.cam_front[0] = 0.0f;
+	g_cam_info.cam_front[1] = 0.0f;
+	g_cam_info.cam_front[2] = -1.0f;
 }
 
 void	recreate_swapchain(t_vulkan *vulkan)

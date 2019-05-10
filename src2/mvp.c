@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 12:01:36 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/10 16:23:39 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/10 18:53:26 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,36 +27,37 @@ void	model_transformation()
 
 }
 
-void	view_lookat(float *view, float *cam_pos, float *cam_target, float *up_u_vector)
+void	view_lookat(float *view, float *cam_pos, float *cam_target)
 {
 	float	lookat[16];
-	float	h_vector[3];
-	float	u_vector[3];
-	float	f_vector[3];
+	float	h_vec[3];
+	float	u_vec[3];
+	float	f_vec[3];
+	float	up_u_vec[3];
 
-	vec3_sub(f_vector, cam_pos, cam_target);
-	vec3_cross(h_vector, f_vector, up_u_vector);
-	vec3_normalize(h_vector);
-	vec3_cross(u_vector, h_vector, f_vector);
+	vec3_sub(f_vec, cam_pos, cam_target);
+	vec3_cross(h_vec, f_vec, up_u_vec);
+	vec3_normalize(h_vec);
+	vec3_cross(u_vec, h_vec, f_vec);
 
 	/* Gram-Schmidt matrix */
-	view[0] = h_vector[0];
-	view[1] = h_vector[1];
-	view[2] = h_vector[2];
-	view[3] = (h_vector[0] * -cam_pos[0]) +
-					(h_vector[1] * -cam_pos[1]) * (h_vector[2] * -cam_pos[2]);
+	view[0] = h_vec[0];
+	view[1] = h_vec[1];
+	view[2] = h_vec[2];
+	view[3] = (h_vec[0] * -cam_pos[0]) +
+					(h_vec[1] * -cam_pos[1]) * (h_vec[2] * -cam_pos[2]);
 
-	view[4] = u_vector[0];
-	view[5] = u_vector[0];
-	view[6] = u_vector[0];
-	view[7] = (u_vector[0] * -cam_pos[0]) +
-					(u_vector[1] * -cam_pos[1]) * (u_vector[2] * -cam_pos[2]);
+	view[4] = u_vec[0];
+	view[5] = u_vec[0];
+	view[6] = u_vec[0];
+	view[7] = (u_vec[0] * -cam_pos[0]) +
+					(u_vec[1] * -cam_pos[1]) * (u_vec[2] * -cam_pos[2]);
 
-	view[8] = f_vector[0];
-	view[9] = f_vector[0];
-	view[10] = f_vector[0];
-	view[11] = (f_vector[0] * -cam_pos[0]) +
-					(f_vector[1] * -cam_pos[1]) * (f_vector[2] * -cam_pos[2]);
+	view[8] = f_vec[0];
+	view[9] = f_vec[0];
+	view[10] = f_vec[0];
+	view[11] = (f_vec[0] * -cam_pos[0]) +
+					(f_vec[1] * -cam_pos[1]) * (f_vec[2] * -cam_pos[2]);
 
 	view[12] = 0.0f;
 	view[13] = 0.0f;
