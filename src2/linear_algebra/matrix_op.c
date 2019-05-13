@@ -6,11 +6,11 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 01:05:53 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/10 14:43:57 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/11 18:08:34 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#include "matrix.h"
 
 void	mat4_multiply(float *dst, float *mat1, float *mat2)
 {

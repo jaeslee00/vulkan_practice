@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/05/10 17:53:15 by jaelee           ###   ########.fr        #
+#    Updated: 2019/05/12 00:09:29 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,16 +30,20 @@ SRCS = main.c \
 		free_resources.c \
 		get_triangle.c \
 		buffer_handlers.c \
-		buffer_objects.c \
 		ubo_handler.c \
 		vertex_buffer.c \
+		mvp.c \
+		descriptor_pool.c \
+		linear_algebra/matrix_op.c \
+		linear_algebra/matrix_transformation.c \
+		linear_algebra/vector_op.c \
 		sync.c
 
 OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 
 CC = gcc
 
-CLFAGS := $(FLAGS) -g
+CLFAGS := $(FLAGS)
 
 GLFW_FLAGS = -framework Cocoa -framework IOKit \
 		  		-framework CoreFoundation -framework CoreVideo
@@ -49,7 +53,9 @@ VK_SDK_PATH = /Users/jaelee/42/vv/vulkansdk/macOS
 GLFW_PATH = /sgoinfre/goinfre/Perso/jaelee/glfw
 
 INCLUDES = ./include/visualizer.h \
-	./libft/includes/libft.h
+	./libft/includes/libft.h \
+	./include/matrix.h \
+	./include/vector.h
 
 INCLUDE_FOLDERS = -I $(VK_SDK_PATH)/include/vulkan -I $(GLFW_PATH)/include -I ./include -I ./libft/includes \
 
@@ -64,6 +70,7 @@ $(NAME): $(OBJS) libft/libft.a
 
 obj:
 	mkdir -p obj
+	mkdir -p obj/linear_algebra
 
 obj/%.o: src2/%.c $(INCLUDES) | obj
 	$(CC) -g $(CFLAGS) $(INCLUDE_FOLDERS) -c $< -o $@

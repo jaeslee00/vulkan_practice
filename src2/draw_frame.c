@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 19:53:42 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 21:35:56 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/13 16:27:26 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,38 @@
 
 size_t		g_current_frame = 0;
 
-void	update_ubo(t_vulkan *vulkan, uint32_t image_index)
+void	update_ubo(t_vulkan *vulkan, uint32_t curr_image)
 {
+	t_ubo	ubo = {};
 
+	view_updates(&ubo);
+	model_updates(&ubo);
+	proj_updates(&ubo);
+
+		// if (g_cam_info.velocity[0] == -0.5f)
+		// 	printf("A pressed\n");
+		// if (g_cam_info.velocity[0] == 0.5f)
+		// 	printf("D pressed\n");
+		// if (g_cam_info.velocity[2] == -0.5f)
+		// 	printf("W pressed\n");
+		// if (g_cam_info.velocity[2] == 0.5f)
+		// 	printf("S pressed\n");
+		// if (g_cam_info.velocity[0] == 0.0f && g_cam_info.velocity[2] == 0.0f)
+		// 	printf("nothing pressed\n");
+	//	printf("yaw : %lf && pitch : %lf\n", g_cam_info.yaw, g_cam_info.pitch);
+		// printf("%f %f %f\n", g_cam_info.cam_pos[0],
+		// 						g_cam_info.cam_pos[1],
+		// 							g_cam_info.cam_pos[2]);
+	//	printf("xpos : %lf %lf\n", g_cam_info.last_x, g_cam_info.last_y);
+	// printf("%f %f %f %f\n", ubo.view[0], ubo.view[1], ubo.view[2], ubo.view[3]);
+	// printf("%f %f %f %f\n", ubo.view[4], ubo.view[5], ubo.view[6], ubo.view[7]);
+	// printf("%f %f %f %f\n", ubo.view[8], ubo.view[9], ubo.view[10], ubo.view[11]);
+	// printf("%f %f %f %f\n", ubo.view[12], ubo.view[13], ubo.view[14], ubo.view[15]);
+	// printf("=========================================\n");
+	void	*data;
+	vkMapMemory(vulkan->logical_device, vulkan->uniform_buffers_memory[curr_image], 0, sizeof(ubo), 0, &data);
+		memcpy(data, &ubo, sizeof(t_ubo));
+	vkUnmapMemory(vulkan->logical_device, vulkan->uniform_buffers_memory[curr_image]);
 }
 
 void	draw_frame(t_vulkan *vulkan)
@@ -36,8 +65,7 @@ void	draw_frame(t_vulkan *vulkan)
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 		printf("failed to acquire swapchain image");
 
-	update_ubo(vulkan, image_index);
-
+//	update_ubo(vulkan, image_index);
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/10 18:53:35 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/13 17:45:03 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,15 @@
 # include "ft_assert.h"
 # include "libft.h"
 # include "array.h"
+# include "vector.h"
+# include <math.h>
 # define GLFW_INCLUDE_VULKAN
 # define WIDTH 1200
 # define HEIGHT 900
+# define PI 3.141592654
+# define FOV 0.785398f
+# define NEAR_Z 0.1f
+# define FAR_Z 200.0f
 # define MAX_FRAMES_IN_FLIGHT 2
 
 /* Initialization
@@ -138,10 +144,10 @@ typedef struct	s_vulkan
 	VkColorSpaceKHR				color_space;
 	VkPresentModeKHR			present_mode;
 	VkExtent2D					swapchain_extent;
-	VkImage						*swapchain_images; // same number
-	VkImageView					*image_views; // same number
+	VkImage						*swapchain_images; // same number /*TODO MALLOC */
+	VkImageView					*image_views; // same number /*TODO MALLOC */
 	uint32_t					swapchain_image_count; // same number
-	VkFramebuffer				*frame_buffers; // same number
+	VkFramebuffer				*frame_buffers; // same number /*TODO MALLOC */
 
 	/*command bufffers */
 	VkCommandPool				command_pool;
@@ -152,6 +158,8 @@ typedef struct	s_vulkan
 
 	/* pipeline */
 	VkDescriptorSetLayout		descriptor_set_layout;
+	VkDescriptorPool			descriptor_pool;
+	VkDescriptorSet				*descriptor_set; /*TODO MALLOC */
 	VkPipelineLayout			pipeline_layout;
 	VkPipeline					graphics_pipeline;
 	VkRenderPass				renderpass;
@@ -162,7 +170,7 @@ typedef struct	s_vulkan
 	VkFence						*fence;
 
 	t_array						triangle;
-	uint32_t					*vertices_index;
+	uint32_t					*vertices_index; /*TODO MALLOC */
 	VkBuffer					vertex_buffer;
 	VkDeviceMemory				vertex_buffer_memory;
 	VkBuffer					index_buffer;
@@ -190,6 +198,9 @@ VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path);
 void			recreate_swapchain(t_vulkan *vulkan);
 
 void			create_descriptor_set_layout(t_vulkan *vulkan);
+void 			create_descriptor_pool(t_vulkan *vulkan);
+void			create_descriptor_set(t_vulkan *vulkan);
+
 void			create_graphics_pipeline(t_vulkan *vulkan);
 void			create_renderpass(t_vulkan *vulkan);
 void			create_framebuffers(t_vulkan *vulkan);
@@ -203,16 +214,24 @@ void			get_triangle_info(t_vulkan *vulkan);
 void			create_buffer(t_vulkan *vulkan, VkDeviceSize size, VkBufferUsageFlags usage,
 								VkMemoryPropertyFlags properties,
 									VkBuffer *buffer, VkDeviceMemory *buffer_memory);
-void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float r, float g, float b);
+void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3, float r, float g, float b);
 void			create_vertex_buffer(t_vulkan *vulkan);
 void			create_index_buffer(t_vulkan *vulkan);
 
-VkVertexInputBindingDescription get_binding_description(void);
-VkVertexInputAttributeDescription *get_attr_description(void);
+VkVertexInputBindingDescription		get_binding_description(void);
+VkVertexInputAttributeDescription 	*get_attr_description(void);
 
 void			create_ubo(t_vulkan *vulkan);
 
+
+
 void			clear_swapchain_objects(t_vulkan *vulkan);
 void			free_resource(t_vulkan *vulkan);
+
+
+
+void	model_updates(t_ubo *ubo);
+void	view_updates(t_ubo *ubo);
+void	proj_updates(t_ubo *ubo);
 
 #endif

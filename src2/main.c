@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/10 18:57:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/13 17:35:57 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,11 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	create_renderpass(vulkan);
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vulkan);
-	create_ubo(vulkan);
+//	create_ubo(vulkan);
 	create_graphics_pipeline(vulkan);
 	create_framebuffers(vulkan);
+//	create_descriptor_pool(vulkan);
+//	create_descriptor_set(vulkan);
 	create_command_buffers(vulkan);
 }
 
@@ -81,24 +83,49 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
 	float	camera_speed;
+	float	up_vec[3];
+	float	tmp[3];
 
 	camera_speed = 0.5f;
+	up_vec[0] = 0.0f;
+	up_vec[1] = 1.0f;
+	up_vec[2] = 0.0f;
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_cam_info.velocity[0] = camera_speed;
-	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		g_cam_info.velocity[0] = 0.0f;
+	{
+		vec3_cross(tmp, g_cam_info.cam_front, up_vec);
+		vec3_normalize(tmp);
+		g_cam_info.cam_pos[0] += camera_speed * tmp[0];
+		g_cam_info.cam_pos[1] += camera_speed * tmp[1];
+		g_cam_info.cam_pos[2] += camera_speed * tmp[2];
+	}
+	// else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+	// 	g_cam_info.velocity[0] = 0.0f;
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_cam_info.velocity[0] = -camera_speed;
-	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		g_cam_info.velocity[0] = 0.0f;
+	{
+		vec3_cross(tmp, g_cam_info.cam_front, up_vec);
+		vec3_normalize(tmp);
+		g_cam_info.cam_pos[0] -= camera_speed * tmp[0];
+		g_cam_info.cam_pos[1] -= camera_speed * tmp[1];
+		g_cam_info.cam_pos[2] -= camera_speed * tmp[2];
+	}
+	// else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
+	// 	g_cam_info.velocity[0] = 0.0f;
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_cam_info.velocity[2] = -camera_speed;
-	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		g_cam_info.velocity[2] = 0.0f;
+	{
+		g_cam_info.cam_pos[0] += camera_speed * g_cam_info.cam_front[0];
+		g_cam_info.cam_pos[1] += camera_speed * g_cam_info.cam_front[1];
+		g_cam_info.cam_pos[2] += camera_speed * g_cam_info.cam_front[2];
+	}
+	// else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+	// 	g_cam_info.velocity[2] = 0.0f;
 	if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_cam_info.velocity[2] = camera_speed;
-	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		g_cam_info.velocity[2] = 0.0f;
+	{
+		g_cam_info.cam_pos[0] -= camera_speed * g_cam_info.cam_front[0];
+		g_cam_info.cam_pos[1] -= camera_speed * g_cam_info.cam_front[1];
+		g_cam_info.cam_pos[2] -= camera_speed * g_cam_info.cam_front[2];
+	}
+	// else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
+	// 	g_cam_info.velocity[2] = 0.0f;
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -107,7 +134,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	float	y_offset;
 	float	sensitivity;
 
-	sensitivity = 0.1f;
+	sensitivity = 1.0f;
 	x_offset = xpos - g_cam_info.last_x;
 	y_offset = g_cam_info.last_y - ypos;
 	g_cam_info.last_x = xpos;
@@ -118,6 +145,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		g_cam_info.pitch = 89.0f;
 	if (g_cam_info.pitch < -89.0f)
 		g_cam_info.pitch = -89.0f;
+
+	g_cam_info.yaw = (g_cam_info.yaw * PI) / 180;
+	g_cam_info.pitch = (g_cam_info.pitch * PI) / 180;
+
+	g_cam_info.cam_front[0] = cos(g_cam_info.pitch) * cos(g_cam_info.yaw);
+	g_cam_info.cam_front[1] = sin(g_cam_info.pitch);
+	g_cam_info.cam_front[2] = cos(g_cam_info.pitch) * sin(g_cam_info.yaw);
+	vec3_normalize(g_cam_info.cam_front);
 }
 
 void	get_device_queue(t_vulkan *vulkan)
@@ -133,7 +168,9 @@ void	get_device_queue(t_vulkan *vulkan)
 int		main()
 {
 	t_vulkan		vulkan;
+	t_ubo			ubo;
 
+	ft_bzero(&ubo, sizeof(t_ubo));
 	if (!init_glfw(&vulkan, &vulkan.window))
 	{
 		printf("initializing GLFW failed.\n");
@@ -148,7 +185,6 @@ int		main()
 	create_surface(&vulkan);
 
 	get_device_queue(&vulkan);
-	create_sync(&vulkan);
 
 	/* swapchain recreation objects */
 	//////////////////////////////////////////////////////////////////////////
@@ -158,7 +194,9 @@ int		main()
 
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(&vulkan);  // re-create swapchains
-	create_descriptor_set_layout(&vulkan);
+
+	//create_descriptor_set_layout(&vulkan);
+
 	create_graphics_pipeline(&vulkan);  // re-create swapchains
 	create_framebuffers(&vulkan);  // re-create swapchains
 	/////////////////////////////////////////////////////////////////////////
@@ -167,9 +205,14 @@ int		main()
 
 	create_vertex_buffer(&vulkan);
 	create_index_buffer(&vulkan);
-	create_ubo(&vulkan); // FUCKING SEGFAULTS needs to be included in swapchain recreation
+//	create_ubo(&vulkan); // FUCKING SEGFAULTS needs to be included in swapchain recreation
+
+//	create_descriptor_pool(&vulkan); // re-create swapchains
+//	create_descriptor_set(&vulkan); // re-create swapchains
+
 	create_command_buffers(&vulkan);
 
+	create_sync(&vulkan);
 	while (!glfwWindowShouldClose(vulkan.window))
 	{
 		glfwPollEvents();
@@ -184,8 +227,11 @@ int		main()
 		// 	printf("S pressed\n");
 		// if (g_cam_info.velocity[0] == 0.0f && g_cam_info.velocity[2] == 0.0f)
 		// 	printf("nothing pressed\n");
-		printf("yaw : %lf && pitch : %lf\n", g_cam_info.yaw, g_cam_info.pitch);
-		//printf("xpos : %lf %lf\n", g_cam_info.last_x, g_cam_info.last_y);
+//		printf("yaw : %lf && pitch : %lf\n", g_cam_info.yaw, g_cam_info.pitch);
+		// printf("%f %f %f\n", g_cam_info.cam_pos[0],
+		// 						g_cam_info.cam_pos[1],
+		// 							g_cam_info.cam_pos[2]);
+//		printf("xpos : %lf %lf\n", g_cam_info.last_x, g_cam_info.last_y);
 		vkDeviceWaitIdle(vulkan.logical_device);
 	}
 	free_resource(&vulkan);
