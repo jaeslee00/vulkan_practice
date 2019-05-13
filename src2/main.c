@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 22:25:56 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/13 22:48:43 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,16 +126,6 @@ int		main()
 	{
 		glfwPollEvents();
 		draw_frame(&vulkan);
-		if (g_camera[0] == -0.5f)
-			printf("A pressed\n");
-		if (g_camera[0] == 0.5f)
-			printf("D pressed\n");
-		if (g_camera[2] == -0.5f)
-			printf("W pressed\n");
-		if (g_camera[2] == 0.5f)
-			printf("S pressed\n");
-		if (g_camera[0] == 0.0f && g_camera[2] == 0.0f)
-			printf("nothing pressed\n");
 		vkDeviceWaitIdle(vulkan.logical_device);
 	}
 	free_resource(&vulkan);
