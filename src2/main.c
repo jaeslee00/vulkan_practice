@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/13 22:48:43 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 00:52:37 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	create_renderpass(vulkan);
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vulkan);
-	create_ubo(vulkan);
 	create_graphics_pipeline(vulkan);
 	create_framebuffers(vulkan);
+	create_ubo(vulkan);
+	create_descriptor_pool(vulkan);
+	create_descriptor_sets(vulkan);
 	create_command_buffers(vulkan);
 }
 
@@ -100,8 +102,8 @@ int		main()
 	vkGetDeviceQueue(vulkan.logical_device, vulkan.graphics_queue_family_index, 0, &vulkan.graphics_queue);
 	vkGetDeviceQueue(vulkan.logical_device, vulkan.present_queue_family_index, 0, &vulkan.present_queue);
 	vkGetDeviceQueue(vulkan.logical_device, vulkan.transfer_queue_family_index, 0, &vulkan.transfer_queue);
-	create_sync(&vulkan);
 
+	create_sync(&vulkan);
 	/* swapchain recreation objects */
 	//////////////////////////////////////////////////////////////////////////
 	swapchain_create(&vulkan); // re-create swapchains
@@ -119,15 +121,19 @@ int		main()
 
 	create_vertex_buffer(&vulkan);
 	create_index_buffer(&vulkan);
-	create_ubo(&vulkan); // FUCKING SEGFAULTS
+
+	create_ubo(&vulkan);
+	create_descriptor_pool(&vulkan);
+	create_descriptor_sets(&vulkan);
+
 	create_command_buffers(&vulkan);
 
 	while (!glfwWindowShouldClose(vulkan.window))
 	{
 		glfwPollEvents();
 		draw_frame(&vulkan);
-		vkDeviceWaitIdle(vulkan.logical_device);
 	}
+	vkDeviceWaitIdle(vulkan.logical_device);
 	free_resource(&vulkan);
 	return 0;
 }

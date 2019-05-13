@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 11:21:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/13 23:01:56 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 00:39:54 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,12 @@ void	create_command_buffers(t_vulkan *vulkan)
 			vkCmdBeginRenderPass(vulkan->command_buffers[i], &begin_pass, VK_SUBPASS_CONTENTS_INLINE);
 
 				vkCmdBindPipeline(vulkan->command_buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, vulkan->graphics_pipeline);
-					VkDeviceSize	offsets[] = {0};
-					vkCmdBindVertexBuffers(vulkan->command_buffers[i], 0, 1, &vulkan->vertex_buffer, offsets);
-					vkCmdBindIndexBuffer(vulkan->command_buffers[i], vulkan->index_buffer, 0, VK_INDEX_TYPE_UINT32);
-			//	vkCmdDraw(vulkan->command_buffers[i], vulkan->triangle.length, 1, 0, 0);
+				VkDeviceSize	offsets[] = {0};
+				vkCmdBindVertexBuffers(vulkan->command_buffers[i], 0, 1, &vulkan->vertex_buffer, offsets);
+				vkCmdBindIndexBuffer(vulkan->command_buffers[i], vulkan->index_buffer, 0, VK_INDEX_TYPE_UINT32);
+				vkCmdBindDescriptorSets(vulkan->command_buffers[i],
+					VK_PIPELINE_BIND_POINT_GRAPHICS, vulkan->pipeline_layout,
+						0, 1, &vulkan->descriptor_sets[i], 0, NULL);
 				vkCmdDrawIndexed(vulkan->command_buffers[i], 6, 1, 0, 0, 0);
 
 			vkCmdEndRenderPass(vulkan->command_buffers[i]);

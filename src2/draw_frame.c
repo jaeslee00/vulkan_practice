@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 19:53:42 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 21:35:56 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 00:40:45 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,15 @@ size_t		g_current_frame = 0;
 
 void	update_ubo(t_vulkan *vulkan, uint32_t image_index)
 {
+	t_ubo	ubo = {};
+	update_model(&ubo);
+	update_view(&ubo);
+	update_proj(&ubo);
 
+	void* data;
+	vkMapMemory(vulkan->logical_device, vulkan->uniform_buffers_memory[image_index], 0, sizeof(ubo), 0, &data);
+		memcpy(data, &ubo, sizeof(ubo));
+	vkUnmapMemory(vulkan->logical_device, vulkan->uniform_buffers_memory[image_index]);
 }
 
 void	draw_frame(t_vulkan *vulkan)
@@ -53,6 +61,7 @@ void	draw_frame(t_vulkan *vulkan)
 
 	ft_assert((vkQueueSubmit(vulkan->graphics_queue, 1, &submitInfo, vulkan->fence[g_current_frame]) == VK_SUCCESS),
 				"failed to submit commands to queue", "draw_frame.c", 37);
+
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.waitSemaphoreCount = 1;
@@ -61,7 +70,9 @@ void	draw_frame(t_vulkan *vulkan)
 	presentInfo.pSwapchains = &vulkan->swapchain;
 	presentInfo.pImageIndices = &image_index;
 	presentInfo.pResults = NULL;
+
 	result = vkQueuePresentKHR(vulkan->present_queue, &presentInfo);
+
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 		recreate_swapchain(vulkan);
 	else if (result != VK_SUCCESS)

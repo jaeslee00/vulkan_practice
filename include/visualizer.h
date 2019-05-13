@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 22:26:10 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/13 23:57:29 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ typedef struct	s_ubo
 
 typedef struct	s_view
 {
-	float	position[3];
+	float	cam_pos[3];
+	float	cam_front[3];
+	float	last_x;
+	float	last_y;
+	float	yaw;
+	float	pitch;
 
-	float	rotation[16];
-	float	transform[16];
-	float	scale[16];
-
-	float	perspective[16];
 }				t_view;
 
 float		g_camera[3];
@@ -165,6 +165,9 @@ typedef struct	s_vulkan
 	t_ubo						ubo;
 	VkBuffer					*uniform_buffers; /* needs uniform buffers for each frame_buffers */
 	VkDeviceMemory				*uniform_buffers_memory;
+
+	VkDescriptorPool			descriptor_pool;
+	VkDescriptorSet				*descriptor_sets; /*TODO Free MALLOC */
 }				t_vulkan;
 
 int				init_glfw(t_vulkan *vulkan);
@@ -201,10 +204,16 @@ void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float r, float g, 
 void			create_vertex_buffer(t_vulkan *vulkan);
 void			create_index_buffer(t_vulkan *vulkan);
 
-VkVertexInputBindingDescription get_binding_description(void);
-VkVertexInputAttributeDescription *get_attr_description(void);
+VkVertexInputBindingDescription		get_binding_description(void);
+VkVertexInputAttributeDescription 	*get_attr_description(void);
 
 void			create_ubo(t_vulkan *vulkan);
+void 			create_descriptor_sets(t_vulkan *vulkan);
+void			create_descriptor_pool(t_vulkan *vulkan);
+
+void			update_model(t_ubo *ubo);
+void			update_view(t_ubo *ubo);
+void			update_proj(t_ubo *ubo);
 
 void			clear_swapchain_objects(t_vulkan *vulkan);
 void			free_resource(t_vulkan *vulkan);

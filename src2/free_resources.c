@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:09:17 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 19:09:32 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 00:40:55 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	clear_swapchain_objects(t_vulkan *vulkan)
 		vkFreeMemory(vulkan->logical_device, vulkan->uniform_buffers_memory[i], NULL);
 		i++;
 	}
+	vkDestroyDescriptorPool(vulkan->logical_device, vulkan->descriptor_pool, NULL);
 }
 
 void	free_resource(t_vulkan *vulkan)

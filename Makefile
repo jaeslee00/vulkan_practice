@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/05/08 19:25:38 by jaelee           ###   ########.fr        #
+#    Updated: 2019/05/13 23:59:32 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,11 @@ SRCS = main.c \
 		buffer_objects.c \
 		ubo_handler.c \
 		vertex_buffer.c \
-		sync.c
+		mvp.c \
+		sync.c \
+		la/matrix_op.c \
+		la/matrix_transformation.c \
+		la/vector_op.c
 
 OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 
@@ -64,6 +68,7 @@ $(NAME): $(OBJS) libft/libft.a
 
 obj:
 	mkdir -p obj
+	mkdir -p obj/la
 
 obj/%.o: src2/%.c $(INCLUDES) | obj
 	$(CC) -g $(CFLAGS) $(INCLUDE_FOLDERS) -c $< -o $@
