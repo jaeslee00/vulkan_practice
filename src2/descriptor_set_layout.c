@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 15:17:39 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 00:32:33 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 01:44:49 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ void create_descriptor_sets(t_vulkan *vulkan)
 
 	layouts =
 		(VkDescriptorSetLayout*)malloc(vulkan->swapchain_image_count * sizeof(VkDescriptorSetLayout));
-	memcpy(&layouts[0], &vulkan->descriptor_set_layout, sizeof(VkDescriptorSetLayout));
-	memcpy(&layouts[1], &vulkan->descriptor_set_layout, sizeof(VkDescriptorSetLayout));
-	memcpy(&layouts[2], &vulkan->descriptor_set_layout, sizeof(VkDescriptorSetLayout));
+	layouts[0] = vulkan->descriptor_set_layout;
+	layouts[1] = vulkan->descriptor_set_layout;
+
 	vulkan->descriptor_sets =
 		(VkDescriptorSet*)malloc(vulkan->swapchain_image_count * sizeof (VkDescriptorSet));
 

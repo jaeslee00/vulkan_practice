@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 00:52:37 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 02:18:19 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
 		g_camera[0] = 0.5f;
 	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		g_camera[0] = 0.0f;
+		g_camera[0] = 1.0f;
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[0] = -0.5f;
+		g_camera[0] = 1.5f;
 	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		g_camera[0] = 0.0f;
+		g_camera[0] = 1.0f;
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
 		g_camera[2] = -0.5f;
 	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)

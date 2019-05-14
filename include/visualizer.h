@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/13 23:57:29 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 02:18:20 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ typedef struct	s_ubo
 	float	model[16]; /* translation * rotation * scale */
 	float	view[16]; /* rotate camera poition and adds translation */
 	float	proj[16]; /* perspective distortion, FOV, clipping */
-	//mvp = projection * view * model //inverted!!!!
 }				t_ubo;
 
 typedef struct	s_view
@@ -93,7 +92,6 @@ typedef struct	s_vulkan
 {
 	/*global_scale... in C++ */
 	GLFWwindow					*window;
-	void						*window_ptr;
 	VkInstance					instance;
 	VkDebugReportCallbackEXT	debug_callback; /*TODO Erase when finished */
 	VkDevice					logical_device; /* logical device */

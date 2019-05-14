@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/05/13 23:59:32 by jaelee           ###   ########.fr        #
+#    Updated: 2019/05/14 01:46:38 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 
 CC = gcc
 
-CLFAGS := $(FLAGS) -g
+CLFAGS := $(FLAGS) -fsanitize=address -g
 
 GLFW_FLAGS = -framework Cocoa -framework IOKit \
 		  		-framework CoreFoundation -framework CoreVideo
@@ -62,7 +62,7 @@ LIBRARY_PATH = -L libft
 all: $(NAME)
 
 $(NAME): $(OBJS) libft/libft.a
-	$(CC) $(CLFAGS) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
+	$(CC) -fsanitize=address -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
 	-Wl,-rpath, $(VK_SDK_PATH)/lib $(GLFW_PATH)/src/libglfw3.a \
 	${VK_SDK_PATH}/lib/libvulkan.1.dylib -I /Users/jaelee/42/vv/volk $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
 
@@ -71,7 +71,7 @@ obj:
 	mkdir -p obj/la
 
 obj/%.o: src2/%.c $(INCLUDES) | obj
-	$(CC) -g $(CFLAGS) $(INCLUDE_FOLDERS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE_FOLDERS) -c $< -o $@
 
 libft/libft.a: $(INCLUDES)
 	make -C libft
