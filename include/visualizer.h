@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 03:21:22 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 03:36:25 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define WIDTH 1200
 # define HEIGHT 900
 # define MAX_FRAMES_IN_FLIGHT 2
+# define PI 3.1415926535f
 
 /* Initialization
 
@@ -172,6 +173,7 @@ typedef struct	s_vulkan
 int				init_glfw(t_vulkan *vulkan);
 void 			key_callback(GLFWwindow *window, int key, int scancode,
 								int action, int mods);
+void 			mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void			init_vulkan(t_vulkan *vulkan);
 int				physical_device_select(t_vulkan *vulkan);
 void			check_devices(t_vulkan *vulkan);

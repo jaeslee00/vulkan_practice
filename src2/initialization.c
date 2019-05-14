@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 18:24:56 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 01:51:25 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 03:35:27 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ int		init_glfw(t_vulkan *vulkan)
 			return (0);
 		}
 		glfwSetKeyCallback(vulkan->window, key_callback);
+		glfwSetCursorPosCallback(vulkan->window, mouse_callback);
 	}
 	return (1);
 }

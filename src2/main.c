@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 03:27:27 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 03:36:46 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,33 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 		g_camera[2] = 0.5f;
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 		g_camera[2] = 0.0f;
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	float	x_offset;
+	float	y_offset;
+	float	sensitivity;
+
+	sensitivity = 0.1f;
+	x_offset = xpos - g_cam.last_x;
+	y_offset = g_cam.last_y - ypos;
+	g_cam.last_x = xpos;
+	g_cam.last_y = ypos;
+	g_cam.yaw += x_offset * sensitivity;
+	g_cam.pitch += y_offset * sensitivity;
+	if (g_cam.pitch > 89.0f)
+		g_cam.pitch = 89.0f;
+	if (g_cam.pitch < -89.0f)
+		g_cam.pitch = -89.0f;
+
+	g_cam.yaw = (g_cam.yaw * PI) / 180;
+	g_cam.pitch = (g_cam.pitch * PI) / 180;
+
+	g_cam.cam_front[0] = cos(g_cam.pitch) * cos(g_cam.yaw);
+	g_cam.cam_front[1] = sin(g_cam.pitch);
+	g_cam.cam_front[2] = cos(g_cam.pitch) * sin(g_cam.yaw);
+	vec3_normalize(g_cam.cam_front);
 }
 
 int		main()
