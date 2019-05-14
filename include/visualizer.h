@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 03:36:25 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 03:39:51 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 # define HEIGHT 900
 # define MAX_FRAMES_IN_FLIGHT 2
 # define PI 3.1415926535f
+# define NEAR_Z 0.2f
+# define FAR_Z 100.f
+# define FOV 0.733038f
 
 /* Initialization
 
