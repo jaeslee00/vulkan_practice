@@ -6,11 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 02:18:19 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 03:27:27 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
+#include "vector.h"
+#include "matrix.h"
 
 void	recreate_swapchain(t_vulkan *vulkan)
 {
@@ -27,6 +29,20 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	create_descriptor_pool(vulkan);
 	create_descriptor_sets(vulkan);
 	create_command_buffers(vulkan);
+}
+void	reset_cam(void)
+{
+	g_cam.cam_pos[0] = 0.0f;
+	g_cam.cam_pos[1] = 0.0f;
+	g_cam.cam_pos[2] = 3.0f;
+	g_cam.cam_front[0] = 0.0f;
+	g_cam.cam_front[1] = 0.0f;
+	g_cam.cam_front[2] = -1.0f;
+
+	g_cam.last_x = 0.0f;
+	g_cam.last_y = 0.0f;
+	g_cam.yaw = 0.0f;
+	g_cam.pitch = 0.0f;
 }
 
 static VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
@@ -62,9 +78,18 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+	float up_u_vec[3];
 
+	up_u_vec[0] = 0.0f;
+	up_u_vec[1] = 1.0f;
+	up_u_vec[2] = 0.0f;
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[0] = 0.5f;
+	{
+		float tmp[3];
+		vec3_cross(tmp, g_cam.cam_front, up_u_vec);
+		vec3_normalize(tmp);
+
+	}
 	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
 		g_camera[0] = 1.0f;
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))

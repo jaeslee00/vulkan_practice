@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 09:50:23 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/08 17:39:29 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 02:50:14 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ VkVertexInputAttributeDescription *get_attr_description(void)
 
 	attr_descriptions[0].binding = 0;
 	attr_descriptions[0].location = 0;
-	attr_descriptions[0].format = VK_FORMAT_R32G32_SFLOAT; /* vertex_buffer input of vec2 info */
+	attr_descriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; /* vertex_buffer input of vec2 info */
 	attr_descriptions[0].offset = offsetof(t_vertex, pos);
 
 	attr_descriptions[1].binding = 0;

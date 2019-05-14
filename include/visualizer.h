@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 02:18:20 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/14 03:21:22 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ Queue
 
 */
 
-# define DIMENSION 2
+# define DIMENSION 3
 # define COLOR_FORMAT 3
 # define FT_FALSE 0
 # define FT_TRUE 1
@@ -75,7 +75,7 @@ typedef struct	s_ubo
 	float	proj[16]; /* perspective distortion, FOV, clipping */
 }				t_ubo;
 
-typedef struct	s_view
+typedef struct	s_cam
 {
 	float	cam_pos[3];
 	float	cam_front[3];
@@ -84,8 +84,9 @@ typedef struct	s_view
 	float	yaw;
 	float	pitch;
 
-}				t_view;
+}				t_cam;
 
+t_cam		g_cam;
 float		g_camera[3];
 
 typedef struct	s_vulkan
@@ -198,7 +199,8 @@ void			get_triangle_info(t_vulkan *vulkan);
 void			create_buffer(t_vulkan *vulkan, VkDeviceSize size, VkBufferUsageFlags usage,
 								VkMemoryPropertyFlags properties,
 									VkBuffer *buffer, VkDeviceMemory *buffer_memory);
-void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float r, float g, float b);
+void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3,
+								float r, float g, float b);
 void			create_vertex_buffer(t_vulkan *vulkan);
 void			create_index_buffer(t_vulkan *vulkan);
 
