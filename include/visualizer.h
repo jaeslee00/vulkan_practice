@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 03:39:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/16 17:31:41 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 # include "array.h"
 # define GLFW_INCLUDE_VULKAN
 # define WIDTH 1200
-# define HEIGHT 900
+# define HEIGHT 1200
 # define MAX_FRAMES_IN_FLIGHT 2
 # define PI 3.1415926535f
 # define NEAR_Z 0.2f
-# define FAR_Z 100.f
+# define FAR_Z 1.0f
 # define FOV 0.733038f
 
 /* Initialization
@@ -87,7 +87,8 @@ typedef struct	s_cam
 	float	last_y;
 	float	yaw;
 	float	pitch;
-
+	float	rad_yaw;
+	float	rad_pitch;
 }				t_cam;
 
 t_cam		g_cam;

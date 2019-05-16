@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 03:19:33 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/16 17:44:53 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void	create_vertex_buffer(t_vulkan *vulkan)
 	VkBuffer		stage_buffer;
 	VkDeviceMemory	stage_buffer_memory;
 
+	printf("vertex ::: %zu\n", vulkan->triangle.length);
 	buffer_size = vulkan->triangle.elem_size * vulkan->triangle.length;
 
 	create_buffer(vulkan, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -128,7 +129,7 @@ void	create_index_buffer(t_vulkan *vulkan)
 	VkBuffer		stage_buffer;
 	VkDeviceMemory	stage_buffer_memory;
 
-	buffer_size = 6 * sizeof(uint32_t); /*TODO the number cannot be hard-coded!!*/
+	buffer_size = 12 * sizeof(uint32_t); /*TODO the number cannot be hard-coded!!*/
 
 	create_buffer(vulkan, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,

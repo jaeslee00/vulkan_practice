@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 14:35:39 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 02:58:57 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/16 17:39:09 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,18 @@ void	mat4_rotation(float *mat, float x_axis, float y_axis)
 
 	mat4_identity(tmp);
 	mat4_identity(rot);
-	//mat4_identity(mat);
+	mat4_identity(mat);
 	rot[0 * 4 + 0] = cos(y_axis);
 	rot[0 * 4 + 2] = -sin(y_axis);
 	rot[2 * 4 + 0] = sin(y_axis);
 	rot[2 * 4 + 2] = cos(y_axis);
-	mat4_multiply(mat, rot, rot);
-	// mat4_identity(rot);
-	// rot[1 * 4 + 1] = cos(x_axis);
-	// rot[1 * 4 + 2] = sin(x_axis);
-	// rot[2 * 4 + 1] = -sin(x_axis);
-	// rot[2 * 4 + 2] = cos(x_axis);
-	// mat4_multiply(mat, rot, tmp);
+	mat4_multiply(tmp, rot, mat);
+	mat4_identity(rot);
+	rot[1 * 4 + 1] = cos(x_axis);
+	rot[1 * 4 + 2] = sin(x_axis);
+	rot[2 * 4 + 1] = -sin(x_axis);
+	rot[2 * 4 + 2] = cos(x_axis);
+	mat4_multiply(mat, rot, tmp);
 
 	// mat4_identity(tmp);
 	// mat4_identity(rot);

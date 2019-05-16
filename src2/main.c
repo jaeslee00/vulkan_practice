@@ -6,13 +6,30 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 03:43:18 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/16 18:33:59 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 #include "vector.h"
 #include "matrix.h"
+#include <math.h>
+#include "vector.h"
+
+void	reset_cam(uint32_t width, uint32_t height)
+{
+	g_cam.cam_pos[0] = 0.0f;
+	g_cam.cam_pos[1] = 0.0f;
+	g_cam.cam_pos[2] = 1.0f;
+	g_cam.cam_front[0] = 0.0f;
+	g_cam.cam_front[1] = 0.0f;
+	g_cam.cam_front[2] = -1.0f;
+
+	g_cam.last_x = 600;
+	g_cam.last_y = 600;
+	g_cam.yaw = 0.0f;
+	g_cam.pitch = 0.0f;
+}
 
 void	recreate_swapchain(t_vulkan *vulkan)
 {
@@ -20,6 +37,7 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	clear_swapchain_objects(vulkan); /*TODO free resources of rendering related resources */
 	swapchain_create(vulkan);
 	create_imageviews(vulkan);
+	//reset_cam(vulkan->swapchain_extent.width, vulkan->swapchain_extent.height);
 	create_renderpass(vulkan);
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vulkan);
@@ -29,20 +47,6 @@ void	recreate_swapchain(t_vulkan *vulkan)
 	create_descriptor_pool(vulkan);
 	create_descriptor_sets(vulkan);
 	create_command_buffers(vulkan);
-}
-void	reset_cam(void)
-{
-	g_cam.cam_pos[0] = 0.0f;
-	g_cam.cam_pos[1] = 0.0f;
-	g_cam.cam_pos[2] = 3.0f;
-	g_cam.cam_front[0] = 0.0f;
-	g_cam.cam_front[1] = 0.0f;
-	g_cam.cam_front[2] = -1.0f;
-
-	g_cam.last_x = 0.0f;
-	g_cam.last_y = 0.0f;
-	g_cam.yaw = 0.0f;
-	g_cam.pitch = 0.0f;
 }
 
 static VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
@@ -78,32 +82,50 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-	float up_u_vec[3];
+	float	camera_speed;
+	float	up_vec[3];
+	float	tmp[3];
 
-	up_u_vec[0] = 0.0f;
-	up_u_vec[1] = 1.0f;
-	up_u_vec[2] = 0.0f;
+	camera_speed = 0.1f;
+	up_vec[0] = 0.0f;
+	up_vec[1] = 1.0f;
+	up_vec[2] = 0.0f;
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
-		float tmp[3];
-		vec3_cross(tmp, g_cam.cam_front, up_u_vec);
+		vec3_cross(tmp, g_cam.cam_front, up_vec);
 		vec3_normalize(tmp);
-
+		g_cam.cam_pos[0] += camera_speed * tmp[0];
+		g_cam.cam_pos[1] += camera_speed * tmp[1];
+		g_cam.cam_pos[2] += camera_speed * tmp[2];
 	}
-	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		g_camera[0] = 1.0f;
+	// else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+	// 	g_cam.velocity[0] = 0.0f;
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[0] = 1.5f;
-	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		g_camera[0] = 1.0f;
+	{
+		vec3_cross(tmp, g_cam.cam_front, up_vec);
+		vec3_normalize(tmp);
+		g_cam.cam_pos[0] -= camera_speed * tmp[0];
+		g_cam.cam_pos[1] -= camera_speed * tmp[1];
+		g_cam.cam_pos[2] -= camera_speed * tmp[2];
+	}
+	// else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
+	// 	g_cam.velocity[0] = 0.0f;
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[2] = -0.5f;
-	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		g_camera[2] = 0.0f;
+	{
+		g_cam.cam_pos[0] += camera_speed * g_cam.cam_front[0];
+		g_cam.cam_pos[1] += camera_speed * g_cam.cam_front[1];
+		g_cam.cam_pos[2] += camera_speed * g_cam.cam_front[2];
+	}
+	// else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+	// 	g_cam.velocity[2] = 0.0f;
 	if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		g_camera[2] = 0.5f;
-	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		g_camera[2] = 0.0f;
+	{
+		g_cam.cam_pos[0] -= camera_speed * g_cam.cam_front[0];
+		g_cam.cam_pos[1] -= camera_speed * g_cam.cam_front[1];
+		g_cam.cam_pos[2] -= camera_speed * g_cam.cam_front[2];
+	}
+	// else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
+	// 	g_cam.velocity[2] = 0.0f;
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -124,12 +146,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if (g_cam.pitch < -89.0f)
 		g_cam.pitch = -89.0f;
 
-	g_cam.yaw = (g_cam.yaw * PI) / 180;
-	g_cam.pitch = (g_cam.pitch * PI) / 180;
+	g_cam.rad_yaw = (g_cam.yaw * PI) / 180.f;
+	g_cam.rad_pitch = (g_cam.pitch * PI) / 180.f;
 
-	g_cam.cam_front[0] = cos(g_cam.pitch) * cos(g_cam.yaw);
-	g_cam.cam_front[1] = sin(g_cam.pitch);
-	g_cam.cam_front[2] = cos(g_cam.pitch) * sin(g_cam.yaw);
+	g_cam.cam_front[0] = cos(g_cam.rad_pitch) * cos(g_cam.rad_yaw);
+	g_cam.cam_front[1] = sin(g_cam.rad_pitch);
+	g_cam.cam_front[2] = cos(g_cam.rad_pitch) * sin(g_cam.rad_yaw);
+	printf("%f %f\n", g_cam.yaw, g_cam.pitch);
 	vec3_normalize(g_cam.cam_front);
 }
 
@@ -137,7 +160,7 @@ int		main()
 {
 	t_vulkan		vulkan;
 
-	ft_bzero(&g_camera, sizeof(g_camera));
+	reset_cam(WIDTH, HEIGHT);
 	if (!init_glfw(&vulkan))
 	{
 		printf("initializing GLFW failed.\n");
