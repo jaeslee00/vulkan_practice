@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/14 00:49:12 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/17 18:56:32 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ void	create_framebuffers(t_vulkan *vulkan)
 	uint32_t	index;
 
 	index = 0;
-	vulkan->frame_buffers = (VkFramebuffer*)malloc(vulkan->swapchain_image_count *sizeof(VkFramebuffer));
+	vulkan->frame_buffers =
+		(VkFramebuffer*)malloc(vulkan->swapchain_image_count * sizeof(VkFramebuffer));
 
 	while (index < vulkan->swapchain_image_count)
 	{

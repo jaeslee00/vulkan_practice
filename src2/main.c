@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/16 18:33:59 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/17 20:06:39 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,18 @@
 #include "matrix.h"
 #include <math.h>
 #include "vector.h"
-
+int firstMouse = 1;
 void	reset_cam(uint32_t width, uint32_t height)
 {
-	g_cam.cam_pos[0] = 0.0f;
-	g_cam.cam_pos[1] = 0.0f;
-	g_cam.cam_pos[2] = 1.0f;
+	g_cam.cam_pos[0] = 2.0f;
+	g_cam.cam_pos[1] = 2.0f;
+	g_cam.cam_pos[2] = 2.0f;
 	g_cam.cam_front[0] = 0.0f;
 	g_cam.cam_front[1] = 0.0f;
 	g_cam.cam_front[2] = -1.0f;
-
-	g_cam.last_x = 600;
-	g_cam.last_y = 600;
-	g_cam.yaw = 0.0f;
+			g_cam.last_x = WIDTH / 2;
+			g_cam.last_y = HEIGHT / 2;
+	g_cam.yaw = -90.0f;
 	g_cam.pitch = 0.0f;
 }
 
@@ -134,7 +133,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	float	y_offset;
 	float	sensitivity;
 
-	sensitivity = 0.1f;
+		if(firstMouse)
+		{
+			g_cam.last_x = xpos;
+			g_cam.last_y = ypos;
+			firstMouse = 0;
+		}
+	sensitivity = 0.05f;
 	x_offset = xpos - g_cam.last_x;
 	y_offset = g_cam.last_y - ypos;
 	g_cam.last_x = xpos;
@@ -152,7 +157,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	g_cam.cam_front[0] = cos(g_cam.rad_pitch) * cos(g_cam.rad_yaw);
 	g_cam.cam_front[1] = sin(g_cam.rad_pitch);
 	g_cam.cam_front[2] = cos(g_cam.rad_pitch) * sin(g_cam.rad_yaw);
-	printf("%f %f\n", g_cam.yaw, g_cam.pitch);
+//	printf("%f %f\n", g_cam.yaw, g_cam.pitch);
 	vec3_normalize(g_cam.cam_front);
 }
 
@@ -193,6 +198,7 @@ int		main()
 	/////////////////////////////////////////////////////////////////////////
 	create_command_pools(&vulkan);
 	create_command_pool_transfer(&vulkan);
+	//create_depth_resource(&vulkan);
 
 	create_vertex_buffer(&vulkan);
 	create_index_buffer(&vulkan);
