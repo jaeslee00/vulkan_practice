@@ -6,14 +6,14 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:17:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 15:31:09 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:20:53 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
 
-void	create_logical_devices(t_vulkan *vulkan)
+void	create_logical_devices(t_vulkan *vk)
 {
 	float						queue_priority;
 	VkPhysicalDeviceFeatures	features; /*TODO must be modified to add functionalities in rasterizer */
@@ -24,7 +24,7 @@ void	create_logical_devices(t_vulkan *vulkan)
 
 	queue_info[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	queue_info[0].pNext = NULL;
-	queue_info[0].queueFamilyIndex = vulkan->graphics_queue_family_index;
+	queue_info[0].queueFamilyIndex = vk->graphics_queue_family_index;
 	printf("trns qu : %u\n", queue_info[0].queueFamilyIndex);
 	queue_info[0].queueCount = 1;
 	queue_info[0].pQueuePriorities = &queue_priority;
@@ -32,7 +32,7 @@ void	create_logical_devices(t_vulkan *vulkan)
 
 	queue_info[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	queue_info[1].pNext = NULL;
-	queue_info[1].queueFamilyIndex = vulkan->transfer_queue_family_index;
+	queue_info[1].queueFamilyIndex = vk->transfer_queue_family_index;
 	printf("trns qu : %u\n", queue_info[1].queueFamilyIndex);
 	queue_info[1].queueCount = 1;
 	queue_info[1].pQueuePriorities = &queue_priority;
@@ -44,13 +44,13 @@ void	create_logical_devices(t_vulkan *vulkan)
 	logical_device_info.pQueueCreateInfos = queue_info;
 	ft_memset(&features, VK_FALSE, sizeof(features));
 	logical_device_info.pEnabledFeatures = &features;
-	logical_device_info.enabledExtensionCount = vulkan->device_extension_count;
-	logical_device_info.ppEnabledExtensionNames = (const char *const *)vulkan->device_extension_name;
+	logical_device_info.enabledExtensionCount = vk->device_extension_count;
+	logical_device_info.ppEnabledExtensionNames = (const char *const *)vk->device_extension_name;
 
-	ft_assert((vkCreateDevice(vulkan->gpu[0], &logical_device_info,
-					NULL, &vulkan->logical_device) == VK_SUCCESS),
+	ft_assert((vkCreateDevice(vk->gpu[0], &logical_device_info,
+					NULL, &vk->logical_device) == VK_SUCCESS),
 						"failed to create logical device!", "create_logical_device.c", 39);
-	printf("nbr of queues in the queueFamily : %u\n", vulkan->queue_props[0].queueCount);
-	vulkan->queue_family_indices[0] = 0;
-	vulkan->queue_family_indices[1] = 1;
+	printf("nbr of queues in the queueFamily : %u\n", vk->queue_props[0].queueCount);
+	vk->queue_family_indices[0] = 0;
+	vk->queue_family_indices[1] = 1;
 }

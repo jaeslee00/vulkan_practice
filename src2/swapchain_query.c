@@ -6,51 +6,51 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 14:30:22 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/29 21:11:24 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:26:04 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
-static void	check_available_present_mode(t_vulkan *vulkan)
+static void	check_available_present_mode(t_vulkan *vk)
 {
 	uint32_t	present_mode_count;
 	uint32_t	i;
 
-	vkGetPhysicalDeviceSurfacePresentModesKHR(vulkan->gpu[0], vulkan->surf, &present_mode_count, NULL);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(vk->gpu[0], vk->surf, &present_mode_count, NULL);
 	ft_assert(present_mode_count != 0, "present mode is missing", "swapchain_query.c", 36);
-	vulkan->present_modes = (VkPresentModeKHR*)malloc(present_mode_count * sizeof(VkPresentModeKHR)); /*TODO MALLOC */
-	if (vkGetPhysicalDeviceSurfacePresentModesKHR(vulkan->gpu[0], vulkan->surf, &present_mode_count, vulkan->present_modes) != VK_SUCCESS)
+	vk->present_modes = (VkPresentModeKHR*)malloc(present_mode_count * sizeof(VkPresentModeKHR)); /*TODO MALLOC */
+	if (vkGetPhysicalDeviceSurfacePresentModesKHR(vk->gpu[0], vk->surf, &present_mode_count, vk->present_modes) != VK_SUCCESS)
 		printf("get physicaldevice surface presenmode failed\n");
 	i = 0;
 	while (i < present_mode_count)
 	{
-		if (vulkan->present_modes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR ||
-				vulkan->present_modes[i] == VK_PRESENT_MODE_MAILBOX_KHR ||
-					vulkan->present_modes[i] == VK_PRESENT_MODE_FIFO_KHR)
+		if (vk->present_modes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR ||
+				vk->present_modes[i] == VK_PRESENT_MODE_MAILBOX_KHR ||
+					vk->present_modes[i] == VK_PRESENT_MODE_FIFO_KHR)
 		{
-			vulkan->present_mode = vulkan->present_modes[i];
+			vk->present_mode = vk->present_modes[i];
 			break ;
 		}
 		i++;
 	}
 	ft_assert(i < present_mode_count, "no present mode available", "swapchain_query.c", 26);
-	free(vulkan->present_modes);
+	free(vk->present_modes);
 }
 
-static void	check_available_format_colorspace(t_vulkan *vulkan)
+static void	check_available_format_colorspace(t_vulkan *vk)
 {
 	uint32_t					format_count;
 
-	vkGetPhysicalDeviceSurfaceFormatsKHR(vulkan->gpu[0], vulkan->surf, &format_count, NULL);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(vk->gpu[0], vk->surf, &format_count, NULL);
 	ft_assert(format_count != 0, "surface format missing", "swapchain_query.c", 28);
-	vulkan->surf_formats = (VkSurfaceFormatKHR*)malloc(format_count * sizeof(VkSurfaceFormatKHR)); /*TODO MALLOC */
-	vkGetPhysicalDeviceSurfaceFormatsKHR(vulkan->gpu[0], vulkan->surf, &format_count, vulkan->surf_formats);
+	vk->surf_formats = (VkSurfaceFormatKHR*)malloc(format_count * sizeof(VkSurfaceFormatKHR)); /*TODO MALLOC */
+	vkGetPhysicalDeviceSurfaceFormatsKHR(vk->gpu[0], vk->surf, &format_count, vk->surf_formats);
 	/*TODO loops to check over all the available formats and colorspaces */
-	vulkan->format = vulkan->surf_formats[0].format;
-	vulkan->color_space = vulkan->surf_formats[0].colorSpace;
+	vk->format = vk->surf_formats[0].format;
+	vk->color_space = vk->surf_formats[0].colorSpace;
 
-	free(vulkan->surf_formats);
+	free(vk->surf_formats);
 }
 
 static uint32_t	max_uint32(uint32_t a, uint32_t b)
@@ -86,12 +86,12 @@ static VkExtent2D	resize_swapchain_extent(GLFWwindow *window, VkSurfaceCapabilit
 	return (curr_extent);
 }
 
-void	swapchain_query(t_vulkan *vulkan)
+void	swapchain_query(t_vulkan *vk)
 {
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkan->gpu[0], vulkan->surf, &vulkan->surf_capabilities);
-	check_available_format_colorspace(vulkan);
-	check_available_present_mode(vulkan);
-	vulkan->swapchain_extent = resize_swapchain_extent(vulkan->window, vulkan->surf_capabilities);
-	printf("width : %u\n", vulkan->swapchain_extent.width);
-	printf("height : %u\n", vulkan->swapchain_extent.height);
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk->gpu[0], vk->surf, &vk->surf_capabilities);
+	check_available_format_colorspace(vk);
+	check_available_present_mode(vk);
+	vk->swapchain_extent = resize_swapchain_extent(vk->window, vk->surf_capabilities);
+	printf("width : %u\n", vk->swapchain_extent.width);
+	printf("height : %u\n", vk->swapchain_extent.height);
 }

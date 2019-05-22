@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 11:23:16 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 11:24:12 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:20:53 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static size_t	load_file(char **code, const char *path)
 	return ((size_t)file_size);
 }
 
-VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path)
+VkShaderModule	get_shader_module(t_vulkan *vk, const char *path)
 {
 	char						*spv_code;
 	size_t						size;
@@ -44,7 +44,7 @@ VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path)
 	ft_assert(size % 4 == 0,
 	"something wrong with the spir-v code!", "graphics_pipeline.c", 45);
 	shader_module_info.pCode = (uint32_t*)spv_code;
-	ft_assert((vkCreateShaderModule(vulkan->logical_device, &shader_module_info, NULL, &module) == VK_SUCCESS),
+	ft_assert((vkCreateShaderModule(vk->logical_device, &shader_module_info, NULL, &module) == VK_SUCCESS),
 				"failed to create shadermodule", "graphics_pipeline.c", 47);
 	free(spv_code);
 	return (module);

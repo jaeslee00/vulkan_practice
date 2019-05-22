@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/17 20:06:39 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:28:23 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,12 @@
 #include "vector.h"
 #include "matrix.h"
 #include <math.h>
-#include "vector.h"
-int firstMouse = 1;
+
 void	reset_cam(uint32_t width, uint32_t height)
 {
-	g_cam.cam_pos[0] = 2.0f;
-	g_cam.cam_pos[1] = 2.0f;
-	g_cam.cam_pos[2] = 2.0f;
+	g_cam.cam_pos[0] = 0.0f;
+	g_cam.cam_pos[1] = 0.0f;
+	g_cam.cam_pos[2] = 0.0f;
 	g_cam.cam_front[0] = 0.0f;
 	g_cam.cam_front[1] = 0.0f;
 	g_cam.cam_front[2] = -1.0f;
@@ -30,22 +29,22 @@ void	reset_cam(uint32_t width, uint32_t height)
 	g_cam.pitch = 0.0f;
 }
 
-void	recreate_swapchain(t_vulkan *vulkan)
+void	recreate_swapchain(t_vulkan *vk)
 {
-	vkDeviceWaitIdle(vulkan->logical_device);
-	clear_swapchain_objects(vulkan); /*TODO free resources of rendering related resources */
-	swapchain_create(vulkan);
-	create_imageviews(vulkan);
-	//reset_cam(vulkan->swapchain_extent.width, vulkan->swapchain_extent.height);
-	create_renderpass(vulkan);
+	vkDeviceWaitIdle(vk->logical_device);
+	clear_swapchain_objects(vk); /*TODO free resources of rendering related resources */
+	swapchain_create(vk);
+	create_imageviews(vk);
+	//reset_cam(vk->swapchain_extent.width, vk->swapchain_extent.height);
+	create_renderpass(vk);
 	/* info to pass to vertex-buffer and index buffer */
-	get_triangle_info(vulkan);
-	create_graphics_pipeline(vulkan);
-	create_framebuffers(vulkan);
-	create_ubo(vulkan);
-	create_descriptor_pool(vulkan);
-	create_descriptor_sets(vulkan);
-	create_command_buffers(vulkan);
+	get_triangle_info(vk);
+	create_graphics_pipeline(vk);
+	create_framebuffers(vk);
+	create_ubo(vk);
+	create_descriptor_pool(vk);
+	create_descriptor_sets(vk);
+	create_command_buffers(vk);
 }
 
 static VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
@@ -64,7 +63,7 @@ static VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags, Vk
 	return (VK_FALSE);
 }
 
-static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
+static void	register_debug_callback(t_vulkan *vk, VkInstance instance)
 {
 	VkDebugReportCallbackCreateInfoEXT	create_info= {};
 
@@ -75,8 +74,8 @@ static void	register_debug_callback(t_vulkan *vulkan, VkInstance instance)
 	PFN_vkCreateDebugReportCallbackEXT	vkCreateDebugReportCallbackEXT =
 		(PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
 
-	vulkan->debug_callback = 0;
-	vkCreateDebugReportCallbackEXT(instance, &create_info, 0, &vulkan->debug_callback);
+	vk->debug_callback = 0;
+	vkCreateDebugReportCallbackEXT(instance, &create_info, 0, &vk->debug_callback);
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -85,7 +84,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	float	up_vec[3];
 	float	tmp[3];
 
-	camera_speed = 0.1f;
+	camera_speed = 0.05f;
 	up_vec[0] = 0.0f;
 	up_vec[1] = 1.0f;
 	up_vec[2] = 0.0f;
@@ -125,6 +124,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	}
 	// else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 	// 	g_cam.velocity[2] = 0.0f;
+	if (key == GLFW_KEY_R)
+	{
+		reset_cam(WIDTH, HEIGHT);
+	}
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -133,13 +136,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	float	y_offset;
 	float	sensitivity;
 
-		if(firstMouse)
-		{
-			g_cam.last_x = xpos;
-			g_cam.last_y = ypos;
-			firstMouse = 0;
-		}
-	sensitivity = 0.05f;
+	sensitivity = 0.03f;
 	x_offset = xpos - g_cam.last_x;
 	y_offset = g_cam.last_y - ypos;
 	g_cam.last_x = xpos;
@@ -157,64 +154,63 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	g_cam.cam_front[0] = cos(g_cam.rad_pitch) * cos(g_cam.rad_yaw);
 	g_cam.cam_front[1] = sin(g_cam.rad_pitch);
 	g_cam.cam_front[2] = cos(g_cam.rad_pitch) * sin(g_cam.rad_yaw);
-//	printf("%f %f\n", g_cam.yaw, g_cam.pitch);
 	vec3_normalize(g_cam.cam_front);
 }
 
 int		main()
 {
-	t_vulkan		vulkan;
+	t_vulkan	vk;
 
 	reset_cam(WIDTH, HEIGHT);
-	if (!init_glfw(&vulkan))
+	if (!init_glfw(&vk))
 	{
 		printf("initializing GLFW failed.\n");
 		return (0);
 	}
 
-	init_vulkan(&vulkan);
-	register_debug_callback(&vulkan, vulkan.instance);
+	init_vulkan(&vk);
+	register_debug_callback(&vk, vk.instance);
 
-	physical_device_select(&vulkan);
-	create_logical_devices(&vulkan);
-	create_surface(&vulkan);
+	physical_device_select(&vk);
+	create_logical_devices(&vk);
+	create_surface(&vk);
 	/* retrieve handles for each queues */
-	vkGetDeviceQueue(vulkan.logical_device, vulkan.graphics_queue_family_index, 0, &vulkan.graphics_queue);
-	vkGetDeviceQueue(vulkan.logical_device, vulkan.present_queue_family_index, 0, &vulkan.present_queue);
-	vkGetDeviceQueue(vulkan.logical_device, vulkan.transfer_queue_family_index, 0, &vulkan.transfer_queue);
+	vkGetDeviceQueue(vk.logical_device, vk.graphics_queue_family_index, 0, &vk.graphics_queue);
+	vkGetDeviceQueue(vk.logical_device, vk.present_queue_family_index, 0, &vk.present_queue);
+	vkGetDeviceQueue(vk.logical_device, vk.transfer_queue_family_index, 0, &vk.transfer_queue);
 
-	create_sync(&vulkan);
+	create_sync(&vk);
 	/* swapchain recreation objects */
 	//////////////////////////////////////////////////////////////////////////
-	swapchain_create(&vulkan); // re-create swapchains
-	create_imageviews(&vulkan); // re-create swapchains
-	create_renderpass(&vulkan); // re-create swapchains
+	swapchain_create(&vk); // re-create swapchains
+	create_imageviews(&vk); // re-create swapchains
+	create_renderpass(&vk); // re-create swapchains
 
 	/* info to pass to vertex-buffer and index buffer */
-	get_triangle_info(&vulkan);  // re-create swapchains
-	create_descriptor_set_layout(&vulkan);
-	create_graphics_pipeline(&vulkan);  // re-create swapchains
-	create_framebuffers(&vulkan);  // re-create swapchains
+	get_triangle_info(&vk);  // re-create swapchains
+	create_descriptor_set_layout(&vk);
+	create_graphics_pipeline(&vk);  // re-create swapchains
+	create_framebuffers(&vk);  // re-create swapchains
 	/////////////////////////////////////////////////////////////////////////
-	create_command_pools(&vulkan);
-	create_command_pool_transfer(&vulkan);
-	//create_depth_resource(&vulkan);
+	create_command_pools(&vk);
+	create_command_pool_transfer(&vk);
+	//create_depth_resource(&vk);
 
-	create_vertex_buffer(&vulkan);
-	create_index_buffer(&vulkan);
+	create_vertex_buffer(&vk);
+	create_index_buffer(&vk);
 
-	create_ubo(&vulkan);
-	create_descriptor_pool(&vulkan);
-	create_descriptor_sets(&vulkan);
+	create_ubo(&vk);
+	create_descriptor_pool(&vk);
+	create_descriptor_sets(&vk);
 
-	create_command_buffers(&vulkan);
+	create_command_buffers(&vk);
 
-	while (!glfwWindowShouldClose(vulkan.window))
+	while (!glfwWindowShouldClose(vk.window))
 	{
 		glfwPollEvents();
-		draw_frame(&vulkan);
+		draw_frame(&vk);
 	}
-	vkDeviceWaitIdle(vulkan.logical_device);
-	free_resource(&vulkan);
+	vkDeviceWaitIdle(vk.logical_device);
+	free_resource(&vk);
 	return 0;
 }

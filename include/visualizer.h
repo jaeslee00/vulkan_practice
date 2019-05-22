@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/17 18:26:59 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:20:53 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define MAX_FRAMES_IN_FLIGHT 2
 # define PI 3.1415926535f
 # define NEAR_Z 0.01f
-# define FAR_Z 1000.0f
+# define FAR_Z 10.0f
 # define FOV 1.0472f
 
 /* Initialization
@@ -179,54 +179,54 @@ typedef struct	s_vulkan
 	VkDescriptorSet				*descriptor_sets; /*TODO Free MALLOC */
 }				t_vulkan;
 
-int				init_glfw(t_vulkan *vulkan);
+int				init_glfw(t_vulkan *vk);
 void 			key_callback(GLFWwindow *window, int key, int scancode,
 								int action, int mods);
 void 			mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void			init_vulkan(t_vulkan *vulkan);
-int				physical_device_select(t_vulkan *vulkan);
-void			check_devices(t_vulkan *vulkan);
-void			find_graphics_queue_family(t_vulkan *vulkan);
-void			create_logical_devices(t_vulkan *vulkan);
-void			create_surface(t_vulkan *vulkan);
-void			swapchain_query(t_vulkan *vulkan);
-void			swapchain_create(t_vulkan *vulkan);
-void			create_imageviews(t_vulkan *vulkan);
-VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path);
+void			init_vulkan(t_vulkan *vk);
+int				physical_device_select(t_vulkan *vk);
+void			check_devices(t_vulkan *vk);
+void			find_graphics_queue_family(t_vulkan *vk);
+void			create_logical_devices(t_vulkan *vk);
+void			create_surface(t_vulkan *vk);
+void			swapchain_query(t_vulkan *vk);
+void			swapchain_create(t_vulkan *vk);
+void			create_imageviews(t_vulkan *vk);
+VkShaderModule	get_shader_module(t_vulkan *vk, const char *path);
 
-void			recreate_swapchain(t_vulkan *vulkan);
+void			recreate_swapchain(t_vulkan *vk);
 
-void			create_descriptor_set_layout(t_vulkan *vulkan);
-void			create_graphics_pipeline(t_vulkan *vulkan);
-void			create_renderpass(t_vulkan *vulkan);
-void			create_framebuffers(t_vulkan *vulkan);
-void			create_command_pools(t_vulkan *vulkan);
-void			create_command_pool_transfer(t_vulkan *vulkan);
-void			create_command_buffers(t_vulkan *vulkan);
-void			create_sync(t_vulkan *vulkan);
-void			draw_frame(t_vulkan *vulkan);
+void			create_descriptor_set_layout(t_vulkan *vk);
+void			create_graphics_pipeline(t_vulkan *vk);
+void			create_renderpass(t_vulkan *vk);
+void			create_framebuffers(t_vulkan *vk);
+void			create_command_pools(t_vulkan *vk);
+void			create_command_pool_transfer(t_vulkan *vk);
+void			create_command_buffers(t_vulkan *vk);
+void			create_sync(t_vulkan *vk);
+void			draw_frame(t_vulkan *vk);
 
-void			get_triangle_info(t_vulkan *vulkan);
-void			create_buffer(t_vulkan *vulkan, VkDeviceSize size, VkBufferUsageFlags usage,
+void			get_triangle_info(t_vulkan *vk);
+void			create_buffer(t_vulkan *vk, VkDeviceSize size, VkBufferUsageFlags usage,
 								VkMemoryPropertyFlags properties,
 									VkBuffer *buffer, VkDeviceMemory *buffer_memory);
 void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3,
 								float r, float g, float b);
-void			create_vertex_buffer(t_vulkan *vulkan);
-void			create_index_buffer(t_vulkan *vulkan);
+void			create_vertex_buffer(t_vulkan *vk);
+void			create_index_buffer(t_vulkan *vk);
 
 VkVertexInputBindingDescription		get_binding_description(void);
 VkVertexInputAttributeDescription 	*get_attr_description(void);
 
-void			create_ubo(t_vulkan *vulkan);
-void 			create_descriptor_sets(t_vulkan *vulkan);
-void			create_descriptor_pool(t_vulkan *vulkan);
+void			create_ubo(t_vulkan *vk);
+void 			create_descriptor_sets(t_vulkan *vk);
+void			create_descriptor_pool(t_vulkan *vk);
 
 void			update_model(t_ubo *ubo);
 void			update_view(t_ubo *ubo);
 void			update_proj(t_ubo *ubo);
 
-void			clear_swapchain_objects(t_vulkan *vulkan);
-void			free_resource(t_vulkan *vulkan);
+void			clear_swapchain_objects(t_vulkan *vk);
+void			free_resource(t_vulkan *vk);
 
 #endif

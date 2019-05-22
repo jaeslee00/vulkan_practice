@@ -6,13 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 18:24:56 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/17 16:53:28 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:25:24 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
-static void	enabled_extensions_setting(t_vulkan *vulkan)
+static void	enabled_extensions_setting(t_vulkan *vk)
 {
 	uint32_t	required_extension_count;
 	const char	**required_extension;
@@ -22,20 +22,20 @@ static void	enabled_extensions_setting(t_vulkan *vulkan)
 	required_extension = glfwGetRequiredInstanceExtensions(&required_extension_count);
 	i = 0;
 
-	vulkan->enabled_extension_count = 0;
+	vk->enabled_extension_count = 0;
 	while (i < required_extension_count)
 	{
-		vulkan->extension_name[vulkan->enabled_extension_count] = required_extension[i];
-		vulkan->enabled_extension_count++;
+		vk->extension_name[vk->enabled_extension_count] = required_extension[i];
+		vk->enabled_extension_count++;
 		i++;
 	}
-	vulkan->extension_name[vulkan->enabled_extension_count] = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-	vulkan->enabled_extension_count++;
-	for (int j=0; j < vulkan->enabled_extension_count; j++)
-	printf("[%d] : %s\n", j, vulkan->extension_name[j]);
+	vk->extension_name[vk->enabled_extension_count] = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
+	vk->enabled_extension_count++;
+	for (int j=0; j < vk->enabled_extension_count; j++)
+	printf("[%d] : %s\n", j, vk->extension_name[j]);
 }
 
-void	init_vulkan(t_vulkan *vulkan)
+void	init_vulkan(t_vulkan *vk)
 {
 	VkApplicationInfo		app_info = {};
 	VkInstanceCreateInfo	instance_info = {};
@@ -52,22 +52,22 @@ void	init_vulkan(t_vulkan *vulkan)
 	instance_info.flags = 0;
 	instance_info.pApplicationInfo = &app_info;
 
-	enabled_extensions_setting(vulkan);
+	enabled_extensions_setting(vk);
 	const char* debug_layers[] =
 	{
 		"VK_LAYER_LUNARG_standard_validation"
 	};
 
-	instance_info.enabledExtensionCount = vulkan->enabled_extension_count;
-	instance_info.ppEnabledExtensionNames = (const char *const *)vulkan->extension_name;
+	instance_info.enabledExtensionCount = vk->enabled_extension_count;
+	instance_info.ppEnabledExtensionNames = (const char *const *)vk->extension_name;
 	instance_info.enabledLayerCount = sizeof(debug_layers) / sizeof(debug_layers[0]);
 	instance_info.ppEnabledLayerNames = debug_layers;
 
-	ft_assert((vkCreateInstance(&instance_info, NULL, &(vulkan->instance)) == VK_SUCCESS),
+	ft_assert((vkCreateInstance(&instance_info, NULL, &(vk->instance)) == VK_SUCCESS),
 			"create instance failed", "example.c", 125);
 }
 
-int		init_glfw(t_vulkan *vulkan)
+int		init_glfw(t_vulkan *vk)
 {
 	if (!glfwInit())
 	{
@@ -78,13 +78,13 @@ int		init_glfw(t_vulkan *vulkan)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		if (!(vulkan->window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN!", NULL, NULL)))
+		if (!(vk->window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN!", NULL, NULL)))
 		{
 			printf("creating GLFW window failed.\n");
 			return (0);
 		}
-		glfwSetKeyCallback(vulkan->window, key_callback);
-		glfwSetCursorPosCallback(vulkan->window, mouse_callback);
+		glfwSetKeyCallback(vk->window, key_callback);
+		glfwSetCursorPosCallback(vk->window, mouse_callback);
 	}
 	return (1);
 }

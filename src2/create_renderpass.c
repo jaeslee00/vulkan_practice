@@ -6,17 +6,17 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 22:29:11 by jaelee            #+#    #+#             */
-/*   Updated: 2019/04/27 05:42:58 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 10:20:53 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
-void	create_renderpass(t_vulkan *vulkan)
+void	create_renderpass(t_vulkan *vk)
 {
 	VkAttachmentDescription	attachments[1];
 	attachments[0].flags =  0;
-	attachments[0].format = vulkan->format;
+	attachments[0].format = vk->format;
 	attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
 	attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -52,6 +52,6 @@ void	create_renderpass(t_vulkan *vulkan)
 	// create_info.dependencyCount = 1;
 	// create_info.pDependencies = &dependency;
 
-	ft_assert((vkCreateRenderPass(vulkan->logical_device, &create_info, NULL, &vulkan->renderpass) == VK_SUCCESS),
+	ft_assert((vkCreateRenderPass(vk->logical_device, &create_info, NULL, &vk->renderpass) == VK_SUCCESS),
 				"failed to create renderpass", "create_renderpass.c", 55);
 }
