@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 14:33:10 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 18:33:05 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@
 # include "array.h"
 # define GLFW_INCLUDE_VULKAN
 # define WIDTH 1200
-# define HEIGHT 900
+# define HEIGHT 1200
 # define MAX_FRAMES_IN_FLIGHT 2
 # define PI 3.1415926535f
 # define NEAR_Z 0.001f
-# define FAR_Z 10000.0f
-# define FOV 1.0472f
+# define FAR_Z 100.f
+# define FOV PI/3.f
 
 /* Initialization
 

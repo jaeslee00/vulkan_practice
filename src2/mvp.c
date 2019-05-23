@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 23:11:24 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 14:35:13 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 18:32:39 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	update_proj(t_ubo *ubo)
 
 	proj = ubo->proj;
 //	near_width = NEAR_Z * tan(FOV / 2.f);
-	f = 1.0f / tan(FOV * 0.5f);
+	f = 1.0f / tanf(FOV * 0.5f);
 	aspect_ratio = WIDTH / HEIGHT;
 	// proj[0 * 4 + 0] = NEAR_Z / near_width; //x 정사각형 모양 클리핑
 	// proj[1 * 4 + 1] = -(NEAR_Z / near_width); //y 정사각형 모양 클리핑
@@ -61,13 +61,13 @@ void	update_proj(t_ubo *ubo)
 
 	proj[2 * 4 + 0] = 0.0f;
 	proj[2 * 4 + 1] = 0.0f;
-	proj[2 * 4 + 2] = -(FAR_Z + NEAR_Z) / (NEAR_Z - FAR_Z);
+	proj[2 * 4 + 2] = -(FAR_Z) / (FAR_Z - NEAR_Z);
 	proj[2 * 4 + 3] = -1.0f;
 
 	proj[3 * 4 + 0] = 0.0f;
 	proj[3 * 4 + 1] = 0.0f;
-	proj[3 * 4 + 2] = -(NEAR_Z * FAR_Z) / (NEAR_Z - FAR_Z);
-	proj[3 * 4 + 3] = 1.0f;
+	proj[3 * 4 + 2] = -(2.f * FAR_Z * NEAR_Z) / (FAR_Z - NEAR_Z);
+	proj[3 * 4 + 3] = 0.0f;
 }
 
 void	view_lookat(t_ubo *ubo, float *cam_target)
@@ -100,19 +100,22 @@ void	view_lookat(t_ubo *ubo, float *cam_target)
 	view[4] = h_vec[1];
 	view[8] = h_vec[2];
 	view[12] = -((h_vec[0] * g_cam.cam_pos[0]) +
-					(h_vec[1] * g_cam.cam_pos[1]) + (h_vec[2] * g_cam.cam_pos[2]));
+					(h_vec[1] * g_cam.cam_pos[1]) +
+						(h_vec[2] * g_cam.cam_pos[2]));
 
 	view[1] = u_vec[0];
 	view[5] = u_vec[1];
 	view[9] = u_vec[2];
 	view[13] = -((u_vec[0] * g_cam.cam_pos[0]) +
-					(u_vec[1] * g_cam.cam_pos[1]) + (u_vec[2] * g_cam.cam_pos[2]));
+					(u_vec[1] * g_cam.cam_pos[1]) +
+						(u_vec[2] * g_cam.cam_pos[2]));
 
 	view[2] = f_vec[0];
 	view[6] = f_vec[1];
 	view[10] = f_vec[2];
 	view[14] = -((f_vec[0] * g_cam.cam_pos[0]) +
-					(f_vec[1] * g_cam.cam_pos[1]) + (f_vec[2] * g_cam.cam_pos[2]));
+					(f_vec[1] * g_cam.cam_pos[1]) +
+						(f_vec[2] * g_cam.cam_pos[2]));
 
 	view[3] = 0.0f;
 	view[7] = 0.0f;
@@ -135,7 +138,8 @@ void	update_view(t_ubo *ubo)
 	// float x = 3.f;
 	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);
 	// g_cam.cam_pos[2] = sin(glfwGetTime()*x);
-	printf("%f\n", g_cam.cam_pos[0]);
+//	printf("%f %f %f\n", g_cam.cam_pos[0], g_cam.cam_pos[1], g_cam.cam_pos[2]);
+	printf("%f\n", g_cam.cam_pos[2]);
 	view_lookat(ubo, target);
 //	mat4_identity(ubo->view);
 }

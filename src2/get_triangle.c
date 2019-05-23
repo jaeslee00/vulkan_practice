@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 02:38:05 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 19:48:00 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 18:04:50 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,22 @@ void	get_triangle_info(t_vulkan *vk)
 
 	array_init(&vk->triangle, sizeof(t_vertex));
 
-	get_vtx_info(&tri_vtx, -0.1f, -0.1f, 0.3f, 0.0f, 1.0f, 0.0f);
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.1f, 0.0f, 1.0f, 0.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.1f, -0.1f, 0.3f, 1.0f, 0.0f, 0.0f);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.1f, 1.0f, 0.0f, 0.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.1f, 0.1f, 0.3f, 0.0f, 0.0f, 1.0f);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.1f, 0.0f, 0.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, -0.1f, 0.1f, 0.3f, 1.0f, 0.0f, 1.0f);
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, 0.1f, 1.0f, 0.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
 
-	get_vtx_info(&tri_vtx, -0.1f, -0.1f, 0.4f, 1.0f, 1.0f, 1.0f);
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.1f, -0.1f, 0.4f, 1.0f, 1.0f, 1.0f);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.1f, 0.1f, 0.4f, 1.0f, 1.0f, 1.0f);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, -0.1f, 0.1f, 0.4f, 1.0f, 1.0f, 1.0f);
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
 
 	vk->vertices_index = (uint32_t*)malloc(12 * sizeof(uint32_t));

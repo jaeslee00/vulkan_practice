@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 14:35:13 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 17:43:54 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ void	reset_cam(uint32_t width, uint32_t height)
 {
 	g_cam.cam_pos[0] = 0.0f;
 	g_cam.cam_pos[1] = 0.0f;
-	g_cam.cam_pos[2] = 0.0f;
+	g_cam.cam_pos[2] = 2.0f;
 	g_cam.cam_front[0] = 0.0f;
 	g_cam.cam_front[1] = 0.0f;
 	g_cam.cam_front[2] = -1.0f;
-	g_cam.last_x = WIDTH / 2;
-	g_cam.last_y = HEIGHT / 2;
+	g_cam.last_x = width / 2;
+	g_cam.last_y = height / 2;
 	g_cam.yaw = -90.0f;
 	g_cam.pitch = 0.0f;
 }
@@ -35,7 +35,7 @@ void	recreate_swapchain(t_vulkan *vk)
 	clear_swapchain_objects(vk); /*TODO free resources of rendering related resources */
 	swapchain_create(vk);
 	create_imageviews(vk);
-	//reset_cam(vk->swapchain_extent.width, vk->swapchain_extent.height);
+	reset_cam(vk->swapchain_extent.width, vk->swapchain_extent.height);
 	create_renderpass(vk);
 	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vk);
@@ -84,7 +84,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	float	up_vec[3];
 	float	tmp[3];
 
-	camera_speed = 0.005f;
+	camera_speed = 0.1f;
 	up_vec[0] = 0.0f;
 	up_vec[1] = 1.0f;
 	up_vec[2] = 0.0f;
@@ -92,9 +92,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		vec3_cross(tmp, g_cam.cam_front, up_vec);
 		vec3_normalize(tmp);
-		g_cam.cam_pos[0] -= camera_speed * tmp[0];
-		g_cam.cam_pos[1] -= camera_speed * tmp[1];
-		g_cam.cam_pos[2] -= camera_speed * tmp[2];
+		g_cam.cam_pos[0] += camera_speed * tmp[0];
+		g_cam.cam_pos[1] += camera_speed * tmp[1];
+		g_cam.cam_pos[2] += camera_speed * tmp[2];
 		//g_cam.cam_pos[0] += camera_speed;
 	}
 	// else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
@@ -103,9 +103,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		vec3_cross(tmp, g_cam.cam_front, up_vec);
 		vec3_normalize(tmp);
-		g_cam.cam_pos[0] += camera_speed * tmp[0];
-		g_cam.cam_pos[1] += camera_speed * tmp[1];
-		g_cam.cam_pos[2] += camera_speed * tmp[2];
+		g_cam.cam_pos[0] -= camera_speed * tmp[0];
+		g_cam.cam_pos[1] -= camera_speed * tmp[1];
+		g_cam.cam_pos[2] -= camera_speed * tmp[2];
 		//g_cam.cam_pos[0] -= camera_speed;
 	}
 	// else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
@@ -153,9 +153,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	g_cam.rad_yaw = (g_cam.yaw * PI) / 180.f;
 	g_cam.rad_pitch = (g_cam.pitch * PI) / 180.f;
 
-	g_cam.cam_front[0] = cos(g_cam.rad_pitch) * cos(g_cam.rad_yaw);
-	g_cam.cam_front[1] = sin(g_cam.rad_pitch);
-	g_cam.cam_front[2] = cos(g_cam.rad_pitch) * sin(g_cam.rad_yaw);
+	g_cam.cam_front[0] = cosf(g_cam.rad_pitch) * cosf(g_cam.rad_yaw);
+	g_cam.cam_front[1] = sinf(g_cam.rad_pitch);
+	g_cam.cam_front[2] = cosf(g_cam.rad_pitch) * sinf(g_cam.rad_yaw);
 	vec3_normalize(g_cam.cam_front);
 }
 
