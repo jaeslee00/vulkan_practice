@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:27:38 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 14:31:11 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	create_graphics_pipeline(t_vulkan *vk)
 	rasterizer_info.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer_info.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer_info.lineWidth = 1.0f;
-	rasterizer_info.cullMode = VK_CULL_MODE_NONE;
+	rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer_info.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer_info.depthBiasEnable = VK_FALSE;
 	rasterizer_info.depthBiasConstantFactor = 0.0f;

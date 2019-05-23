@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 23:11:24 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/21 15:19:14 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 14:35:13 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 void	update_model(t_ubo *ubo)
 {
 //	mat4_rotation(ubo->model, g_cam.rad_yaw, g_cam.rad_pitch);
-//	mat4_translation(ubo->model, g_cam.cam_pos[0], g_cam.cam_pos[1], g_cam.cam_pos[2]);
+//	mat4_translation(ubo->model, g_cam.cam_pos[0], g_cam.cam_pos[1], 0.0f);
 	mat4_identity(ubo->model);
 	// for (int i=0;i<4;i++)
 	// printf("%f %f %f %f\n", ubo->model[i*4+0], ubo->model[i*4+1], ubo->model[i*4+2], ubo->model[i*4+3]);
@@ -83,46 +83,41 @@ void	view_lookat(t_ubo *ubo, float *cam_target)
 	up_u_vec[1] = 1.0f;
 	up_u_vec[2] = 0.0f;
 	vec3_sub(f_vec, g_cam.cam_pos, cam_target);
-//	vec3_normalize(f_vec);
-	vec3_cross(h_vec, up_u_vec, f_vec);
-//	vec3_normalize(h_vec);
-	vec3_cross(u_vec, f_vec, h_vec);
 	vec3_normalize(f_vec);
+	vec3_cross(h_vec, up_u_vec, f_vec);
 	vec3_normalize(h_vec);
+	vec3_cross(u_vec, f_vec, h_vec);
+//	vec3_normalize(f_vec);
+//	vec3_normalize(h_vec);
 //	printf("f_vec : %f %f %f\n", f_vec[0], f_vec[1], f_vec[2]);
 	//  printf("h_vec : %f %f %f\n", h_vec[0], h_vec[1], h_vec[2]);
 	//  printf("u_vec : %f %f %f\n", u_vec[0], u_vec[1], u_vec[2]);
 //	printf("%f %f %f\n", g_cam.cam_pos[0] - cam_target[0], g_cam.cam_pos[1] - cam_target[1], g_cam.cam_pos[2] - cam_target[2]);
-	printf("%f %f %f\n", g_cam.cam_pos[0], g_cam.cam_pos[1], g_cam.cam_pos[2]);
+//	printf("%f %f %f\n", g_cam.cam_pos[0], g_cam.cam_pos[1], g_cam.cam_pos[2]);
 //	printf("%f %f %f\n", cam_target[0], cam_target[1], cam_target[2]);
 	/* Gram-Schmidt matrix */
 	view[0] = h_vec[0];
-	view[1] = h_vec[1];
-	view[2] = h_vec[2];
-	view[3] = (h_vec[0] * -g_cam.cam_pos[0]) +
-					(h_vec[1] * -g_cam.cam_pos[1]) + (h_vec[2] * -g_cam.cam_pos[2]);
+	view[4] = h_vec[1];
+	view[8] = h_vec[2];
+	view[12] = -((h_vec[0] * g_cam.cam_pos[0]) +
+					(h_vec[1] * g_cam.cam_pos[1]) + (h_vec[2] * g_cam.cam_pos[2]));
 
-	view[4] = u_vec[0];
+	view[1] = u_vec[0];
 	view[5] = u_vec[1];
-	view[6] = u_vec[2];
-	view[7] = (u_vec[0] * -g_cam.cam_pos[0]) +
-					(u_vec[1] * -g_cam.cam_pos[1]) + (u_vec[2] * -g_cam.cam_pos[2]);
+	view[9] = u_vec[2];
+	view[13] = -((u_vec[0] * g_cam.cam_pos[0]) +
+					(u_vec[1] * g_cam.cam_pos[1]) + (u_vec[2] * g_cam.cam_pos[2]));
 
-	view[8] = f_vec[0];
-	view[9] = f_vec[1];
+	view[2] = f_vec[0];
+	view[6] = f_vec[1];
 	view[10] = f_vec[2];
-	view[11] = (f_vec[0] * -g_cam.cam_pos[0]) +
-					(f_vec[1] * -g_cam.cam_pos[1]) + (f_vec[2] * -g_cam.cam_pos[2]);
+	view[14] = -((f_vec[0] * g_cam.cam_pos[0]) +
+					(f_vec[1] * g_cam.cam_pos[1]) + (f_vec[2] * g_cam.cam_pos[2]));
 
-	view[12] = 0.0f;
-	view[13] = 0.0f;
-	view[14] = 0.0f;
+	view[3] = 0.0f;
+	view[7] = 0.0f;
+	view[11] = 0.0f;
 	view[15] = 1.0f;
-
-	// for (int i=0;i<4;i++)
- 	// 	printf("%f %f %f %f\n", ubo->view[i*4+0], ubo->view[i*4+1],
-	// 				ubo->view[i*4+2], ubo->view[i*4+3]);
-	// printf("--------------------------------------------------\n");
 }
 
 void	update_view(t_ubo *ubo)
@@ -140,7 +135,7 @@ void	update_view(t_ubo *ubo)
 	// float x = 3.f;
 	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);
 	// g_cam.cam_pos[2] = sin(glfwGetTime()*x);
-//	printf("%f\n", g_cam.cam_front[0]);
+	printf("%f\n", g_cam.cam_pos[0]);
 	view_lookat(ubo, target);
 //	mat4_identity(ubo->view);
 }

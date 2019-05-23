@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 11:21:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:20:53 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/22 11:54:20 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	create_command_buffers(t_vulkan *vk)
 				vkCmdBindDescriptorSets(vk->command_buffers[i],
 					VK_PIPELINE_BIND_POINT_GRAPHICS, vk->pipeline_layout,
 						0, 1, &vk->descriptor_sets[i], 0, NULL);
+
 				vkCmdDrawIndexed(vk->command_buffers[i], 12, 1, 0, 0, 0);
 
 			vkCmdEndRenderPass(vk->command_buffers[i]);

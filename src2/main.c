@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:28:23 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 14:35:13 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	reset_cam(uint32_t width, uint32_t height)
 	g_cam.cam_front[0] = 0.0f;
 	g_cam.cam_front[1] = 0.0f;
 	g_cam.cam_front[2] = -1.0f;
-			g_cam.last_x = WIDTH / 2;
-			g_cam.last_y = HEIGHT / 2;
+	g_cam.last_x = WIDTH / 2;
+	g_cam.last_y = HEIGHT / 2;
 	g_cam.yaw = -90.0f;
 	g_cam.pitch = 0.0f;
 }
@@ -84,7 +84,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	float	up_vec[3];
 	float	tmp[3];
 
-	camera_speed = 0.05f;
+	camera_speed = 0.005f;
 	up_vec[0] = 0.0f;
 	up_vec[1] = 1.0f;
 	up_vec[2] = 0.0f;
@@ -92,9 +92,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		vec3_cross(tmp, g_cam.cam_front, up_vec);
 		vec3_normalize(tmp);
-		g_cam.cam_pos[0] += camera_speed * tmp[0];
-		g_cam.cam_pos[1] += camera_speed * tmp[1];
-		g_cam.cam_pos[2] += camera_speed * tmp[2];
+		g_cam.cam_pos[0] -= camera_speed * tmp[0];
+		g_cam.cam_pos[1] -= camera_speed * tmp[1];
+		g_cam.cam_pos[2] -= camera_speed * tmp[2];
+		//g_cam.cam_pos[0] += camera_speed;
 	}
 	// else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
 	// 	g_cam.velocity[0] = 0.0f;
@@ -102,9 +103,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		vec3_cross(tmp, g_cam.cam_front, up_vec);
 		vec3_normalize(tmp);
-		g_cam.cam_pos[0] -= camera_speed * tmp[0];
-		g_cam.cam_pos[1] -= camera_speed * tmp[1];
-		g_cam.cam_pos[2] -= camera_speed * tmp[2];
+		g_cam.cam_pos[0] += camera_speed * tmp[0];
+		g_cam.cam_pos[1] += camera_speed * tmp[1];
+		g_cam.cam_pos[2] += camera_speed * tmp[2];
+		//g_cam.cam_pos[0] -= camera_speed;
 	}
 	// else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
 	// 	g_cam.velocity[0] = 0.0f;

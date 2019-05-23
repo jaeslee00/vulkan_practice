@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 19:53:42 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:23:12 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/23 14:31:25 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	update_ubo(t_vulkan *vk, uint32_t image_index)
 	update_model(&ubo);
 	update_view(&ubo);
 	update_proj(&ubo);
-//	mat4_identity(ubo.proj);
 
 	void* data;
 	vkMapMemory(vk->logical_device, vk->uniform_buffers_memory[image_index], 0, sizeof(ubo), 0, &data);
