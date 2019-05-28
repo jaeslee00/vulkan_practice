@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:24:54 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/28 22:00:09 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	copy_buffer(t_vulkan *vk, VkBuffer src_buffer, VkBuffer dst_buffer, VkDevic
 	vkFreeCommandBuffers(vk->logical_device, vk->command_pool_transfer, 1, &command_buffer);
 }
 
-static uint32_t	find_memory_type(t_vulkan *vk, uint32_t type_filter, VkMemoryPropertyFlags properties)
+uint32_t	find_memory_type(t_vulkan *vk, uint32_t type_filter, VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties	mem_properties;
 	uint32_t							i;
@@ -55,7 +55,7 @@ static uint32_t	find_memory_type(t_vulkan *vk, uint32_t type_filter, VkMemoryPro
 	i = 0;
 	while (i < mem_properties.memoryTypeCount)
 	{
-		if ((type_filter & (1 - i)) &&
+		if ((type_filter & (1 << i)) &&
 			(mem_properties.memoryTypes[i].propertyFlags & properties) == properties)
 			return (i);
 		i++;
