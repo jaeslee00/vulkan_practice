@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:09:17 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:22:45 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 18:30:46 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	clear_swapchain_objects(t_vulkan *vk)
 	i = 0;
 	while (i < vk->swapchain_image_count)
 	{
-		vkDestroyImageView(vk->logical_device, vk->image_views[i], NULL);
+		vkDestroyImageView(vk->logical_device, vk->swapchain_imageviews[i], NULL);
 		i++;
 	}
 	vkDestroySwapchainKHR(vk->logical_device, vk->swapchain, NULL);

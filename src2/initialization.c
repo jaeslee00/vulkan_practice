@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 18:24:56 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:25:24 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 17:44:09 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	enabled_extensions_setting(t_vulkan *vk)
 	vk->extension_name[vk->enabled_extension_count] = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
 	vk->enabled_extension_count++;
 	for (int j=0; j < vk->enabled_extension_count; j++)
-	printf("[%d] : %s\n", j, vk->extension_name[j]);
+		printf("instance extension %d : %s\n", j, vk->extension_name[j]);
 }
 
 void	init_vulkan(t_vulkan *vk)
@@ -73,18 +73,6 @@ int		init_glfw(t_vulkan *vk)
 	{
 		printf("GLFW initialize failed.\n");
 		return (0);
-	}
-	else
-	{
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		if (!(vk->window = glfwCreateWindow(WIDTH, HEIGHT, "VULKAN!", NULL, NULL)))
-		{
-			printf("creating GLFW window failed.\n");
-			return (0);
-		}
-		glfwSetKeyCallback(vk->window, key_callback);
-		glfwSetCursorPosCallback(vk->window, mouse_callback);
 	}
 	return (1);
 }

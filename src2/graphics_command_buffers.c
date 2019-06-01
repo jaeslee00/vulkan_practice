@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 11:21:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 11:54:20 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 17:22:51 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	create_command_buffers(t_vulkan *vk)
 	{
 		VkCommandBufferBeginInfo	begin_info = {};
 		begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	// 	begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		vkBeginCommandBuffer(vk->command_buffers[i], &begin_info);
 
@@ -76,18 +75,4 @@ void	create_command_pools(t_vulkan *vk)
 	cmd_pool_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 	ft_assert((vkCreateCommandPool(vk->logical_device, &cmd_pool_info, NULL, &vk->command_pool) == VK_SUCCESS),
 				"failed to create command pool!", "command_buffers", 67);
-}
-
-void	create_command_pool_transfer(t_vulkan *vk)
-{
-	VkCommandPool command_pool;
-	VkCommandPoolCreateInfo cmd_pool_info = {};
-
-	cmd_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	cmd_pool_info.queueFamilyIndex = vk->transfer_queue_family_index;
-	printf("transfer_queue index :: %u\n", cmd_pool_info.queueFamilyIndex);
-	cmd_pool_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-	ft_assert((vkCreateCommandPool(vk->logical_device, &cmd_pool_info, NULL, &vk->command_pool_transfer) == VK_SUCCESS),
-				"failed to create command pool!", "command_buffers", 67);
-
 }

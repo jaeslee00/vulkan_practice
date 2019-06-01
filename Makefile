@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/05/22 10:17:27 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/01 22:36:52 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,10 +18,14 @@ SRCS = main.c \
 		initialization.c \
 		phy_devices.c \
 		create_logical_devices.c \
+		image_objects.c \
+		transition_image_layout.c \
 		swapchain_query.c \
 		swapchain_create.c \
 		create_renderpass.c \
-		surface_create.c \
+		create_surface.c \
+		create_textures.c \
+		command_buffer_utils.c \
 		graphics_command_buffers.c \
 		descriptor_set_layout.c \
 		graphics_pipeline_framebuffers.c \
@@ -30,7 +34,6 @@ SRCS = main.c \
 		free_resources.c \
 		get_triangle.c \
 		buffer_handlers.c \
-		buffer_objects.c \
 		ubo_handler.c \
 		vertex_buffer.c \
 		mvp.c \
@@ -43,7 +46,7 @@ OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 
 CC = gcc
 
-CLFAGS := $(FLAGS) -fsanitize=address -g
+CLFAGS :=
 
 GLFW_FLAGS = -framework Cocoa -framework IOKit \
 		  		-framework CoreFoundation -framework CoreVideo
@@ -52,6 +55,7 @@ VK_SDK_PATH = /Users/jaelee/42/vv/vulkansdk/macOS
 
 GLFW_PATH = /Users/jaelee/42/vv/glfw
 
+STB_INCLUDE_PATH = -I ./stb
 INCLUDES = ./include/visualizer.h \
 	./libft/includes/libft.h
 
@@ -62,16 +66,16 @@ LIBRARY_PATH = -L libft
 all: $(NAME)
 
 $(NAME): $(OBJS) libft/libft.a
-	$(CC) -fsanitize=address -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
+	$(CC) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
 	-Wl,-rpath, $(VK_SDK_PATH)/lib $(GLFW_PATH)/src/libglfw3.a \
-	${VK_SDK_PATH}/lib/libvulkan.1.dylib -I /Users/jaelee/42/vv/volk $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
+	${VK_SDK_PATH}/lib/libvulkan.1.dylib $(STB_INCLUDE_PATH) $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
 
 obj:
 	mkdir -p obj
 	mkdir -p obj/la
 
 obj/%.o: src2/%.c $(INCLUDES) | obj
-	$(CC) -fsanitize=address -g $(INCLUDE_FOLDERS) -c $< -o $@
+	$(CC) $(INCLUDE_FOLDERS) $(STB_INCLUDE_PATH) -c $< -o $@
 
 libft/libft.a: $(INCLUDES)
 	make -C libft

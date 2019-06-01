@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 18:33:53 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 18:30:46 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	create_framebuffers(t_vulkan *vk)
 		create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		create_info.renderPass = vk->renderpass;
 		create_info.attachmentCount = 1;
-		create_info.pAttachments = &vk->image_views[index]; // 씨바ㅏ다아아아아알ㄹ 주소르 ㄹ제대ㅗㄹ 안정해줘서 망함
+		create_info.pAttachments = &vk->swapchain_imageviews[index]; // 씨바ㅏ다아아아아알ㄹ 주소르 ㄹ제대ㅗㄹ 안정해줘서 망함
 		create_info.width = vk->swapchain_extent.width;
 		create_info.height = vk->swapchain_extent.height;
 		create_info.layers = 1;
@@ -106,7 +106,7 @@ void	create_graphics_pipeline(t_vulkan *vk)
 	rasterizer_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer_info.depthClampEnable = VK_FALSE;
 	rasterizer_info.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer_info.polygonMode = VK_POLYGON_MODE_LINE;
+	rasterizer_info.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer_info.lineWidth = 1.0f;
 	rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer_info.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 22:29:11 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:20:53 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 13:03:10 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	create_renderpass(t_vulkan *vk)
 {
 	VkAttachmentDescription	attachments[1];
 	attachments[0].flags =  0;
-	attachments[0].format = vk->format;
+	attachments[0].format = vk->swapchain_image_format;
 	attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
 	attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;

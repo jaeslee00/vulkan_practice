@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 18:33:05 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/01 22:35:35 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,31 +121,33 @@ typedef struct	s_vulkan
 	VkQueueFamilyProperties		*queue_props; /*TODO MALLOC */
 	VkQueue						graphics_queue;
 	VkQueue						present_queue;
-	VkQueue						transfer_queue;
 	uint32_t					queue_family_count;
 	uint32_t					graphics_queue_family_index;
 	uint32_t					present_queue_family_index;
-	uint32_t					transfer_queue_family_index;
-	uint32_t					queue_family_indices[2];
 
 	/* details of the swapchain support */
 	VkSwapchainKHR 				swapchain;
 	VkSurfaceCapabilitiesKHR	surf_capabilities;
 	VkSurfaceFormatKHR			*surf_formats; /*TODO MALLOC */
 	VkPresentModeKHR			*present_modes; /*TODO MALLOC */
-	VkFormat 					format;
+	VkFormat 					swapchain_image_format;
 	VkColorSpaceKHR				color_space;
 	VkPresentModeKHR			present_mode;
 	VkExtent2D					swapchain_extent;
 	VkImage						*swapchain_images; // same number
-	VkImageView					*image_views; // same number
+	VkImageView					*swapchain_imageviews; // same number
 	uint32_t					swapchain_image_count; // same number
 	VkFramebuffer				*frame_buffers; // same number
 
 	/* Depth-related */
-	VkImage						depthImage;
-	VkDeviceMemory				depthImageMemory;
-	VkImageView					depthImageView;
+	VkImage						depth_image;
+	VkDeviceMemory				depth_image_memory;
+	VkImageView					depth_image_view;
+
+	/* texture-related */
+	VkImage						texture_image;
+	VkDeviceMemory				texture_image_memory;
+	VkImageView					texture_image_view;
 
 	/*command bufffers */
 	VkCommandPool				command_pool;
@@ -186,12 +188,19 @@ void 			mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void			init_vulkan(t_vulkan *vk);
 int				physical_device_select(t_vulkan *vk);
 void			check_devices(t_vulkan *vk);
-void			find_graphics_queue_family(t_vulkan *vk);
+void			check_queue_family(t_vulkan *vk);
 void			create_logical_devices(t_vulkan *vk);
 void			create_surface(t_vulkan *vk);
+
+void			create_image(t_vulkan *vk, uint32_t width, uint32_t height, VkFormat format,
+					VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
+					VkImage *image, VkDeviceMemory *image_memory);
 void			swapchain_query(t_vulkan *vk);
-void			swapchain_create(t_vulkan *vk);
-void			create_imageviews(t_vulkan *vk);
+void			create_swapchain(t_vulkan *vk);
+VkImageView		create_imageview(t_vulkan *vk, VkImage image, uint32_t levels,
+					VkFormat format, VkImageAspectFlags flags);
+
+
 VkShaderModule	get_shader_module(t_vulkan *vk, const char *path);
 
 void			recreate_swapchain(t_vulkan *vk);
@@ -214,9 +223,18 @@ void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3,
 								float r, float g, float b);
 void			create_vertex_buffer(t_vulkan *vk);
 void			create_index_buffer(t_vulkan *vk);
+uint32_t		find_memory_type(t_vulkan *vk, uint32_t type_filter,
+									VkMemoryPropertyFlags properties);
 
 VkVertexInputBindingDescription		get_binding_description(void);
 VkVertexInputAttributeDescription 	*get_attr_description(void);
+
+/* util for recording single-time commands */
+VkCommandBuffer	begin_singletime_commands(t_vulkan *vk);
+void			end_singletime_commands(t_vulkan *vk, VkCommandBuffer command_buffer);
+
+void			transition_image_layout(t_vulkan *vk, VkImage image, VkFormat format,
+					VkImageLayout old_layout, VkImageLayout new_layout);
 
 void			create_ubo(t_vulkan *vk);
 void 			create_descriptor_sets(t_vulkan *vk);

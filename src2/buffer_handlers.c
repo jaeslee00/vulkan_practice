@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/28 22:00:09 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 21:33:08 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,15 @@
 
 void	copy_buffer(t_vulkan *vk, VkBuffer src_buffer, VkBuffer dst_buffer, VkDeviceSize size)
 {
-	VkCommandBufferAllocateInfo	alloc_info = {};
-	alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	alloc_info.commandPool = vk->command_pool_transfer;
-	alloc_info.commandBufferCount = 1;
+	VkCommandBuffer		command_buffer;
 
-	VkCommandBuffer				command_buffer;
-	vkAllocateCommandBuffers(vk->logical_device, &alloc_info, &command_buffer);
+	command_buffer = begin_singletime_commands(vk);
 
-	VkCommandBufferBeginInfo	begin_info = {};
-	begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	VkBufferCopy copy_region = {};
+	copy_region.size = size;
+	vkCmdCopyBuffer(command_buffer, src_buffer, dst_buffer, 1, &copy_region);
 
-	vkBeginCommandBuffer(command_buffer, &begin_info);
-
-		VkBufferCopy copy_region = {};
-		copy_region.size = size;
-		vkCmdCopyBuffer(command_buffer, src_buffer, dst_buffer, 1, &copy_region);
-
-	vkEndCommandBuffer(command_buffer);
-
-	VkSubmitInfo	submit_info = {};
-	submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submit_info.commandBufferCount = 1;
-	submit_info.pCommandBuffers = &command_buffer;
-
-	vkQueueSubmit(vk->transfer_queue, 1, &submit_info, VK_NULL_HANDLE);
-	vkQueueWaitIdle(vk->transfer_queue);
-
-	vkFreeCommandBuffers(vk->logical_device, vk->command_pool_transfer, 1, &command_buffer);
+	end_singletime_commands(vk, command_buffer);
 }
 
 uint32_t	find_memory_type(t_vulkan *vk, uint32_t type_filter, VkMemoryPropertyFlags properties)
@@ -72,9 +51,7 @@ void	create_buffer(t_vulkan *vk, VkDeviceSize size,
 	create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	create_info.size = size;
 	create_info.usage = usage;
-	create_info.queueFamilyIndexCount = 2;
-	create_info.pQueueFamilyIndices = vk->queue_family_indices;
-	create_info.sharingMode = VK_SHARING_MODE_CONCURRENT; // diff queues;.. please change it back if not work out!!
+	create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 	ft_assert((vkCreateBuffer(vk->logical_device, &create_info, NULL,
 				buffer) == VK_SUCCESS),
@@ -101,9 +78,7 @@ void	create_vertex_buffer(t_vulkan *vk)
 	VkBuffer		stage_buffer;
 	VkDeviceMemory	stage_buffer_memory;
 
-	printf("vertex ::: %zu\n", vk->triangle.length);
 	buffer_size = vk->triangle.elem_size * vk->triangle.length;
-
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 					&stage_buffer, &stage_buffer_memory);

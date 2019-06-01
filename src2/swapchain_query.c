@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 14:30:22 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/22 10:26:04 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 17:55:30 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	check_available_format_colorspace(t_vulkan *vk)
 	vk->surf_formats = (VkSurfaceFormatKHR*)malloc(format_count * sizeof(VkSurfaceFormatKHR)); /*TODO MALLOC */
 	vkGetPhysicalDeviceSurfaceFormatsKHR(vk->gpu[0], vk->surf, &format_count, vk->surf_formats);
 	/*TODO loops to check over all the available formats and colorspaces */
-	vk->format = vk->surf_formats[0].format;
+	vk->swapchain_image_format = vk->surf_formats[0].format;
 	vk->color_space = vk->surf_formats[0].colorSpace;
 
 	free(vk->surf_formats);
@@ -70,7 +70,10 @@ static VkExtent2D	resize_swapchain_extent(GLFWwindow *window, VkSurfaceCapabilit
 	int			height;
 
 	if (capabilities.currentExtent.width != UINT32_MAX)
+	{
+		printf("width %u , height : %u\n", capabilities.currentExtent.width, capabilities.currentExtent.height);
 		return capabilities.currentExtent;
+	}
 	else
 	{
 		glfwGetFramebufferSize(window, &width, &height);
@@ -81,8 +84,6 @@ static VkExtent2D	resize_swapchain_extent(GLFWwindow *window, VkSurfaceCapabilit
 		curr_extent.height = max_uint32(capabilities.minImageExtent.height,
 			min_uint32(capabilities.maxImageExtent.height, curr_extent.height));
 	}
-	printf("width : %u\n", curr_extent.width);
-	printf("height : %u\n", curr_extent.height);
 	return (curr_extent);
 }
 
@@ -92,6 +93,4 @@ void	swapchain_query(t_vulkan *vk)
 	check_available_format_colorspace(vk);
 	check_available_present_mode(vk);
 	vk->swapchain_extent = resize_swapchain_extent(vk->window, vk->surf_capabilities);
-	printf("width : %u\n", vk->swapchain_extent.width);
-	printf("height : %u\n", vk->swapchain_extent.height);
 }

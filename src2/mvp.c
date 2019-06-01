@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 23:11:24 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 18:32:39 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 15:55:39 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,6 @@ void	update_view(t_ubo *ubo)
 	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);
 	// g_cam.cam_pos[2] = sin(glfwGetTime()*x);
 //	printf("%f %f %f\n", g_cam.cam_pos[0], g_cam.cam_pos[1], g_cam.cam_pos[2]);
-	printf("%f\n", g_cam.cam_pos[2]);
 	view_lookat(ubo, target);
 //	mat4_identity(ubo->view);
 }

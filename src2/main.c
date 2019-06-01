@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/23 17:43:54 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/05/29 20:36:54 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,9 @@ void	recreate_swapchain(t_vulkan *vk)
 {
 	vkDeviceWaitIdle(vk->logical_device);
 	clear_swapchain_objects(vk); /*TODO free resources of rendering related resources */
-	swapchain_create(vk);
-	create_imageviews(vk);
+	create_swapchain(vk);
 	reset_cam(vk->swapchain_extent.width, vk->swapchain_extent.height);
 	create_renderpass(vk);
-	/* info to pass to vertex-buffer and index buffer */
 	get_triangle_info(vk);
 	create_graphics_pipeline(vk);
 	create_framebuffers(vk);
@@ -169,23 +167,17 @@ int		main()
 		printf("initializing GLFW failed.\n");
 		return (0);
 	}
-
 	init_vulkan(&vk);
 	register_debug_callback(&vk, vk.instance);
-
+	create_surface(&vk);
 	physical_device_select(&vk);
 	create_logical_devices(&vk);
-	create_surface(&vk);
-	/* retrieve handles for each queues */
-	vkGetDeviceQueue(vk.logical_device, vk.graphics_queue_family_index, 0, &vk.graphics_queue);
-	vkGetDeviceQueue(vk.logical_device, vk.present_queue_family_index, 0, &vk.present_queue);
-	vkGetDeviceQueue(vk.logical_device, vk.transfer_queue_family_index, 0, &vk.transfer_queue);
 
+	/* retrieve handles for each queues */
 	create_sync(&vk);
 	/* swapchain recreation objects */
 	//////////////////////////////////////////////////////////////////////////
-	swapchain_create(&vk); // re-create swapchains
-	create_imageviews(&vk); // re-create swapchains
+	create_swapchain(&vk); // re-create swapchains
 	create_renderpass(&vk); // re-create swapchains
 
 	/* info to pass to vertex-buffer and index buffer */
@@ -195,7 +187,6 @@ int		main()
 	create_framebuffers(&vk);  // re-create swapchains
 	/////////////////////////////////////////////////////////////////////////
 	create_command_pools(&vk);
-	create_command_pool_transfer(&vk);
 	//create_depth_resource(&vk);
 
 	create_vertex_buffer(&vk);
