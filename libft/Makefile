@@ -104,7 +104,7 @@ OBJS = $(patsubst %.c,obj/%.o,$(SRCS))
 CC = gcc
 ifndef CFLAGS_WARNINGS
 export CFLAGS_WARNINGS = 1
-export CFLAGS := $(CFLAGS) -fsanitize=address -g -Wall -Wextra -Werror
+export CFLAGS := $(CFLAGS) -Wall -Wextra -Werror -g
 endif
 INCLUDES = includes/libft.h \
 		includes/list.h \
