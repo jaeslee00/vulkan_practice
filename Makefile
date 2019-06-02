@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/06/01 22:36:52 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/02 17:42:18 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ NAME = triangle
 
 SRCS = main.c \
 		initialization.c \
+		input_callbacks.c \
 		phy_devices.c \
 		create_logical_devices.c \
 		image_objects.c \
@@ -35,7 +36,7 @@ SRCS = main.c \
 		get_triangle.c \
 		buffer_handlers.c \
 		ubo_handler.c \
-		vertex_buffer.c \
+		vtx_buffer_description.c \
 		mvp.c \
 		sync.c \
 		la/matrix_op.c \

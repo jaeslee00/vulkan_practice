@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 13:05:38 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/29 20:51:28 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 17:44:41 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,28 @@ void	create_image(t_vulkan *vk, uint32_t width, uint32_t height, VkFormat format
 	vkBindImageMemory(vk->logical_device, *image, *image_memory, 0);
 }
 
-VkImageView	create_imageview(t_vulkan *vk, VkImage image, uint32_t levels, VkFormat format, VkImageAspectFlags flags)
+VkImageView	create_imageview(t_vulkan *vk, VkImage image, uint32_t levels,
+				VkFormat format, VkImageAspectFlagBits flags)
 {
-	VkImageView	image_view;
-
 	VkImageViewCreateInfo	imageview_info = {};
+	VkImageView				image_view;
+
 	imageview_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	imageview_info.image = image;
 	imageview_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-	imageview_info.format = vk->swapchain_image_format;
+	imageview_info.format = format;
 	imageview_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 	imageview_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 	imageview_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 	imageview_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 	imageview_info.subresourceRange.aspectMask = flags;
-	imageview_info.subresourceRange.baseMipLevel = 0;
-	imageview_info.subresourceRange.levelCount = levels;
-	imageview_info.subresourceRange.baseArrayLayer = 0;
 	imageview_info.subresourceRange.layerCount = 1;
-	ft_assert((vkCreateImageView(vk->logical_device, &imageview_info, NULL, &image_view) == VK_SUCCESS),
-		"creating swapchain_imageview failed.\n", "example.c", 48);
+	imageview_info.subresourceRange.baseArrayLayer = 0;
+	imageview_info.subresourceRange.levelCount = levels;
+	imageview_info.subresourceRange.baseMipLevel = 0;
+
+	ft_assert((vkCreateImageView(vk->logical_device, &imageview_info, NULL,
+		&image_view) == VK_SUCCESS), "create imageview failed.\n",
+		"create_texture.c", 30);
 	return (image_view);
 }

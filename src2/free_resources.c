@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:09:17 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/29 18:30:46 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 16:15:21 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,22 @@ void	free_resource(t_vulkan *vk)
 		vkDestroyFence(vk->logical_device, vk->fence[i], NULL);
 		i++;
 	}
+	/* destroy texture resources */
+	vkDestroySampler(vk->logical_device, vk->texture_sampler, NULL);
+	vkDestroyImageView(vk->logical_device, vk->texture_image_view, NULL);
+	vkDestroyImage(vk->logical_device, vk->texture_image, NULL);
+	vkFreeMemory(vk->logical_device, vk->texture_image_memory, NULL);
+
 	vkDestroyDescriptorSetLayout(vk->logical_device, vk->descriptor_set_layout, NULL);
 	vkDestroyCommandPool(vk->logical_device, vk->command_pool_transfer, NULL);
 	vkDestroyCommandPool(vk->logical_device, vk->command_pool, NULL);
+
 	vkDestroyBuffer(vk->logical_device, vk->index_buffer, NULL);
 	vkFreeMemory(vk->logical_device, vk->index_buffer_memory, NULL);
+
 	vkDestroyBuffer(vk->logical_device, vk->vertex_buffer, NULL);
 	vkFreeMemory(vk->logical_device, vk->vertex_buffer_memory, NULL);
+
 	vkDestroySurfaceKHR(vk->instance, vk->surf, NULL);
 	vkDestroyDevice(vk->logical_device, NULL);
 	vkDestroyInstance(vk->instance, NULL);

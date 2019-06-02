@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/01 22:35:35 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 17:37:41 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "vulkan.h"
 # include "GLFW/glfw3.h"
 # include <stdio.h>
+# include <math.h>
 # include "ft_assert.h"
 # include "libft.h"
 # include "array.h"
@@ -56,6 +57,7 @@ Queue
 */
 
 # define DIMENSION 3
+# define TEXEL_DIMENSION 2
 # define COLOR_FORMAT 3
 # define FT_FALSE 0
 # define FT_TRUE 1
@@ -64,6 +66,7 @@ typedef struct	s_vertex
 {
 	float	pos[DIMENSION];
 	float	color[COLOR_FORMAT];
+	float	tex_coord[TEXEL_DIMENSION];
 }				t_vertex;
 
 typedef struct	s_renderer
@@ -148,6 +151,7 @@ typedef struct	s_vulkan
 	VkImage						texture_image;
 	VkDeviceMemory				texture_image_memory;
 	VkImageView					texture_image_view;
+	VkSampler					texture_sampler;
 
 	/*command bufffers */
 	VkCommandPool				command_pool;
@@ -185,25 +189,27 @@ int				init_glfw(t_vulkan *vk);
 void 			key_callback(GLFWwindow *window, int key, int scancode,
 								int action, int mods);
 void 			mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void			reset_cam(uint32_t width, uint32_t height);
 void			init_vulkan(t_vulkan *vk);
 int				physical_device_select(t_vulkan *vk);
 void			check_devices(t_vulkan *vk);
 void			check_queue_family(t_vulkan *vk);
 void			create_logical_devices(t_vulkan *vk);
 void			create_surface(t_vulkan *vk);
+void			recreate_swapchain(t_vulkan *vk);
 
+/* create image_objects : VkImage & VkImageView */
 void			create_image(t_vulkan *vk, uint32_t width, uint32_t height, VkFormat format,
 					VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
 					VkImage *image, VkDeviceMemory *image_memory);
-void			swapchain_query(t_vulkan *vk);
-void			create_swapchain(t_vulkan *vk);
 VkImageView		create_imageview(t_vulkan *vk, VkImage image, uint32_t levels,
 					VkFormat format, VkImageAspectFlags flags);
 
+/* create swapchain */
+void			swapchain_query(t_vulkan *vk);
+void			create_swapchain(t_vulkan *vk);
 
 VkShaderModule	get_shader_module(t_vulkan *vk, const char *path);
-
-void			recreate_swapchain(t_vulkan *vk);
 
 void			create_descriptor_set_layout(t_vulkan *vk);
 void			create_graphics_pipeline(t_vulkan *vk);
@@ -215,19 +221,37 @@ void			create_command_buffers(t_vulkan *vk);
 void			create_sync(t_vulkan *vk);
 void			draw_frame(t_vulkan *vk);
 
+/* vertex info generator */
 void			get_triangle_info(t_vulkan *vk);
+void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3,
+								float r, float g, float b, float tex1, float tex2);
+
+/* VkBuffer handlers */
 void			create_buffer(t_vulkan *vk, VkDeviceSize size, VkBufferUsageFlags usage,
 								VkMemoryPropertyFlags properties,
 									VkBuffer *buffer, VkDeviceMemory *buffer_memory);
-void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3,
-								float r, float g, float b);
+
+/* buffers to be used */
 void			create_vertex_buffer(t_vulkan *vk);
 void			create_index_buffer(t_vulkan *vk);
+
 uint32_t		find_memory_type(t_vulkan *vk, uint32_t type_filter,
 									VkMemoryPropertyFlags properties);
 
+/* bining and attribute description of vertex buffer */
 VkVertexInputBindingDescription		get_binding_description(void);
-VkVertexInputAttributeDescription 	*get_attr_description(void);
+VkVertexInputBindingDescription		get_binding_description(void);
+VkVertexInputAttributeDescription	get_position_attirbutes(void);
+VkVertexInputAttributeDescription	get_color_attributes(void);
+VkVertexInputAttributeDescription	get_tex_coord_attirbutes(void);
+
+/* create texture */
+void			create_texture_image(t_vulkan *vk);
+void			create_texture_imageview(t_vulkan *vk);
+void			create_texture_sampler(t_vulkan *vk);
+
+void			copy_buffer_to_image(t_vulkan *vk, VkBuffer buffer, VkImage image,
+					uint32_t width, uint32_t height);
 
 /* util for recording single-time commands */
 VkCommandBuffer	begin_singletime_commands(t_vulkan *vk);

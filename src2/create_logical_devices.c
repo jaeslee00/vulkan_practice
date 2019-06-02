@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:17:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/29 17:47:56 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 16:21:13 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,10 @@ void	create_logical_devices(t_vulkan *vk)
 	}
 
 	ft_bzero(&features, sizeof(VkPhysicalDeviceFeatures));
-	features.fillModeNonSolid = VK_TRUE;
+	if (vk->dv_feats.fillModeNonSolid)
+		features.fillModeNonSolid = VK_TRUE;
+	if (vk->dv_feats.samplerAnisotropy)
+		features.samplerAnisotropy = VK_TRUE;
 
 	logical_device_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	logical_device_info.pNext = NULL;

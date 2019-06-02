@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/29 18:30:46 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 19:05:23 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,13 @@ void	create_graphics_pipeline(t_vulkan *vk)
 	VkVertexInputAttributeDescription		*attr_descriptions;
 
 	binding_descriptions = get_binding_description();
-	attr_descriptions = get_attr_description();
 	vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	vertex_input_info.vertexBindingDescriptionCount = 1;
 	vertex_input_info.pVertexBindingDescriptions = &binding_descriptions;
-	vertex_input_info.vertexAttributeDescriptionCount = 2;
-	vertex_input_info.pVertexAttributeDescriptions = attr_descriptions;
+	vertex_input_info.vertexAttributeDescriptionCount = 3;
+	vertex_input_info.pVertexAttributeDescriptions =
+		(VkVertexInputAttributeDescription[]){
+			get_position_attirbutes(), get_color_attributes(), get_tex_coord_attirbutes()};
 
 	VkPipelineInputAssemblyStateCreateInfo	input_assembley_info = {};
 	input_assembley_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
