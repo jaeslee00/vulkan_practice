@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:49:21 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 19:53:15 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ typedef struct	s_vulkan
 	/* pipeline */
 	VkDescriptorSetLayout		descriptor_set_layout;
 	VkDescriptorPool			descriptor_pool;
-	VkDescriptorSet				*descriptor_set; /*TODO MALLOC */
+	VkDescriptorSet				*descriptor_sets; /*TODO MALLOC */
 	VkPipelineLayout			pipeline_layout;
 	VkPipeline					graphics_pipeline;
 	VkRenderPass				renderpass;
@@ -184,9 +184,6 @@ typedef struct	s_vulkan
 	t_ubo						ubo;
 	VkBuffer					*uniform_buffers; /* needs uniform buffers for each frame_buffers */
 	VkDeviceMemory				*uniform_buffers_memory;
-
-	VkDescriptorPool			descriptor_pool;
-	VkDescriptorSet				*descriptor_sets; /*TODO Free MALLOC */
 }				t_vulkan;
 
 int				init_glfw(t_vulkan *vk);
