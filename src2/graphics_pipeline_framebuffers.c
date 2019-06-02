@@ -6,44 +6,45 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/13 17:31:39 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 19:47:45 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 #include "vulkan.h"
 
-void	create_framebuffers(t_vulkan *vulkan)
+void	create_framebuffers(t_vulkan *vk)
 {
 	uint32_t	index;
 
 	index = 0;
-	vulkan->frame_buffers = (VkFramebuffer*)malloc(vulkan->swapchain_image_count *sizeof(VkFramebuffer));
+	vk->frame_buffers =
+		(VkFramebuffer*)malloc(vk->swapchain_image_count * sizeof(VkFramebuffer));
 
-	while (index < vulkan->swapchain_image_count)
+	while (index < vk->swapchain_image_count)
 	{
 		VkFramebufferCreateInfo	create_info = {};
 		create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		create_info.renderPass = vulkan->renderpass;
+		create_info.renderPass = vk->renderpass;
 		create_info.attachmentCount = 1;
-		create_info.pAttachments = &vulkan->image_views[index]; // 씨바ㅏ다아아아아알ㄹ 주소르 ㄹ제대ㅗㄹ 안정해줘서 망함
-		create_info.width = vulkan->swapchain_extent.width;
-		create_info.height = vulkan->swapchain_extent.height;
+		create_info.pAttachments = &vk->swapchain_imageviews[index]; // 씨바ㅏ다아아아아알ㄹ 주소르 ㄹ제대ㅗㄹ 안정해줘서 망함
+		create_info.width = vk->swapchain_extent.width;
+		create_info.height = vk->swapchain_extent.height;
 		create_info.layers = 1;
-		ft_assert((vkCreateFramebuffer(vulkan->logical_device,
-			&create_info, NULL, &vulkan->frame_buffers[index]) == VK_SUCCESS),
+		ft_assert((vkCreateFramebuffer(vk->logical_device,
+			&create_info, NULL, &vk->frame_buffers[index]) == VK_SUCCESS),
 			"failed to create frame buffers", "example.c", 73);
 		index++;
 	}
 }
 
-void	create_graphics_pipeline(t_vulkan *vulkan)
+void	create_graphics_pipeline(t_vulkan *vk)
 {
 	VkShaderModule					vertex_shader;
 	VkShaderModule					fragment_shader;
 
-	vertex_shader = get_shader_module(vulkan, "shaders/vert.spv");
-	fragment_shader = get_shader_module(vulkan, "shaders/frag.spv");
+	vertex_shader = get_shader_module(vk, "shaders/vert.spv");
+	fragment_shader = get_shader_module(vk, "shaders/frag.spv");
 
 	VkPipelineShaderStageCreateInfo vtx_shader_info = {};
 	vtx_shader_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -66,12 +67,13 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 	VkVertexInputAttributeDescription		*attr_descriptions;
 
 	binding_descriptions = get_binding_description();
-	attr_descriptions = get_attr_description();
 	vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	vertex_input_info.vertexBindingDescriptionCount = 1;
 	vertex_input_info.pVertexBindingDescriptions = &binding_descriptions;
-	vertex_input_info.vertexAttributeDescriptionCount = 2;
-	vertex_input_info.pVertexAttributeDescriptions = attr_descriptions;
+	vertex_input_info.vertexAttributeDescriptionCount = 3;
+	vertex_input_info.pVertexAttributeDescriptions =
+		(VkVertexInputAttributeDescription[]){
+			get_position_attirbutes(), get_color_attributes(), get_tex_coord_attirbutes()};
 
 	VkPipelineInputAssemblyStateCreateInfo	input_assembley_info = {};
 	input_assembley_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -84,15 +86,15 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 	VkViewport	viewport = {};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = vulkan->swapchain_extent.width;
-	viewport.height = vulkan->swapchain_extent.height;
+	viewport.width = vk->swapchain_extent.width;
+	viewport.height = vk->swapchain_extent.height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor = {};
 	scissor.offset.x = 0;
 	scissor.offset.y = 0;
-	scissor.extent = vulkan->swapchain_extent;
+	scissor.extent = vk->swapchain_extent;
 
 	VkPipelineViewportStateCreateInfo	viewport_state_info = {};
 	viewport_state_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -150,13 +152,13 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 
 	VkPipelineLayoutCreateInfo		pipeline_layout_info = {};
 	pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipeline_layout_info.setLayoutCount = 0;//1;
-	pipeline_layout_info.pSetLayouts = NULL;//&vulkan->descriptor_set_layout;
+	pipeline_layout_info.setLayoutCount = 1;
+	pipeline_layout_info.pSetLayouts = &vk->descriptor_set_layout;
 	pipeline_layout_info.pushConstantRangeCount = 0;
 	pipeline_layout_info.pPushConstantRanges = NULL;
 
-	ft_assert((vkCreatePipelineLayout(vulkan->logical_device,
-		&pipeline_layout_info, NULL, &vulkan->pipeline_layout) == VK_SUCCESS),
+	ft_assert((vkCreatePipelineLayout(vk->logical_device,
+		&pipeline_layout_info, NULL, &vk->pipeline_layout) == VK_SUCCESS),
 			"create pipeline_layout failed... T_T", "graphics_pipeline.c", 169);
 
 	VkGraphicsPipelineCreateInfo	pipeline_info = {};
@@ -171,15 +173,15 @@ void	create_graphics_pipeline(t_vulkan *vulkan)
 	pipeline_info.pMultisampleState = &multisampling;
 	pipeline_info.pDepthStencilState = &depth_stencilstate;
 	pipeline_info.pColorBlendState = &color_blend_info;
-	pipeline_info.layout = vulkan->pipeline_layout;
-	pipeline_info.renderPass = vulkan->renderpass;
+	pipeline_info.layout = vk->pipeline_layout;
+	pipeline_info.renderPass = vk->renderpass;
 	pipeline_info.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipeline_info.basePipelineIndex = -1; // Optional
 
-	ft_assert((vkCreateGraphicsPipelines(vulkan->logical_device, VK_NULL_HANDLE, 1,
-		&pipeline_info, NULL, &vulkan->graphics_pipeline) == VK_SUCCESS),
+	ft_assert((vkCreateGraphicsPipelines(vk->logical_device, VK_NULL_HANDLE, 1,
+		&pipeline_info, NULL, &vk->graphics_pipeline) == VK_SUCCESS),
 			"create graphics pipeline failed.!", "graphics_pipeline.c", 189);
 
-	vkDestroyShaderModule(vulkan->logical_device, vertex_shader, NULL);
-	vkDestroyShaderModule(vulkan->logical_device, fragment_shader, NULL);
+	vkDestroyShaderModule(vk->logical_device, vertex_shader, NULL);
+	vkDestroyShaderModule(vk->logical_device, fragment_shader, NULL);
 }

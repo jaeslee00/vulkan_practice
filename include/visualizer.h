@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/05/13 17:45:03 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 19:49:21 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "vulkan.h"
 # include "GLFW/glfw3.h"
 # include <stdio.h>
+# include <math.h>
 # include "ft_assert.h"
 # include "libft.h"
 # include "array.h"
@@ -22,12 +23,12 @@
 # include <math.h>
 # define GLFW_INCLUDE_VULKAN
 # define WIDTH 1200
-# define HEIGHT 900
-# define PI 3.141592654
-# define FOV 0.785398f
-# define NEAR_Z 0.1f
-# define FAR_Z 200.0f
+# define HEIGHT 1200
 # define MAX_FRAMES_IN_FLIGHT 2
+# define PI 3.1415926535f
+# define NEAR_Z 0.001f
+# define FAR_Z 100.f
+# define FOV PI/3.f
 
 /* Initialization
 
@@ -57,7 +58,8 @@ Queue
 
 */
 
-# define DIMENSION 2
+# define DIMENSION 3
+# define TEXEL_DIMENSION 2
 # define COLOR_FORMAT 3
 # define FT_FALSE 0
 # define FT_TRUE 1
@@ -66,6 +68,7 @@ typedef struct	s_vertex
 {
 	float	pos[DIMENSION];
 	float	color[COLOR_FORMAT];
+	float	tex_coord[TEXEL_DIMENSION];
 }				t_vertex;
 
 typedef struct	s_renderer
@@ -79,27 +82,22 @@ typedef struct	s_ubo
 	float	model[16]; /* translation * rotation * scale */
 	float	view[16]; /* rotate camera poition and adds translation */
 	float	proj[16]; /* perspective distortion, FOV, clipping */
-	//mvp = projection * view * model //inverted!!!!
 }				t_ubo;
 
-typedef struct	s_camera
+typedef struct	s_cam
 {
-	float	velocity[3];
-	int		first_move;
+	float	cam_pos[3];
+	float	cam_front[3];
 	float	last_x;
 	float	last_y;
 	float	yaw;
 	float	pitch;
-	float	cam_pos[3];
-	float	cam_front[3];
-	float	position[3];
-	float	rotation[16];
-	float	transform[16];
-	float	scale[16];
-	float	perspective[16];
-}				t_camera;
+	float	rad_yaw;
+	float	rad_pitch;
+}				t_cam;
 
-t_camera	g_cam_info;
+t_cam		g_cam;
+float		g_camera[3];
 
 typedef struct	s_vulkan
 {
@@ -128,26 +126,34 @@ typedef struct	s_vulkan
 	VkQueueFamilyProperties		*queue_props; /*TODO MALLOC */
 	VkQueue						graphics_queue;
 	VkQueue						present_queue;
-	VkQueue						transfer_queue;
 	uint32_t					queue_family_count;
 	uint32_t					graphics_queue_family_index;
 	uint32_t					present_queue_family_index;
-	uint32_t					transfer_queue_family_index;
-	uint32_t					queue_family_indices[2];
 
 	/* details of the swapchain support */
 	VkSwapchainKHR 				swapchain;
 	VkSurfaceCapabilitiesKHR	surf_capabilities;
 	VkSurfaceFormatKHR			*surf_formats; /*TODO MALLOC */
 	VkPresentModeKHR			*present_modes; /*TODO MALLOC */
-	VkFormat 					format;
+	VkFormat 					swapchain_image_format;
 	VkColorSpaceKHR				color_space;
 	VkPresentModeKHR			present_mode;
 	VkExtent2D					swapchain_extent;
-	VkImage						*swapchain_images; // same number /*TODO MALLOC */
-	VkImageView					*image_views; // same number /*TODO MALLOC */
+	VkImage						*swapchain_images; // same number
+	VkImageView					*swapchain_imageviews; // same number
 	uint32_t					swapchain_image_count; // same number
 	VkFramebuffer				*frame_buffers; // same number /*TODO MALLOC */
+
+	/* Depth-related */
+	VkImage						depth_image;
+	VkDeviceMemory				depth_image_memory;
+	VkImageView					depth_image_view;
+
+	/* texture-related */
+	VkImage						texture_image;
+	VkDeviceMemory				texture_image_memory;
+	VkImageView					texture_image_view;
+	VkSampler					texture_sampler;
 
 	/*command bufffers */
 	VkCommandPool				command_pool;
@@ -178,55 +184,96 @@ typedef struct	s_vulkan
 	t_ubo						ubo;
 	VkBuffer					*uniform_buffers; /* needs uniform buffers for each frame_buffers */
 	VkDeviceMemory				*uniform_buffers_memory;
+
+	VkDescriptorPool			descriptor_pool;
+	VkDescriptorSet				*descriptor_sets; /*TODO Free MALLOC */
 }				t_vulkan;
 
-int				init_glfw(t_vulkan *vulkan, GLFWwindow **window);
+int				init_glfw(t_vulkan *vk);
 void 			key_callback(GLFWwindow *window, int key, int scancode,
 								int action, int mods);
 void 			mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void			init_vulkan(t_vulkan *vulkan);
-int				physical_device_select(t_vulkan *vulkan);
-void			check_devices(t_vulkan *vulkan);
-void			find_graphics_queue_family(t_vulkan *vulkan);
-void			create_logical_devices(t_vulkan *vulkan);
-void			create_surface(t_vulkan *vulkan);
-void			swapchain_query(t_vulkan *vulkan);
-void			swapchain_create(t_vulkan *vulkan);
-void			create_imageviews(t_vulkan *vulkan);
-VkShaderModule	get_shader_module(t_vulkan *vulkan, const char *path);
+void			reset_cam(uint32_t width, uint32_t height);
+void			init_vulkan(t_vulkan *vk);
+int				physical_device_select(t_vulkan *vk);
+void			check_devices(t_vulkan *vk);
+void			check_queue_family(t_vulkan *vk);
+void			create_logical_devices(t_vulkan *vk);
+void			create_surface(t_vulkan *vk);
+void			recreate_swapchain(t_vulkan *vk);
 
-void			recreate_swapchain(t_vulkan *vulkan);
+/* create image_objects : VkImage & VkImageView */
+void			create_image(t_vulkan *vk, uint32_t width, uint32_t height, VkFormat format,
+					VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
+					VkImage *image, VkDeviceMemory *image_memory);
+VkImageView		create_imageview(t_vulkan *vk, VkImage image, uint32_t levels,
+					VkFormat format, VkImageAspectFlags flags);
 
-void			create_descriptor_set_layout(t_vulkan *vulkan);
-void 			create_descriptor_pool(t_vulkan *vulkan);
-void			create_descriptor_set(t_vulkan *vulkan);
+/* create swapchain */
+void			swapchain_query(t_vulkan *vk);
+void			create_swapchain(t_vulkan *vk);
 
-void			create_graphics_pipeline(t_vulkan *vulkan);
-void			create_renderpass(t_vulkan *vulkan);
-void			create_framebuffers(t_vulkan *vulkan);
-void			create_command_pools(t_vulkan *vulkan);
-void			create_command_pool_transfer(t_vulkan *vulkan);
-void			create_command_buffers(t_vulkan *vulkan);
-void			create_sync(t_vulkan *vulkan);
-void			draw_frame(t_vulkan *vulkan);
+VkShaderModule	get_shader_module(t_vulkan *vk, const char *path);
 
-void			get_triangle_info(t_vulkan *vulkan);
-void			create_buffer(t_vulkan *vulkan, VkDeviceSize size, VkBufferUsageFlags usage,
+void			create_descriptor_set_layout(t_vulkan *vk);
+void			create_graphics_pipeline(t_vulkan *vk);
+void			create_renderpass(t_vulkan *vk);
+void			create_framebuffers(t_vulkan *vk);
+void			create_command_pools(t_vulkan *vk);
+void			create_command_pool_transfer(t_vulkan *vk);
+void			create_command_buffers(t_vulkan *vk);
+void			create_sync(t_vulkan *vk);
+void			draw_frame(t_vulkan *vk);
+
+/* vertex info generator */
+void			get_triangle_info(t_vulkan *vk);
+void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3,
+								float r, float g, float b, float tex1, float tex2);
+
+/* VkBuffer handlers */
+void			create_buffer(t_vulkan *vk, VkDeviceSize size, VkBufferUsageFlags usage,
 								VkMemoryPropertyFlags properties,
 									VkBuffer *buffer, VkDeviceMemory *buffer_memory);
-void			get_vtx_info(t_vertex *vertex, float vtx1, float vtx2, float vtx3, float r, float g, float b);
-void			create_vertex_buffer(t_vulkan *vulkan);
-void			create_index_buffer(t_vulkan *vulkan);
 
+/* buffers to be used */
+void			create_vertex_buffer(t_vulkan *vk);
+void			create_index_buffer(t_vulkan *vk);
+
+uint32_t		find_memory_type(t_vulkan *vk, uint32_t type_filter,
+									VkMemoryPropertyFlags properties);
+
+/* bining and attribute description of vertex buffer */
 VkVertexInputBindingDescription		get_binding_description(void);
-VkVertexInputAttributeDescription 	*get_attr_description(void);
+VkVertexInputBindingDescription		get_binding_description(void);
+VkVertexInputAttributeDescription	get_position_attirbutes(void);
+VkVertexInputAttributeDescription	get_color_attributes(void);
+VkVertexInputAttributeDescription	get_tex_coord_attirbutes(void);
 
-void			create_ubo(t_vulkan *vulkan);
+/* create texture */
+void			create_texture_image(t_vulkan *vk);
+void			create_texture_imageview(t_vulkan *vk);
+void			create_texture_sampler(t_vulkan *vk);
 
+void			copy_buffer_to_image(t_vulkan *vk, VkBuffer buffer, VkImage image,
+					uint32_t width, uint32_t height);
 
+/* util for recording single-time commands */
+VkCommandBuffer	begin_singletime_commands(t_vulkan *vk);
+void			end_singletime_commands(t_vulkan *vk, VkCommandBuffer command_buffer);
 
-void			clear_swapchain_objects(t_vulkan *vulkan);
-void			free_resource(t_vulkan *vulkan);
+void			transition_image_layout(t_vulkan *vk, VkImage image, VkFormat format,
+					VkImageLayout old_layout, VkImageLayout new_layout);
+
+void			create_ubo(t_vulkan *vk);
+void 			create_descriptor_sets(t_vulkan *vk);
+void			create_descriptor_pool(t_vulkan *vk);
+
+void			update_model(t_ubo *ubo);
+void			update_view(t_ubo *ubo);
+void			update_proj(t_ubo *ubo);
+
+void			clear_swapchain_objects(t_vulkan *vk);
+void			free_resource(t_vulkan *vk);
 
 
 
