@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 09:49:45 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 17:00:29 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define NEAR_Z 0.001f
 # define FAR_Z 100.f
 # define FOV PI/3.f
-
+# define QUADS 32.f
 /* Initialization
 
 INSTANCE

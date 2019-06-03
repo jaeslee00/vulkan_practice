@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 02:38:05 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 10:31:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 17:02:35 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,14 @@ void	get_cube_info(t_vulkan *vk)
 	float		x = -0.5f;
 	float		y = 0.5f;
 	float		z = 0.5f;
-	float		divisor;
 
-	divisor = 512.0f;
-	quad = 1.f / divisor;
+	quad = 1.f / QUADS;
 	array_init(&vk->triangle, sizeof(t_vertex));
 
-	for (int j=0; j < (int)divisor; j++)
+	for (int j=0; j < (int)QUADS; j++)
 	{
 		y = 0.5f;
-		for (int t=0; t < (int)divisor; t++)
+		for (int t=0; t < (int)QUADS; t++)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -72,10 +70,10 @@ void	get_cube_info(t_vulkan *vk)
 	x = -0.5f;
 	y = 0.5f;
 	z = -0.5f;
-	for (int k=0; k < (int)divisor; k++)
+	for (int k=0; k < (int)QUADS; k++)
 	{
 		y = 0.5f;
-		for (int n=0; n < (int)divisor; n++)
+		for (int n=0; n < (int)QUADS; n++)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -93,10 +91,10 @@ void	get_cube_info(t_vulkan *vk)
 	x = -0.5f;
 	y = 0.5f;
 	z = 0.5f;
-	for (int k=0; k < (int)divisor; k++)
+	for (int k=0; k < (int)QUADS; k++)
 	{
 		z = 0.5f;
-		for (int n=0; n < (int)divisor; n++)
+		for (int n=0; n < (int)QUADS; n++)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -113,10 +111,10 @@ void	get_cube_info(t_vulkan *vk)
 	x = -0.5f;
 	y = -0.5f;
 	z = 0.5f;
-	for (int k=0; k < (int)divisor; k++)
+	for (int k=0; k < (int)QUADS; k++)
 	{
 		z = 0.5f;
-		for (int n=0; n < (int)divisor; n++)
+		for (int n=0; n < (int)QUADS; n++)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -138,10 +136,10 @@ void	get_cube_info(t_vulkan *vk)
 	x = 0.5f;
 	y = 0.5f;
 	z = 0.5f;
-	for (int k=0; k < (int)divisor; k++)
+	for (int k=0; k < (int)QUADS; k++)
 	{
 		z = 0.5f;
-		for (int n=0; n < (int)divisor; n++)
+		for (int n=0; n < (int)QUADS; n++)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -158,10 +156,10 @@ void	get_cube_info(t_vulkan *vk)
 	x = -0.5f;
 	y = 0.5f;
 	z = 0.5f;
-	for (int k=0; k < (int)divisor; k++)
+	for (int k=0; k < (int)QUADS; k++)
 	{
 		z = 0.5f;
-		for (int n=0; n < (int)divisor; n++)
+		for (int n=0; n < (int)QUADS; n++)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -176,8 +174,8 @@ void	get_cube_info(t_vulkan *vk)
 		y = y - quad;
 	}
 
-	vk->vertices_index = (uint32_t*)malloc(262144 * 6 * 6 * sizeof(uint32_t));
-	for (int i=0; i < 262144 * 6; i++)
+	vk->vertices_index = (uint32_t*)malloc((uint32_t)QUADS * (uint32_t)QUADS * 6 * 6 * sizeof(uint32_t));
+	for (int i=0; i < QUADS * QUADS * 6; i++)
 	{
 		vk->vertices_index[0 + i * 6] = 0 + 4 * i;
 		vk->vertices_index[1 + i * 6] = 1 + 4 * i;
