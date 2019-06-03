@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/03 18:54:27 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 20:44:16 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 23:30:59 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,4 +117,15 @@ void	get_icosahedron(t_vulkan *vk)
 	vk->vertices_index[58] = 8;
 	vk->vertices_index[59] = 1;
 	printf("vertex buffer %zu\n", vk->triangle.length);
+}
+/* TODO refining icosahedron to morph into real spherical shape */
+void computeHalfVertex(const float v1[3], const float v2[3], float newV[3])
+{
+    newV[0] = v1[0] + v2[0];    // x
+    newV[1] = v1[1] + v2[1];    // y
+    newV[2] = v1[2] + v2[2];    // z
+    float scale = radius / sqrtf(newV[0]*newV[0] + newV[1]*newV[1] + newV[2]*newV[2]);
+    newV[0] *= scale;
+    newV[1] *= scale;
+    newV[2] *= scale;
 }
