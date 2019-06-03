@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 17:01:36 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 20:32:28 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,9 @@ void	create_index_buffer(t_vulkan *vk)
 	VkBuffer		stage_buffer;
 	VkDeviceMemory	stage_buffer_memory;
 
-	buffer_size = (uint64_t)QUADS * (uint64_t)QUADS * 6 * 6 * sizeof(uint32_t); /*TODO the number cannot be hard-coded!!*/
-
+	//buffer_size = (uint64_t)QUADS * (uint64_t)QUADS * 6 * 6 * sizeof(uint32_t); /*TODO the number cannot be hard-coded!!*/
+	buffer_size = 60 * sizeof(uint32_t);
+	printf("buffersize : %llu", buffer_size);
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 					&stage_buffer, &stage_buffer_memory);

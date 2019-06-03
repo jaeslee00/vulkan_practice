@@ -6,12 +6,14 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 02:38:05 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 17:02:35 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 20:39:54 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 #include "vector.h"
+
+int g_c = 0;
 
 void	get_vtx_info(t_array *triangle, t_vertex *vertex, float vtx1, float vtx2, float vtx3,
 						float r, float g, float b, float tex1, float tex2)
@@ -30,9 +32,12 @@ void	get_vtx_info(t_array *triangle, t_vertex *vertex, float vtx1, float vtx2, f
 
 void	sphere_transformation(float *out, float *src)
 {
-	out[0] = src[0] * sqrtf(1.0 - (src[1]*src[1]/2.0) - (src[2]*src[2]/2.0) + (src[1]*src[1]*src[2]*src[2]/3.0));
-	out[1]= src[1] * sqrtf(1.0 - (src[2]*src[2]/2.0) - (src[0]*src[0]/2.0) + (src[2]*src[2]*src[0]*src[0]/3.0));
-	out[2] = src[2] * sqrtf(1.0 - (src[0]*src[0]/2.0) - (src[1]*src[1]/2.0) + (src[0]*src[0]*src[1]*src[1]/3.0));
+//	out[0] = src[0] * sqrtf(1.0 - (src[1]*src[1]/2.0) - (src[2]*src[2]/2.0) + (src[1]*src[1]*src[2]*src[2]/3.0));
+//	out[1]= src[1] * sqrtf(1.0 - (src[2]*src[2]/2.0) - (src[0]*src[0]/2.0) + (src[2]*src[2]*src[0]*src[0]/3.0));
+//	out[2] = src[2] * sqrtf(1.0 - (src[0]*src[0]/2.0) - (src[1]*src[1]/2.0) + (src[0]*src[0]*src[1]*src[1]/3.0));
+	out[0] = src[0];
+	out[1]= src[1];
+	out[2] = src[2];
 	vec3_normalize(out);
 	vec3_scale(out, .7f);
 }
@@ -58,11 +63,11 @@ void	get_cube_info(t_vulkan *vk)
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y - quad, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
 			sphere_transformation(out, (float[]){x, y - quad, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			y = y - quad;
 		}
 		x = x + quad;
@@ -78,11 +83,11 @@ void	get_cube_info(t_vulkan *vk)
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y - quad, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
 			sphere_transformation(out, (float[]){x, y - quad, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			y = y - quad;
 		}
 		x = x + quad;
@@ -99,11 +104,11 @@ void	get_cube_info(t_vulkan *vk)
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
 			sphere_transformation(out, (float[]){x, y, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			z = z - quad;
 		}
 		x = x + quad;
@@ -118,16 +123,12 @@ void	get_cube_info(t_vulkan *vk)
 		{
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-//			array_push_back(&vk->triangle, &tri_vtx);
 			sphere_transformation(out, (float[]){x + quad, y, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-//			array_push_back(&vk->triangle, &tri_vtx);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 			sphere_transformation(out, (float[]){x + quad, y, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-//			array_push_back(&vk->triangle, &tri_vtx);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
 			sphere_transformation(out, (float[]){x, y, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-//			array_push_back(&vk->triangle, &tri_vtx);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			z = z - quad;
 		}
 		x = x + quad;
@@ -144,11 +145,11 @@ void	get_cube_info(t_vulkan *vk)
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 			sphere_transformation(out, (float[]){x, y - quad, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 			sphere_transformation(out, (float[]){x, y - quad, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
 			sphere_transformation(out, (float[]){x, y, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			z = z - quad;
 		}
 		y = y - quad;
@@ -164,11 +165,11 @@ void	get_cube_info(t_vulkan *vk)
 			sphere_transformation(out, (float[]){x, y, z});
 			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 			sphere_transformation(out, (float[]){x, y - quad, z});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 			sphere_transformation(out, (float[]){x, y - quad, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
 			sphere_transformation(out, (float[]){x, y, z - quad});
-			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+			get_vtx_info(&vk->triangle, &tri_vtx, out[0], out[1], out[2], 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			z = z - quad;
 		}
 		y = y - quad;
