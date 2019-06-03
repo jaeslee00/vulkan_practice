@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 23:11:24 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 02:13:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 09:46:02 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 
 void	update_model(t_ubo *ubo)
 {
-	float	x = 1.f;
-	float	y = 2.f;
+	float	x = 0.5f;
+	float	y = 0.5f;
 	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);
 	// g_cam.cam_pos[2] = sin(glfwGetTime()*x);
 	mat4_rotation(ubo->model, glfwGetTime()*x, glfwGetTime()*y);

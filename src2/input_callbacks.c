@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/02 15:27:59 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:49:35 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 10:23:44 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	float	up_vec[3];
 	float	tmp[3];
 
-	camera_speed = 0.1f;
+	camera_speed = 0.03f;
 	up_vec[0] = 0.0f;
 	up_vec[1] = 1.0f;
 	up_vec[2] = 0.0f;
