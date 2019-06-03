@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:48:15 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 23:40:51 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	recreate_swapchain(t_vulkan *vk)
 	create_renderpass(vk);
 	get_triangle_info(vk);
 	create_graphics_pipeline(vk);
+	create_depth_resource(vk);
 	create_framebuffers(vk);
 	create_ubo(vk);
 	create_descriptor_pool(vk);
@@ -91,10 +92,10 @@ int		main()
 	get_triangle_info(&vk);  // re-create swapchains
 	create_descriptor_set_layout(&vk);
 	create_graphics_pipeline(&vk);  // re-create swapchains
+	create_command_pools(&vk);
+	create_depth_resource(&vk); // re-create swapchains
 	create_framebuffers(&vk);  // re-create swapchains
 	/////////////////////////////////////////////////////////////////////////
-	create_command_pools(&vk);
-	//create_depth_resource(&vk);
 	create_texture_image(&vk);
 	create_texture_imageview(&vk);
 	create_texture_sampler(&vk);

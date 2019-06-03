@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 02:38:05 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:45:14 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 02:13:52 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,67 @@ void	get_triangle_info(t_vulkan *vk)
 
 	array_init(&vk->triangle, sizeof(t_vertex));
 
-	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+	/* back */
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, -0.3f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.1f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, -0.3f, 1.0f, 0.0f, 0.0f, 2.0f, 2.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.1f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, -0.3f, 0.0f, 0.0f, 1.0f, 2.0f, 0.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, -0.3f, 0.3f, 0.1f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, -0.3f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
 
-	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.2f, 1.0f, 1.0f, 1.0f, 0.0f, 2.0f);
+	/* front */
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.5f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
-	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.4f, 1.0f, 1.0f, 1.0f, 2.0f, 0.0f);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
 	get_vtx_info(&tri_vtx, -0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	array_push_back(&vk->triangle, &tri_vtx);
 
-	vk->vertices_index = (uint32_t*)malloc(12 * sizeof(uint32_t));
+	/* bottom */
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, -0.3f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, -0.3f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+
+	/* top */
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, -0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, -0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+
+
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, -0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, 0.3f, -0.3f, 0.3f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, 0.3f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, 0.3f, 0.3f, -0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+
+
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, -0.3f, 0.3f, -0.3f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, -0.3f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+	get_vtx_info(&tri_vtx, -0.3f, -0.3f, 0.3f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+	array_push_back(&vk->triangle, &tri_vtx);
+
+	vk->vertices_index = (uint32_t*)malloc(36 * sizeof(uint32_t));
 	vk->vertices_index[0] = 0;
 	vk->vertices_index[1] = 1;
 	vk->vertices_index[2] = 2;
@@ -63,4 +105,32 @@ void	get_triangle_info(t_vulkan *vk)
 	vk->vertices_index[9] = 6;
 	vk->vertices_index[10] = 7;
 	vk->vertices_index[11] = 4;
+
+	vk->vertices_index[12] = 8;
+	vk->vertices_index[13] = 9;
+	vk->vertices_index[14] = 10;
+	vk->vertices_index[15] = 10;
+	vk->vertices_index[16] = 11;
+	vk->vertices_index[17] = 8;
+
+	vk->vertices_index[18] = 12;
+	vk->vertices_index[19] = 13;
+	vk->vertices_index[20] = 14;
+	vk->vertices_index[21] = 14;
+	vk->vertices_index[22] = 15;
+	vk->vertices_index[23] = 12;
+
+	vk->vertices_index[24] = 16;
+	vk->vertices_index[25] = 17;
+	vk->vertices_index[26] = 18;
+	vk->vertices_index[27] = 18;
+	vk->vertices_index[28] = 19;
+	vk->vertices_index[29] = 16;
+
+	vk->vertices_index[30] = 20;
+	vk->vertices_index[31] = 21;
+	vk->vertices_index[32] = 22;
+	vk->vertices_index[33] = 22;
+	vk->vertices_index[34] = 23;
+	vk->vertices_index[35] = 20;
 }

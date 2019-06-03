@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 23:11:24 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:48:26 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 02:13:51 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,17 @@
 #include "matrix.h"
 #include "vector.h"
 #include <math.h>
+#include <time.h>
 
 void	update_model(t_ubo *ubo)
 {
-//	mat4_rotation(ubo->model, g_cam.rad_yaw, g_cam.rad_pitch);
+	float	x = 1.f;
+	float	y = 2.f;
+	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);
+	// g_cam.cam_pos[2] = sin(glfwGetTime()*x);
+	mat4_rotation(ubo->model, glfwGetTime()*x, glfwGetTime()*y);
 //	mat4_translation(ubo->model, g_cam.cam_pos[0], g_cam.cam_pos[1], 0.0f);
-	mat4_identity(ubo->model);
+//	mat4_identity(ubo->model);
 	// for (int i=0;i<4;i++)
 	// printf("%f %f %f %f\n", ubo->model[i*4+0], ubo->model[i*4+1], ubo->model[i*4+2], ubo->model[i*4+3]);
 	// printf("--------------------------------------------------\n");

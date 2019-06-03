@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:09:17 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:47:21 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/03 02:17:06 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@ void	clear_swapchain_objects(t_vulkan *vk)
 {
 	uint32_t	i;
 
+
+	vkDestroyImageView(vk->logical_device, vk->depth_image_view, NULL);
+	vkDestroyImage(vk->logical_device, vk->depth_image, NULL);
+	vkFreeMemory(vk->logical_device, vk->depth_image_memory, NULL);
 	i = 0;
 	while (i < vk->swapchain_image_count)
 	{
@@ -65,7 +69,6 @@ void	free_resource(t_vulkan *vk)
 	vkFreeMemory(vk->logical_device, vk->texture_image_memory, NULL);
 
 	vkDestroyDescriptorSetLayout(vk->logical_device, vk->descriptor_set_layout, NULL);
-	vkDestroyCommandPool(vk->logical_device, vk->command_pool_transfer, NULL);
 	vkDestroyCommandPool(vk->logical_device, vk->command_pool, NULL);
 
 	vkDestroyBuffer(vk->logical_device, vk->index_buffer, NULL);

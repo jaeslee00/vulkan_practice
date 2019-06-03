@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/06/02 20:02:09 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/02 22:28:17 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRCS = main.c \
 		create_renderpass.c \
 		create_surface.c \
 		create_textures.c \
+		create_depth_resource.c \
 		command_buffer_utils.c \
 		graphics_command_buffers.c \
 		descriptor_set_layout.c \

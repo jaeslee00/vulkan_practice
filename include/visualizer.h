@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:53:15 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/02 23:04:01 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,6 @@ typedef struct	s_vulkan
 
 	/*command bufffers */
 	VkCommandPool				command_pool;
-	VkCommandPool				command_pool_transfer;
 	VkCommandBuffer				*command_buffers; //same number
 	/* command_buffers for 'stage_buffer' is created and destroyed separately in
 	copy_buffer() function */
@@ -217,7 +216,6 @@ void			create_graphics_pipeline(t_vulkan *vk);
 void			create_renderpass(t_vulkan *vk);
 void			create_framebuffers(t_vulkan *vk);
 void			create_command_pools(t_vulkan *vk);
-void			create_command_pool_transfer(t_vulkan *vk);
 void			create_command_buffers(t_vulkan *vk);
 void			create_sync(t_vulkan *vk);
 void			draw_frame(t_vulkan *vk);
@@ -250,6 +248,10 @@ VkVertexInputAttributeDescription	get_tex_coord_attirbutes(void);
 void			create_texture_image(t_vulkan *vk);
 void			create_texture_imageview(t_vulkan *vk);
 void			create_texture_sampler(t_vulkan *vk);
+
+/* create depth resource */
+void			create_depth_resource(t_vulkan *vk);
+VkFormat		choose_depth_format(t_vulkan *vk);
 
 void			copy_buffer_to_image(t_vulkan *vk, VkBuffer buffer, VkImage image,
 					uint32_t width, uint32_t height);
