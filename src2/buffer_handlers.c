@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 20:32:28 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 23:05:06 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,14 @@ void	create_vertex_buffer(t_vulkan *vk)
 	VkBuffer		stage_buffer;
 	VkDeviceMemory	stage_buffer_memory;
 
-	buffer_size = vk->triangle.elem_size * vk->triangle.length;
+	buffer_size = vk->ico.elem_size * vk->ico.length;
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 					&stage_buffer, &stage_buffer_memory);
 
 	void	*data;
 	vkMapMemory(vk->logical_device, stage_buffer_memory, 0, buffer_size, 0, &data);
-		memcpy(data, (t_vertex*)vk->triangle.ptr, (size_t)buffer_size);
+		memcpy(data, (t_vertex*)vk->ico.ptr, (size_t)buffer_size);
 	vkUnmapMemory(vk->logical_device, stage_buffer_memory);
 
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -105,7 +105,7 @@ void	create_index_buffer(t_vulkan *vk)
 	VkDeviceMemory	stage_buffer_memory;
 
 	//buffer_size = (uint64_t)QUADS * (uint64_t)QUADS * 6 * 6 * sizeof(uint32_t); /*TODO the number cannot be hard-coded!!*/
-	buffer_size = 60 * sizeof(uint32_t);
+	buffer_size = 3840 * sizeof(uint32_t);
 	printf("buffersize : %llu", buffer_size);
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -113,7 +113,7 @@ void	create_index_buffer(t_vulkan *vk)
 
 	void	*data;
 	vkMapMemory(vk->logical_device, stage_buffer_memory, 0, buffer_size, 0, &data);
-		memcpy(data, vk->vertices_index, (size_t)buffer_size);
+		memcpy(data, vk->final_vi, (size_t)buffer_size);
 	vkUnmapMemory(vk->logical_device, stage_buffer_memory);
 
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,

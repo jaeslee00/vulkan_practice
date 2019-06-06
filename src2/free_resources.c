@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 15:09:17 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 02:17:06 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 22:35:52 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	free_resource(t_vulkan *vk)
 	vkDestroyInstance(vk->instance, NULL);
 	free(vk->gpu);
 	free(vk->queue_props);
+	array_clear(&vk->ico, NULL);
 	glfwDestroyWindow(vk->window);
 	glfwTerminate();
 }

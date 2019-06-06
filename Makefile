@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/06/03 19:16:08 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/06 22:55:38 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,10 +46,10 @@ SRCS = main.c \
 		la/vector_op.c
 
 OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
-
+SHADER = shader
 CC = gcc
 
-CLFAGS := $(FLAGS) -Wall -Wextra -Werror -g
+CFLAGS := -fsanitize=address -g
 
 GLFW_FLAGS = -framework Cocoa -framework IOKit \
 		  		-framework CoreFoundation -framework CoreVideo
@@ -68,19 +68,23 @@ INCLUDE_FOLDERS = -I $(VK_SDK_PATH)/include/vulkan -I $(GLFW_PATH)/include -I ./
 
 LIBRARY_PATH = -L libft
 
-all: $(NAME)
+all: $(SHADER) $(NAME)
 
 $(NAME): $(OBJS) libft/libft.a
-	$(CC) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
+	$(CC) -fsanitize=address -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
 	-Wl,-rpath, $(VK_SDK_PATH)/lib $(GLFW_PATH)/src/libglfw3.a \
 	${VK_SDK_PATH}/lib/libvulkan.1.dylib $(STB_INCLUDE_PATH) $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
+
+$(SHADER) :
+	/Users/jaelee/42/vv/vulkansdk/macOs/bin/glslangValidator -V /Users/jaelee/42/vv/shaders/triangle.vert
+	/Users/jaelee/42/vv/vulkansdk/macOs/bin/glslangValidator -V /Users/jaelee/42/vv/shaders/triangle.frag
 
 obj:
 	mkdir -p obj
 	mkdir -p obj/la
 
 obj/%.o: src2/%.c $(INCLUDES) | obj
-	$(CC) $(INCLUDE_FOLDERS) $(STB_INCLUDE_PATH) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE_FOLDERS) $(STB_INCLUDE_PATH) -c $< -o $@
 
 libft/libft.a: $(INCLUDES)
 	make -C libft

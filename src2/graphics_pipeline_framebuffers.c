@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 20:45:29 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 17:17:11 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	create_graphics_pipeline(t_vulkan *vk)
 	VkShaderModule					vertex_shader;
 	VkShaderModule					fragment_shader;
 
-	vertex_shader = get_shader_module(vk, "shaders/vert.spv");
-	fragment_shader = get_shader_module(vk, "shaders/frag.spv");
+	vertex_shader = get_shader_module(vk, "/Users/jaelee/42/vv/vert.spv");
+	fragment_shader = get_shader_module(vk, "/Users/jaelee/42/vv/frag.spv");
 
 	VkPipelineShaderStageCreateInfo vtx_shader_info = {};
 	vtx_shader_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

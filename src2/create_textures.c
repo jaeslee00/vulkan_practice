@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 13:19:44 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 18:24:52 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/05 14:40:48 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	create_texture_image(t_vulkan *vk)
 	VkBuffer		stage_buffer;
 	VkDeviceMemory	stage_buffer_memory;
 
-	pixels = stbi_load("./textures/terrain.jpg", &tex_width, &tex_height,
+	pixels = stbi_load("./textures/moss.jpg", &tex_width, &tex_height,
 				&tex_channel, STBI_rgb_alpha);
 	size = tex_width * tex_height * 4;
 	printf("texture size : %d by %d\n", tex_width, tex_height);

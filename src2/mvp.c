@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 23:11:24 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 18:35:32 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/05 15:05:39 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	update_model(t_ubo *ubo)
 	float	y = 0.1f;
 	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);
 	// g_cam.cam_pos[2] = sin(glfwGetTime()*x);
-	mat4_rotation(ubo->model, glfwGetTime()*x, glfwGetTime()*y);
+	mat4_rotation(ubo->model, g_cam.v_rot, g_cam.h_rot);
 //	mat4_translation(ubo->model, g_cam.cam_pos[0], g_cam.cam_pos[1], 0.0f);
 //	mat4_identity(ubo->model);
 	// for (int i=0;i<4;i++)
@@ -136,9 +136,6 @@ void	update_view(t_ubo *ubo)
 	target[0] = g_cam.cam_pos[0] + g_cam.cam_front[0];
 	target[1] = g_cam.cam_pos[1] + g_cam.cam_front[1];
 	target[2] = g_cam.cam_pos[2] + g_cam.cam_front[2];
-//	target[0] = 0.0f;
-//	target[1] = 0.0f;
-//	target[2] = 0.0f;
 
 	// float x = 3.f;
 	// g_cam.cam_pos[0] = cos(glfwGetTime()*x);

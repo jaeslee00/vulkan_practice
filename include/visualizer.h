@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 19:14:12 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 23:07:23 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ typedef struct	s_cam
 	float	pitch;
 	float	rad_yaw;
 	float	rad_pitch;
+	float	h_rot;
+	float	v_rot;
 }				t_cam;
 
 t_cam		g_cam;
@@ -175,8 +177,12 @@ typedef struct	s_vulkan
 	VkSemaphore					*release_semaphore; // MALLOC frames in flight
 	VkFence						*fence;
 
-	t_array						triangle;
+	t_array						triangle; /*TODO MALLOC */
+	t_array						ico; /*TODO MALLOC */
 	uint32_t					*vertices_index; /*TODO MALLOC */
+	uint32_t					*vi; /*TODO MALLOC */
+	uint32_t					*new_vi; /*TODO MALLOC */
+	uint32_t					*final_vi; /*TODO MALLOC */
 	VkBuffer					vertex_buffer;
 	VkDeviceMemory				vertex_buffer_memory;
 	VkBuffer					index_buffer;
@@ -225,7 +231,9 @@ void			draw_frame(t_vulkan *vk);
 void			get_triangle_info(t_vulkan *vk);
 void			get_cube_info(t_vulkan *vk);
 void			get_icosahedron(t_vulkan *vk);
-void			get_vtx_info(t_array *triangle, t_vertex *vertex, float vtx1, float vtx2, float vtx3,
+void			refine_icosahedron(t_vulkan *vk, t_array *ico, uint32_t *vtx_index,
+					uint32_t *new_vtx_index, int refine);
+void			add_vertex(t_array *polygon, t_vertex *vertex, float vtx1, float vtx2, float vtx3,
 								float r, float g, float b, float tex1, float tex2);
 
 /* VkBuffer handlers */

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 18:24:56 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:52:53 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 22:49:30 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	enabled_extensions_setting(t_vulkan *vk)
 	}
 	vk->extension_name[vk->enabled_extension_count] = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
 	vk->enabled_extension_count++;
-	for (int j=0; j < vk->enabled_extension_count; j++)
+	for (uint32_t j=0; j < vk->enabled_extension_count; j++)
 		printf("instance extension %d : %s\n", j, vk->extension_name[j]);
 }
 
@@ -69,6 +69,7 @@ void	init_vulkan(t_vulkan *vk)
 
 int		init_glfw(t_vulkan *vk)
 {
+	(void)vk;
 	if (!glfwInit())
 	{
 		printf("GLFW initialize failed.\n");

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 20:27:16 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 22:53:34 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,12 @@ static	VkBool32 VKAPI_CALL debug_report_callback(VkDebugReportFlagsEXT flags,
 				size_t location, int32_t messageCode, const char* pLayerPrefix,
 					const char* pMessage, void* pUserData)
 {
+	(void)objectType;
+	(void)object;
+	(void)location;
+	(void)messageCode;
+	(void)pLayerPrefix;
+	(void)pUserData;
 	if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
 	{
 		printf("%s\n", pMessage);

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/02 15:27:59 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 10:23:44 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/05 15:08:13 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	reset_cam(uint32_t width, uint32_t height)
 	g_cam.last_y = height / 2;
 	g_cam.yaw = -90.0f;
 	g_cam.pitch = 0.0f;
+	g_cam.h_rot = 0.0f;
+	g_cam.v_rot = 0.0f;
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -75,9 +77,29 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	}
 	// else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 	// 	g_cam.velocity[2] = 0.0f;
-	if (key == GLFW_KEY_R)
+	if (key == GLFW_KEY_V)
 	{
 		reset_cam(WIDTH, HEIGHT);
+	}
+	if (key == GLFW_KEY_Q && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		g_cam.h_rot += 0.05f;
+		g_cam.h_rot = fmod(g_cam.h_rot, 360.f);
+	}
+	if (key == GLFW_KEY_E && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		g_cam.h_rot -= 0.05f;
+		g_cam.h_rot = fmod(g_cam.h_rot, 360.f);
+	}
+		if (key == GLFW_KEY_R && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		g_cam.v_rot += 0.05f;
+		g_cam.v_rot = fmod(g_cam.v_rot, 360.f);
+	}
+	if (key == GLFW_KEY_F && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		g_cam.v_rot -= 0.05f;
+		g_cam.v_rot = fmod(g_cam.v_rot, 360.f);
 	}
 }
 

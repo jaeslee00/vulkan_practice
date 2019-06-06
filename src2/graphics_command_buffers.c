@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 11:21:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/03 19:18:02 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/06 23:05:10 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	create_command_buffers(t_vulkan *vk)
 						0, 1, &vk->descriptor_sets[i], 0, NULL);
 
 				//vkCmdDrawIndexed(vk->command_buffers[i], (uint32_t)QUADS * (uint32_t)QUADS * 6 * 6, 1, 0, 0, 0);
-				vkCmdDrawIndexed(vk->command_buffers[i], 60, 1, 0, 0, 0);
+				vkCmdDrawIndexed(vk->command_buffers[i], 3840, 1, 0, 0, 0);
 			vkCmdEndRenderPass(vk->command_buffers[i]);
 
 		ft_assert((vkEndCommandBuffer(vk->command_buffers[i]) == VK_SUCCESS),
