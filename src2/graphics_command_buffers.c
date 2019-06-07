@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/22 11:21:15 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/06 23:05:10 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/07 15:24:55 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,14 @@ void	create_command_buffers(t_vulkan *vk)
 
 		VkClearValue			clear_color[2] = {};
 
-		clear_color[0].color.float32[0] = 48.f / 255.f;
-		clear_color[0].color.float32[1] = 10.f / 255.f;
-		clear_color[0].color.float32[2] = 36.f / 255.f;
+		// clear_color[0].color.float32[0] = 48.f / 255.f;
+		// clear_color[0].color.float32[1] = 10.f / 255.f;
+		// clear_color[0].color.float32[2] = 36.f / 255.f;
+
+		clear_color[0].color.float32[0] = 150.f / 255.f;
+		clear_color[0].color.float32[1] = 150.f / 255.f;
+		clear_color[0].color.float32[2] = 150.f / 255.f;
+
 		clear_color[0].color.float32[3] = 1.0f;
 		clear_color[1].depthStencil.depth = 1.0f;
 		clear_color[1].depthStencil.stencil = 0.0f;

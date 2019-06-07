@@ -6,14 +6,13 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 02:38:05 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/06 23:07:08 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/07 15:46:59 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 #include "vector.h"
-
-int g_cnt = 0;
+#include <stdlib.h>
 
 void	add_vertex(t_array *polygon, t_vertex *vertex, float vtx1, float vtx2, float vtx3,
 						float r, float g, float b, float tex1, float tex2)
@@ -29,7 +28,6 @@ void	add_vertex(t_array *polygon, t_vertex *vertex, float vtx1, float vtx2, floa
 	vertex->tex_coord[1] = tex2;
 	array_push_back(polygon, vertex);
 }
-
 
 void	sphere_transformation(float *out, float *src)
 {

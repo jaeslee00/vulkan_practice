@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/06 22:53:34 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/07 15:02:14 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ int		main()
 	create_texture_sampler(&vk);
 	create_vertex_buffer(&vk);
 	create_index_buffer(&vk);
-
 	create_ubo(&vk);
 	create_descriptor_pool(&vk);
 	create_descriptor_sets(&vk);

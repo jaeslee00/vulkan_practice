@@ -6,56 +6,108 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/03 18:54:27 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/06 23:09:02 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/07 16:02:11 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
+
+void	generate_island(uint32_t *vtx, t_array *ico)
+{
+	int	i;
+
+	i = 0;
+
+	// 삼각형 20480 개
+	// icosahedron 면 한개당 삼각형 1024개
+	while (i < 600)
+	{
+		vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
+		i++;
+	}
+	// i = 10240 - 1;
+	// while (i <  10240 - 1 + 1024)
+	// {
+	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
+	// 	i++;
+	// }
+	// i = 10240 * 2 - 1;
+	// while (i <  10240 * 2 - 1 + 1024)
+	// {
+	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
+	// 	i++;
+	// }
+	// i = 10240 * 3 - 1;
+	// while (i < 10240 * 3 - 1 + 1024)
+	// {
+	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
+	// 	i++;
+	// }
+	// i = 10240 * 4 - 1;
+	// while (i < 10240 * 4 - 1 + 1024)
+	// {
+	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
+	// 	i++;
+	// }
+	// i = 10240 * 5 - 1;
+	// while (i < 10240 * 5 - 1 + 1024)
+	// {
+	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
+	// 	i++;
+	// }
+	// i = 3411;
+	// while (i < 3411 + 600)
+	// {
+	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.05f);
+	// 	i++;
+	// }
+}
 
 void	get_icosahedron(t_vulkan *vk)
 
 {
 	float	t;
 	t_vertex	tri_vtx;
+
 	t = (1.0f + sqrtf(5.0f)) / 2.0f;
 	array_init(&vk->ico, sizeof(t_vertex));
 	add_vertex(&vk->ico, &tri_vtx, -1.0f, t, 0.0f,
-								1.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								1.0f, 1.0f);
 	add_vertex(&vk->ico, &tri_vtx, 1.0f, t, 0.0f,
-								1.0f, 0.0f, 0.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f);
 	add_vertex(&vk->ico, &tri_vtx, -1.0f, -t, 0.0f,
-								0.0f, 1.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f);
 	add_vertex(&vk->ico, &tri_vtx, 1.0f, -t, 0.0f,
-								0.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								1.0f, 1.0f);
 
 	add_vertex(&vk->ico, &tri_vtx, 0.0f, -1.f, t,
-								1.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f);
 	add_vertex(&vk->ico, &tri_vtx, 0.0f, 1.f, t,
-								1.0f, 0.0f, 0.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 1.0f);
 	add_vertex(&vk->ico, &tri_vtx, 0.0f, -1.f, -t,
-								0.0f, 1.0f, 0.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f);
 	add_vertex(&vk->ico, &tri_vtx, 0.0f, 1.f, -t,
-								0.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								1.0f, 0.0f);
 
 	add_vertex(&vk->ico, &tri_vtx, t, 0, -1.f,
-								1.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 1.0f);
 	add_vertex(&vk->ico, &tri_vtx, t, 0, 1.f,
-								1.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 0.0f);
 	add_vertex(&vk->ico, &tri_vtx, -t, 0, -1.f,
-								1.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								0.0f, 1.0f);
 	add_vertex(&vk->ico, &tri_vtx, -t, 0, 1.f,
-								1.0f, 0.0f, 1.0f,
+								0.0f, 0.0f, 0.0f,
 								1.0f, 0.0f);
 
 	vk->vertices_index = (uint32_t*)malloc(60 * sizeof(uint32_t));
@@ -141,15 +193,39 @@ void	get_icosahedron(t_vulkan *vk)
 	vk->vertices_index[58] = 8;
 	vk->vertices_index[59] = 1;
 
-	vk->vi = (uint32_t*)malloc(240 * sizeof(uint32_t));
-	vk->new_vi = (uint32_t*)malloc(960 * sizeof(uint32_t));
-	vk->final_vi = (uint32_t*)malloc(3840 * sizeof(uint32_t));
-	refine_icosahedron(vk, &vk->ico, vk->vertices_index, vk->vi, 58);
+	vk->vi1 = (uint32_t*)malloc(240 * sizeof(uint32_t));
+	vk->vi2 = (uint32_t*)malloc(960 * sizeof(uint32_t));
+	vk->vi3 = (uint32_t*)malloc(3840 * sizeof(uint32_t));
+//	vk->vi4 = (uint32_t*)malloc(15360 * sizeof(uint32_t));
+//	vk->vi5 = (uint32_t*)malloc(15360 * 4 * sizeof(uint32_t));
+	refine_icosahedron(vk, &vk->ico, vk->vertices_index, vk->vi1, 58);
 	free(vk->vertices_index);
-	refine_icosahedron(vk, &vk->ico, vk->vi, vk->new_vi, 238);
-	free(vk->vi);
-	refine_icosahedron(vk, &vk->ico, vk->new_vi, vk->final_vi, 958);
-	free(vk->new_vi);
+	refine_icosahedron(vk, &vk->ico, vk->vi1, vk->vi2, 238);
+	free(vk->vi1);
+	refine_icosahedron(vk, &vk->ico, vk->vi2, vk->vi3, 958);
+	free(vk->vi2);
+	// refine_icosahedron(vk, &vk->ico, vk->vi3, vk->vi4, 3838);
+	// free(vk->vi3);
+	// refine_icosahedron(vk, &vk->ico, vk->vi4, vk->vi5, 15360);
+	// free(vk->vi4);
+	//generate_island(vk->vi5, &vk->ico);
+	/* 버텍스 3개당 유닛 삼각형!!
+	 버텍스 12개 삼각형 그룹1!
+	 버텍스 48개 삼각형 그룹2! */
+
+	// inner index = (index % 3)
+	for (int j=0; j < 3; j++)
+	{
+			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].color[0] = 1.0f;
+			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].color[1] = 1.0f;
+			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].color[2] = 1.0f;
+			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].pos[0] *= 1.1f;
+			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].pos[1] *= 1.1f;
+			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].pos[2] *= 1.1f;
+	}
+	vec3_scale(((t_vertex*)(vk->ico.ptr))[vk->vi3[3]].pos, 1.1f);
+	vec3_scale(((t_vertex*)(vk->ico.ptr))[vk->vi3[6]].pos, 1.1f);
+	vec3_scale(((t_vertex*)(vk->ico.ptr))[vk->vi3[9]].pos, 1.1f);
 }
 
 void	get_midpoint(float *mid_vtx, float *vtx1, float *vtx2)
@@ -173,7 +249,6 @@ void	refine_icosahedron(t_vulkan *vk, t_array *ico, uint32_t *vtx_index, uint32_
 	int 		ico_vertices;
 
 	ico_vertices = ico->length;
-
 	i = 0;
 	while (i < refine)
 	{
@@ -183,15 +258,15 @@ void	refine_icosahedron(t_vulkan *vk, t_array *ico, uint32_t *vtx_index, uint32_
 		get_midpoint(mid_vertex_c, old_vtx[vtx_index[i + 2]].pos, old_vtx[vtx_index[i]].pos);
 
 		add_vertex(&vk->ico, &new_vtx, mid_vertex_a[0], mid_vertex_a[1], mid_vertex_a[2],
-			0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+			0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 		add_vertex(&vk->ico, &new_vtx, mid_vertex_b[0], mid_vertex_b[1], mid_vertex_b[2],
-			0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+			0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 		add_vertex(&vk->ico, &new_vtx, mid_vertex_c[0], mid_vertex_c[1], mid_vertex_c[2],
-			1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+			0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
-		new_vtx_index[i * 4] = vtx_index[i];
-		new_vtx_index[i * 4 + 1] = ico_vertices + i;
-		new_vtx_index[i * 4 + 2] = ico_vertices + (i + 2);
+		new_vtx_index[i * 4] = ico_vertices + i;
+		new_vtx_index[i * 4 + 1] = ico_vertices + (i + 2); /* middle */
+		new_vtx_index[i * 4 + 2] = ico_vertices + (i + 1);
 
 		new_vtx_index[i * 4 + 3] = vtx_index[i + 1];
 		new_vtx_index[i * 4 + 4] = ico_vertices + (i + 1);
@@ -201,9 +276,9 @@ void	refine_icosahedron(t_vulkan *vk, t_array *ico, uint32_t *vtx_index, uint32_
 		new_vtx_index[i * 4 + 7] = ico_vertices + (i + 2);
 		new_vtx_index[i * 4 + 8] = ico_vertices + (i + 1);
 
-		new_vtx_index[i * 4 + 9] = ico_vertices + i;
-		new_vtx_index[i * 4 + 10] = ico_vertices + (i + 2);
-		new_vtx_index[i * 4 + 11] = ico_vertices + (i + 1);
+		new_vtx_index[i * 4 + 9] = vtx_index[i];
+		new_vtx_index[i * 4 + 10] = ico_vertices + i;
+		new_vtx_index[i * 4 + 11] = ico_vertices + (i + 2);
 
 		i += 3;
 	}

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/06 23:07:23 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/07 15:04:05 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,9 +180,11 @@ typedef struct	s_vulkan
 	t_array						triangle; /*TODO MALLOC */
 	t_array						ico; /*TODO MALLOC */
 	uint32_t					*vertices_index; /*TODO MALLOC */
-	uint32_t					*vi; /*TODO MALLOC */
-	uint32_t					*new_vi; /*TODO MALLOC */
-	uint32_t					*final_vi; /*TODO MALLOC */
+	uint32_t					*vi1; /*TODO MALLOC */
+	uint32_t					*vi2; /*TODO MALLOC */
+	uint32_t					*vi3; /*TODO MALLOC */
+	uint32_t					*vi4;
+	uint32_t					*vi5;
 	VkBuffer					vertex_buffer;
 	VkDeviceMemory				vertex_buffer_memory;
 	VkBuffer					index_buffer;
