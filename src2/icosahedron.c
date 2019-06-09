@@ -6,280 +6,144 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/03 18:54:27 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/07 16:02:11 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/09 21:32:15 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
 
-void	generate_island(uint32_t *vtx, t_array *ico)
+void	generate_island(t_vulkan *vk)
 {
-	int	i;
+	float	hx;
+	float	hy;
 
-	i = 0;
-
-	// 삼각형 20480 개
-	// icosahedron 면 한개당 삼각형 1024개
-	while (i < 600)
-	{
-		vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
-		i++;
-	}
-	// i = 10240 - 1;
-	// while (i <  10240 - 1 + 1024)
-	// {
-	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
-	// 	i++;
-	// }
-	// i = 10240 * 2 - 1;
-	// while (i <  10240 * 2 - 1 + 1024)
-	// {
-	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
-	// 	i++;
-	// }
-	// i = 10240 * 3 - 1;
-	// while (i < 10240 * 3 - 1 + 1024)
-	// {
-	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
-	// 	i++;
-	// }
-	// i = 10240 * 4 - 1;
-	// while (i < 10240 * 4 - 1 + 1024)
-	// {
-	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
-	// 	i++;
-	// }
-	// i = 10240 * 5 - 1;
-	// while (i < 10240 * 5 - 1 + 1024)
-	// {
-	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.03f);
-	// 	i++;
-	// }
-	// i = 3411;
-	// while (i < 3411 + 600)
-	// {
-	// 	vec3_scale(((t_vertex*)ico->ptr)[vtx[i]].pos, 1.05f);
-	// 	i++;
-	// }
+	hx = atan2( ((t_vertex_info*)vk->vtx.ptr)[0].pos[0], ((t_vertex_info*)vk->vtx.ptr)[0].pos[2] ) / (-2.f * PI);
+	hy = asin( (t_vertex_info*)vk->vtx.ptr[0].pos[1] ) / PI + 0.5f;
 }
 
 void	get_icosahedron(t_vulkan *vk)
 
 {
-	float	t;
-	t_vertex	tri_vtx;
+	float		t;
 
 	t = (1.0f + sqrtf(5.0f)) / 2.0f;
-	array_init(&vk->ico, sizeof(t_vertex));
-	add_vertex(&vk->ico, &tri_vtx, -1.0f, t, 0.0f,
-								0.0f, 0.0f, 0.0f,
-								1.0f, 1.0f);
-	add_vertex(&vk->ico, &tri_vtx, 1.0f, t, 0.0f,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 0.0f);
-	add_vertex(&vk->ico, &tri_vtx, -1.0f, -t, 0.0f,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 0.0f);
-	add_vertex(&vk->ico, &tri_vtx, 1.0f, -t, 0.0f,
-								0.0f, 0.0f, 0.0f,
-								1.0f, 1.0f);
+	array_init(&vk->vtx, sizeof(t_vertex_info));
+	add_vertex(vk, (float[]){-1.0f, t, 0.0f}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){1.0f, t, 0.0f}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){-1.0f, -t, 0.0f}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){1.0f, -t, 0.0f}, 1.0f, 1.0f, 1.0f);
 
-	add_vertex(&vk->ico, &tri_vtx, 0.0f, -1.f, t,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 0.0f);
-	add_vertex(&vk->ico, &tri_vtx, 0.0f, 1.f, t,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 1.0f);
-	add_vertex(&vk->ico, &tri_vtx, 0.0f, -1.f, -t,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 0.0f);
-	add_vertex(&vk->ico, &tri_vtx, 0.0f, 1.f, -t,
-								0.0f, 0.0f, 0.0f,
-								1.0f, 0.0f);
+	add_vertex(vk, (float[]){0.0f, -1.f, t}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){0.0f, 1.f, t}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){0.0f, -1.f, -t}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){0.0f, 1.f, -t}, 1.0f, 1.0f, 1.0f);
 
-	add_vertex(&vk->ico, &tri_vtx, t, 0, -1.f,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 1.0f);
-	add_vertex(&vk->ico, &tri_vtx, t, 0, 1.f,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 0.0f);
-	add_vertex(&vk->ico, &tri_vtx, -t, 0, -1.f,
-								0.0f, 0.0f, 0.0f,
-								0.0f, 1.0f);
-	add_vertex(&vk->ico, &tri_vtx, -t, 0, 1.f,
-								0.0f, 0.0f, 0.0f,
-								1.0f, 0.0f);
+	add_vertex(vk, (float[]){t, 0, -1.f}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){t, 0, 1.f}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){-t, 0, -1.f}, 1.0f, 1.0f, 1.0f);
+	add_vertex(vk, (float[]){-t, 0, 1.f}, 1.0f, 1.0f, 1.0f);
 
-	vk->vertices_index = (uint32_t*)malloc(60 * sizeof(uint32_t));
-	ft_bzero(vk->vertices_index, sizeof(uint32_t) * 60);
+	array_init(&vk->tri_faces, sizeof(t_tri_vtx_indices));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){0, 11, 5}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){5, 1, 0}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){0, 1, 7}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){7, 10, 0}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){0, 10, 11}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){1, 5, 9}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){5, 11, 4}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){11, 10, 2}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){10, 7 ,6}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){7, 1, 8}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){3, 9, 4}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){4, 2, 3}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){3, 2, 6}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){6, 8, 3}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){3, 8, 9}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){4, 9, 5}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){2, 4, 11}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){6, 2, 10}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){8, 6, 7}));
+	array_push_back(&vk->tri_faces, &((t_tri_vtx_indices){9, 8, 1}));
 
-	vk->vertices_index[0] = 0;
-	vk->vertices_index[1] = 11;
-	vk->vertices_index[2] = 5;
+	refine_icosahedron(vk, 6);
+	printf("%zu\n", vk->vtx.length);
+	generate_island(vk);
+}
 
-	vk->vertices_index[3] = 5;
-	vk->vertices_index[4] = 1;
-	vk->vertices_index[5] = 0;
+int			pair_compare(const void *content1, const void *content2)
+{
+	if ( ((t_pair*)content1)->pair != ((t_pair*)content2)->pair )
+		return (1);
+	return (0);
+}
 
-	vk->vertices_index[6] = 0;
-	vk->vertices_index[7] = 1;
-	vk->vertices_index[8] = 7;
+uint32_t	add_midpoint(t_vulkan *vk, uint32_t v1, uint32_t v2)
+{
+	float		mid_vertex[3];
+	size_t		index;
+	t_tree		*new_node;
+	t_tree		*node;
+	t_pair		vtx_pair;
+	uint32_t	minor;
+	uint32_t	major;
 
-	vk->vertices_index[9] = 7;
-	vk->vertices_index[10] = 10;
-	vk->vertices_index[11] = 0;
-
-	vk->vertices_index[12] = 0;
-	vk->vertices_index[13] = 10;
-	vk->vertices_index[14] = 11;
-///////////////////////////////////////////////////////
-	vk->vertices_index[15] = 1;
-	vk->vertices_index[16] = 5;
-	vk->vertices_index[17] = 9;
-
-	vk->vertices_index[18] = 5;
-	vk->vertices_index[19] = 11;
-	vk->vertices_index[20] = 4;
-
-	vk->vertices_index[21] = 11;
-	vk->vertices_index[22] = 10;
-	vk->vertices_index[23] = 2;
-
-	vk->vertices_index[24] = 10;
-	vk->vertices_index[25] = 7;
-	vk->vertices_index[26] = 6;
-
-	vk->vertices_index[27] = 7;
-	vk->vertices_index[28] = 1;
-	vk->vertices_index[29] = 8;
-////////////////////////////////////////////////////
-	vk->vertices_index[30] = 3;
-	vk->vertices_index[31] = 9;
-	vk->vertices_index[32] = 4;
-
-	vk->vertices_index[33] = 4;
-	vk->vertices_index[34] = 2;
-	vk->vertices_index[35] = 3;
-
-	vk->vertices_index[36] = 3;
-	vk->vertices_index[37] = 2;
-	vk->vertices_index[38] = 6;
-
-	vk->vertices_index[39] = 6;
-	vk->vertices_index[40] = 8;
-	vk->vertices_index[41] = 3;
-
-	vk->vertices_index[42] = 3;
-	vk->vertices_index[43] = 8;
-	vk->vertices_index[44] = 9;
-///////////////////////////////////////////////////
-	vk->vertices_index[45] = 4;
-	vk->vertices_index[46] = 9;
-	vk->vertices_index[47] = 5;
-
-	vk->vertices_index[48] = 2;
-	vk->vertices_index[49] = 4;
-	vk->vertices_index[50] = 11;
-
-	vk->vertices_index[51] = 6;
-	vk->vertices_index[52] = 2;
-	vk->vertices_index[53] = 10;
-
-	vk->vertices_index[54] = 8;
-	vk->vertices_index[55] = 6;
-	vk->vertices_index[56] = 7;
-
-	vk->vertices_index[57] = 9;
-	vk->vertices_index[58] = 8;
-	vk->vertices_index[59] = 1;
-
-	vk->vi1 = (uint32_t*)malloc(240 * sizeof(uint32_t));
-	vk->vi2 = (uint32_t*)malloc(960 * sizeof(uint32_t));
-	vk->vi3 = (uint32_t*)malloc(3840 * sizeof(uint32_t));
-//	vk->vi4 = (uint32_t*)malloc(15360 * sizeof(uint32_t));
-//	vk->vi5 = (uint32_t*)malloc(15360 * 4 * sizeof(uint32_t));
-	refine_icosahedron(vk, &vk->ico, vk->vertices_index, vk->vi1, 58);
-	free(vk->vertices_index);
-	refine_icosahedron(vk, &vk->ico, vk->vi1, vk->vi2, 238);
-	free(vk->vi1);
-	refine_icosahedron(vk, &vk->ico, vk->vi2, vk->vi3, 958);
-	free(vk->vi2);
-	// refine_icosahedron(vk, &vk->ico, vk->vi3, vk->vi4, 3838);
-	// free(vk->vi3);
-	// refine_icosahedron(vk, &vk->ico, vk->vi4, vk->vi5, 15360);
-	// free(vk->vi4);
-	//generate_island(vk->vi5, &vk->ico);
-	/* 버텍스 3개당 유닛 삼각형!!
-	 버텍스 12개 삼각형 그룹1!
-	 버텍스 48개 삼각형 그룹2! */
-
-	// inner index = (index % 3)
-	for (int j=0; j < 3; j++)
+	minor = v1 > v2 ? v2 : v1;
+	major = v1 > v2 ? v1 : v2;
+	ft_bzero(&vtx_pair, sizeof(t_pair));
+	vtx_pair.pair |= ((uint64_t)minor << 32);
+	vtx_pair.pair |= (uint64_t)major;
+	index = 0;
+	if ((node = tree_search(vk->pair_tree, &vtx_pair, pair_compare)) != NULL)
 	{
-			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].color[0] = 1.0f;
-			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].color[1] = 1.0f;
-			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].color[2] = 1.0f;
-			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].pos[0] *= 1.1f;
-			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].pos[1] *= 1.1f;
-			((t_vertex*)(vk->ico.ptr))[vk->vi3[j]].pos[2] *= 1.1f;
+		return (((t_pair*)node->content)->vtx_index);
 	}
-	vec3_scale(((t_vertex*)(vk->ico.ptr))[vk->vi3[3]].pos, 1.1f);
-	vec3_scale(((t_vertex*)(vk->ico.ptr))[vk->vi3[6]].pos, 1.1f);
-	vec3_scale(((t_vertex*)(vk->ico.ptr))[vk->vi3[9]].pos, 1.1f);
-}
-
-void	get_midpoint(float *mid_vtx, float *vtx1, float *vtx2)
-{
-	float	scale;
-
-	mid_vtx[0] = (vtx1[0] + vtx2[0]);
-	mid_vtx[1] = (vtx1[1] + vtx2[1]);
-	mid_vtx[2] = (vtx1[2] + vtx2[2]);
-	vec3_normalize(mid_vtx);
-}
-
-void	refine_icosahedron(t_vulkan *vk, t_array *ico, uint32_t *vtx_index, uint32_t *new_vtx_index, int refine)
-{
-	t_vertex	*old_vtx;
-	t_vertex	new_vtx;
-	float		mid_vertex_a[3];
-	float		mid_vertex_b[3];
-	float		mid_vertex_c[3];
-	int			i;
-	int 		ico_vertices;
-
-	ico_vertices = ico->length;
-	i = 0;
-	while (i < refine)
+	else
 	{
-		old_vtx = (t_vertex*)vk->ico.ptr;
-		get_midpoint(mid_vertex_a, old_vtx[vtx_index[i]].pos, old_vtx[vtx_index[i + 1]].pos);
-		get_midpoint(mid_vertex_b, old_vtx[vtx_index[i + 1]].pos, old_vtx[vtx_index[i + 2]].pos);
-		get_midpoint(mid_vertex_c, old_vtx[vtx_index[i + 2]].pos, old_vtx[vtx_index[i]].pos);
+		mid_vertex[0] = (((t_vertex_info*)vk->vtx.ptr)[minor].pos[0]
+			+ ((t_vertex_info*)vk->vtx.ptr)[major].pos[0]);
+		mid_vertex[1] = (((t_vertex_info*)vk->vtx.ptr)[minor].pos[1]
+			+ ((t_vertex_info*)vk->vtx.ptr)[major].pos[1]);
+		mid_vertex[2] = (((t_vertex_info*)vk->vtx.ptr)[minor].pos[2]
+			+ ((t_vertex_info*)vk->vtx.ptr)[major].pos[2]);
+		vtx_pair.vtx_index = add_vertex(vk, mid_vertex, 0.0f, 0.0f, 0.0f);
+		tree_insert(&vk->pair_tree, node_create(&vtx_pair, sizeof(t_pair)), pair_compare);
+		return (vtx_pair.vtx_index);
+	}
+}
 
-		add_vertex(&vk->ico, &new_vtx, mid_vertex_a[0], mid_vertex_a[1], mid_vertex_a[2],
-			0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-		add_vertex(&vk->ico, &new_vtx, mid_vertex_b[0], mid_vertex_b[1], mid_vertex_b[2],
-			0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-		add_vertex(&vk->ico, &new_vtx, mid_vertex_c[0], mid_vertex_c[1], mid_vertex_c[2],
-			0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+void		refine_icosahedron(t_vulkan *vk, int refine)
+{
+	size_t				i;
+	int					refine_index;
+	size_t				a;
+	size_t				b;
+	size_t				c;
+	t_array				tmp_faces;
+	t_tri_vtx_indices	triangle;
 
-		new_vtx_index[i * 4] = ico_vertices + i;
-		new_vtx_index[i * 4 + 1] = ico_vertices + (i + 2); /* middle */
-		new_vtx_index[i * 4 + 2] = ico_vertices + (i + 1);
-
-		new_vtx_index[i * 4 + 3] = vtx_index[i + 1];
-		new_vtx_index[i * 4 + 4] = ico_vertices + (i + 1);
-		new_vtx_index[i * 4 + 5] = ico_vertices + i;
-
-		new_vtx_index[i * 4 + 6] = vtx_index[i + 2];
-		new_vtx_index[i * 4 + 7] = ico_vertices + (i + 2);
-		new_vtx_index[i * 4 + 8] = ico_vertices + (i + 1);
-
-		new_vtx_index[i * 4 + 9] = vtx_index[i];
-		new_vtx_index[i * 4 + 10] = ico_vertices + i;
-		new_vtx_index[i * 4 + 11] = ico_vertices + (i + 2);
-
-		i += 3;
+	refine_index = 0;
+	vk->pair_tree = NULL;
+	while (refine_index < refine)
+	{
+		array_init(&tmp_faces, sizeof(t_tri_vtx_indices));
+		i = 0;
+		while (i < vk->tri_faces.length)
+		{
+			triangle = ((t_tri_vtx_indices*)vk->tri_faces.ptr)[i];
+			a = add_midpoint(vk, triangle.v1, triangle.v2);
+			b = add_midpoint(vk, triangle.v2, triangle.v3);
+			c = add_midpoint(vk, triangle.v3, triangle.v1);
+			array_push_back(&tmp_faces, &((t_tri_vtx_indices){a, b, c}));
+			array_push_back(&tmp_faces, &((t_tri_vtx_indices){triangle.v1, a, c}));
+			array_push_back(&tmp_faces, &((t_tri_vtx_indices){triangle.v2, b, a}));
+			array_push_back(&tmp_faces, &((t_tri_vtx_indices){triangle.v3, c, b}));
+			i++;
+		}
+		array_clear(&vk->tri_faces, NULL);
+		vk->tri_faces.ptr = tmp_faces.ptr;
+		vk->tri_faces.length = tmp_faces.length;
+		vk->tri_faces.reserved = tmp_faces.reserved;
+		ft_bzero(&tmp_faces, sizeof(t_array));
+		refine_index++;
 	}
 }

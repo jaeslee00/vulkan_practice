@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/07 15:04:05 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/09 19:34:47 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 # include "GLFW/glfw3.h"
 # include <stdio.h>
 # include <math.h>
+# include <stdint.h>
 # include "ft_assert.h"
 # include "libft.h"
 # include "array.h"
 # include "vector.h"
-# include <math.h>
+# include "tree.h"
 
 # define GLFW_INCLUDE_VULKAN
 # define WIDTH 1200
@@ -65,12 +66,26 @@ Queue
 # define FT_FALSE 0
 # define FT_TRUE 1
 
-typedef struct	s_vertex
+typedef struct	s_vertex_info
 {
 	float	pos[DIMENSION];
 	float	color[COLOR_FORMAT];
 	float	tex_coord[TEXEL_DIMENSION];
-}				t_vertex;
+}				t_vertex_info;
+
+typedef struct	s_tri_vtx_indices
+{
+	uint32_t	v1;
+	uint32_t	v2;
+	uint32_t	v3;
+}				t_tri_vtx_indices;
+
+typedef struct	s_pair
+{
+	uint64_t	pair;
+	uint32_t	vtx_index;
+}				t_pair;
+
 
 typedef struct	s_renderer
 {
@@ -178,13 +193,10 @@ typedef struct	s_vulkan
 	VkFence						*fence;
 
 	t_array						triangle; /*TODO MALLOC */
-	t_array						ico; /*TODO MALLOC */
-	uint32_t					*vertices_index; /*TODO MALLOC */
-	uint32_t					*vi1; /*TODO MALLOC */
-	uint32_t					*vi2; /*TODO MALLOC */
-	uint32_t					*vi3; /*TODO MALLOC */
-	uint32_t					*vi4;
-	uint32_t					*vi5;
+	t_array						vtx; /*TODO MALLOC */
+	t_array						tri_faces;
+	t_array						vtx_pairs;
+	t_tree						*pair_tree;
 	VkBuffer					vertex_buffer;
 	VkDeviceMemory				vertex_buffer_memory;
 	VkBuffer					index_buffer;
@@ -233,10 +245,8 @@ void			draw_frame(t_vulkan *vk);
 void			get_triangle_info(t_vulkan *vk);
 void			get_cube_info(t_vulkan *vk);
 void			get_icosahedron(t_vulkan *vk);
-void			refine_icosahedron(t_vulkan *vk, t_array *ico, uint32_t *vtx_index,
-					uint32_t *new_vtx_index, int refine);
-void			add_vertex(t_array *polygon, t_vertex *vertex, float vtx1, float vtx2, float vtx3,
-								float r, float g, float b, float tex1, float tex2);
+void			refine_icosahedron(t_vulkan *vk, int refine);
+uint32_t		add_vertex(t_vulkan *vk, float *position, float r, float g, float b);
 
 /* VkBuffer handlers */
 void			create_buffer(t_vulkan *vk, VkDeviceSize size, VkBufferUsageFlags usage,
