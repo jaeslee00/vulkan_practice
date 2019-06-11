@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/06/06 22:55:38 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/10 23:27:46 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,7 @@ SRCS = main.c \
 		draw_frame.c \
 		free_resources.c \
 		get_triangle.c \
+		cube_sphere.c \
 		buffer_handlers.c \
 		ubo_handler.c \
 		vtx_buffer_description.c \
@@ -43,7 +44,8 @@ SRCS = main.c \
 		sync.c \
 		la/matrix_op.c \
 		la/matrix_transformation.c \
-		la/vector_op.c
+		la/vector_op.c \
+		simplex_noise/open-simplex-noise.c
 
 OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 SHADER = shader
@@ -82,6 +84,7 @@ $(SHADER) :
 obj:
 	mkdir -p obj
 	mkdir -p obj/la
+	mkdir -p obj/simplex_noise
 
 obj/%.o: src2/%.c $(INCLUDES) | obj
 	$(CC) $(CFLAGS) $(INCLUDE_FOLDERS) $(STB_INCLUDE_PATH) -c $< -o $@

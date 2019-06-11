@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/07 15:02:14 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/11 17:32:50 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void	recreate_swapchain(t_vulkan *vk)
 	create_renderpass(vk);
 	//get_triangle_info(vk);
 	//get_cube_info(vk);
-	get_icosahedron(vk);
+	//get_icosahedron(vk);
+	create_cube(vk, 2000);
 	create_graphics_pipeline(vk);
 	create_depth_resource(vk);
 	create_framebuffers(vk);
@@ -99,7 +100,8 @@ int		main()
 	/* info to pass to vertex-buffer and index buffer */
 	//get_triangle_info(&vk);  // re-create swapchains
 	//get_cube_info(&vk);
-	get_icosahedron(&vk);
+	//get_icosahedron(&vk);
+	create_cube(&vk, 2000);
 	create_descriptor_set_layout(&vk);
 	create_graphics_pipeline(&vk);  // re-create swapchains
 	create_command_pools(&vk);
@@ -116,11 +118,26 @@ int		main()
 	create_descriptor_sets(&vk);
 
 	create_command_buffers(&vk);
-
+	int i = 0;
 	while (!glfwWindowShouldClose(vk.window))
 	{
+		float a;
+		float b;
+		float c;
 		glfwPollEvents();
+		if (i == 0)
+			a = glfwGetTime();
 		draw_frame(&vk);
+		i++;
+		if (i == 200)
+		{
+			b = glfwGetTime();
+			c = b - a;
+			printf("fps : %f\n", 200.f / c);
+			i = 0;
+		}
+
+
 	}
 	vkDeviceWaitIdle(vk.logical_device);
 	free_resource(&vk);

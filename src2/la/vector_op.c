@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 14:29:07 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/06 22:38:09 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/11 17:13:09 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,13 @@ void	vec3_scale(float *vec, float scale)
 	vec[2] *= scale;
 }
 
+void	vec3_scale_dst(float *dst, float *vec, float scale)
+{
+	dst[0] = vec[0] * scale;
+	dst[1] = vec[1] * scale;
+	dst[2] = vec[2] * scale;
+}
+
 void	vec3_normalize(float *vec)
 {
 	float	normalize_factor;
@@ -61,6 +68,11 @@ void	vec3_normalize(float *vec)
 	vec[0] = vec[0] * normalize_factor;
 	vec[1] = vec[1] * normalize_factor;
 	vec[2] = vec[2] * normalize_factor;
+}
+
+float	vec3_size(float *vec)
+{
+	return (sqrtf((vec[0] * vec[0]) + (vec[1] * vec[1]) + (vec[2] * vec[2])));
 }
 
 /*TODO if possible SIMD */

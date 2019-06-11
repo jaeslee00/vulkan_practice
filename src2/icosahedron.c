@@ -6,20 +6,11 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/03 18:54:27 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/09 21:32:15 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/10 18:44:12 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visualizer.h"
-
-void	generate_island(t_vulkan *vk)
-{
-	float	hx;
-	float	hy;
-
-	hx = atan2( ((t_vertex_info*)vk->vtx.ptr)[0].pos[0], ((t_vertex_info*)vk->vtx.ptr)[0].pos[2] ) / (-2.f * PI);
-	hy = asin( (t_vertex_info*)vk->vtx.ptr[0].pos[1] ) / PI + 0.5f;
-}
 
 void	get_icosahedron(t_vulkan *vk)
 
@@ -67,7 +58,6 @@ void	get_icosahedron(t_vulkan *vk)
 
 	refine_icosahedron(vk, 6);
 	printf("%zu\n", vk->vtx.length);
-	generate_island(vk);
 }
 
 int			pair_compare(const void *content1, const void *content2)

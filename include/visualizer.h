@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/09 19:34:47 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/10 18:54:04 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,6 +247,12 @@ void			get_cube_info(t_vulkan *vk);
 void			get_icosahedron(t_vulkan *vk);
 void			refine_icosahedron(t_vulkan *vk, int refine);
 uint32_t		add_vertex(t_vulkan *vk, float *position, float r, float g, float b);
+void	create_cube(t_vulkan *vk, int resolution);
+void	create_cube_surface(t_vulkan *vk, int resolution, float *up_vec);
+
+
+
+
 
 /* VkBuffer handlers */
 void			create_buffer(t_vulkan *vk, VkDeviceSize size, VkBufferUsageFlags usage,
