@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 10:19:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/11 16:29:10 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/11 21:11:25 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	create_index_buffer(t_vulkan *vk)
 
 	void	*data;
 	vkMapMemory(vk->logical_device, stage_buffer_memory, 0, buffer_size, 0, &data);
-		memcpy(data, (t_tri_vtx_indices*)vk->tri_faces.ptr, (size_t)buffer_size);
+		memcpy(data, ((t_tri_vtx_indices*)vk->tri_faces.ptr), (size_t)buffer_size);
 	vkUnmapMemory(vk->logical_device, stage_buffer_memory);
 
 	create_buffer(vk, buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,

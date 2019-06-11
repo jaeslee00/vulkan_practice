@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 04:39:19 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/11 17:13:20 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/11 18:39:18 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	create_graphics_pipeline(t_vulkan *vk)
 	VkPipelineColorBlendAttachmentState color_blend_attachment = {};
 	color_blend_attachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT |
 		VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-	color_blend_attachment.blendEnable = VK_FALSE;
+	color_blend_attachment.blendEnable = VK_TRUE;
 	color_blend_attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
 	color_blend_attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
 	color_blend_attachment.colorBlendOp = VK_BLEND_OP_SUBTRACT;

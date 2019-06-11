@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/10 18:54:04 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/11 21:16:30 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ Queue
 # define DIMENSION 3
 # define TEXEL_DIMENSION 2
 # define COLOR_FORMAT 3
+# define RESOLUTION 1500
 # define FT_FALSE 0
 # define FT_TRUE 1
 
@@ -115,7 +116,6 @@ typedef struct	s_cam
 }				t_cam;
 
 t_cam		g_cam;
-float		g_camera[3];
 
 typedef struct	s_vulkan
 {
@@ -247,8 +247,8 @@ void			get_cube_info(t_vulkan *vk);
 void			get_icosahedron(t_vulkan *vk);
 void			refine_icosahedron(t_vulkan *vk, int refine);
 uint32_t		add_vertex(t_vulkan *vk, float *position, float r, float g, float b);
-void	create_cube(t_vulkan *vk, int resolution);
-void	create_cube_surface(t_vulkan *vk, int resolution, float *up_vec);
+void			create_cube(t_vulkan *vk, int resolution);
+void			create_cube_surface(t_vulkan *vk, int resolution, float *up_vec);
 
 
 

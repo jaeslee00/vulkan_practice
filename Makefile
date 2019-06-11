@@ -6,7 +6,7 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/06/10 23:27:46 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/11 19:42:42 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,7 @@ OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 SHADER = shader
 CC = gcc
 
-CFLAGS := -fsanitize=address -g
+CFLAGS :=
 
 GLFW_FLAGS = -framework Cocoa -framework IOKit \
 		  		-framework CoreFoundation -framework CoreVideo
@@ -73,7 +73,7 @@ LIBRARY_PATH = -L libft
 all: $(SHADER) $(NAME)
 
 $(NAME): $(OBJS) libft/libft.a
-	$(CC) -fsanitize=address -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
+	$(CC) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
 	-Wl,-rpath, $(VK_SDK_PATH)/lib $(GLFW_PATH)/src/libglfw3.a \
 	${VK_SDK_PATH}/lib/libvulkan.1.dylib $(STB_INCLUDE_PATH) $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
 

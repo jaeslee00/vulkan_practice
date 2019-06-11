@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 17:36:20 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/11 17:32:50 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/11 19:10:47 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	recreate_swapchain(t_vulkan *vk)
 	//get_triangle_info(vk);
 	//get_cube_info(vk);
 	//get_icosahedron(vk);
-	create_cube(vk, 2000);
+	create_cube(vk, RESOLUTION);
 	create_graphics_pipeline(vk);
 	create_depth_resource(vk);
 	create_framebuffers(vk);
@@ -101,7 +101,7 @@ int		main()
 	//get_triangle_info(&vk);  // re-create swapchains
 	//get_cube_info(&vk);
 	//get_icosahedron(&vk);
-	create_cube(&vk, 2000);
+	create_cube(&vk, RESOLUTION);
 	create_descriptor_set_layout(&vk);
 	create_graphics_pipeline(&vk);  // re-create swapchains
 	create_command_pools(&vk);
@@ -129,15 +129,13 @@ int		main()
 			a = glfwGetTime();
 		draw_frame(&vk);
 		i++;
-		if (i == 200)
+		if (i == 100)
 		{
 			b = glfwGetTime();
 			c = b - a;
-			printf("fps : %f\n", 200.f / c);
+			printf("fps : %f\n", 100.f / c);
 			i = 0;
 		}
-
-
 	}
 	vkDeviceWaitIdle(vk.logical_device);
 	free_resource(&vk);
