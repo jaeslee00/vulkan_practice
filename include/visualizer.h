@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/11 21:16:30 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/13 23:27:39 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,27 @@
 # include <math.h>
 # include <stdint.h>
 # include "ft_assert.h"
+# include "open-simplex-noise.h"
 # include "libft.h"
 # include "array.h"
 # include "vector.h"
 # include "tree.h"
 
 # define GLFW_INCLUDE_VULKAN
-# define WIDTH 1200
-# define HEIGHT 1200
+# define WIDTH 1300
+# define HEIGHT 1300
 # define MAX_FRAMES_IN_FLIGHT 2
 # define PI 3.1415926535f
 # define NEAR_Z 0.001f
 # define FAR_Z 100.f
-# define FOV PI/3.f
+# define FOV (PI / 3.f)
 # define QUADS 64.f
+# define DIMENSION 3
+# define TEXEL_DIMENSION 2
+# define COLOR_FORMAT 3
+# define RESOLUTION 1000
+# define FT_FALSE 0
+# define FT_TRUE 1
 /* Initialization
 
 INSTANCE
@@ -60,13 +67,6 @@ Queue
 
 */
 
-# define DIMENSION 3
-# define TEXEL_DIMENSION 2
-# define COLOR_FORMAT 3
-# define RESOLUTION 1500
-# define FT_FALSE 0
-# define FT_TRUE 1
-
 typedef struct	s_vertex_info
 {
 	float	pos[DIMENSION];
@@ -80,6 +80,15 @@ typedef struct	s_tri_vtx_indices
 	uint32_t	v2;
 	uint32_t	v3;
 }				t_tri_vtx_indices;
+
+typedef struct	s_noise_attr
+{
+	float	freq;
+	float	freq_delta;
+	float	amplitude;
+	float	persistence;
+	int		layers;
+}				t_noise_attr;
 
 typedef struct	s_pair
 {
@@ -195,6 +204,7 @@ typedef struct	s_vulkan
 	t_array						triangle; /*TODO MALLOC */
 	t_array						vtx; /*TODO MALLOC */
 	t_array						tri_faces;
+
 	t_array						vtx_pairs;
 	t_tree						*pair_tree;
 	VkBuffer					vertex_buffer;
@@ -247,10 +257,10 @@ void			get_cube_info(t_vulkan *vk);
 void			get_icosahedron(t_vulkan *vk);
 void			refine_icosahedron(t_vulkan *vk, int refine);
 uint32_t		add_vertex(t_vulkan *vk, float *position, float r, float g, float b);
+void			add_color(float *pos, float *color);
+float			noise_filter(struct osn_context *ctx, float *pos, t_noise_attr *attr);
 void			create_cube(t_vulkan *vk, int resolution);
 void			create_cube_surface(t_vulkan *vk, int resolution, float *up_vec);
-
-
 
 
 

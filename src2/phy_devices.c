@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/13 14:47:58 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/02 19:48:37 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/13 18:56:51 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	check_devices(t_vulkan *vk)
 	if (!vk->dv_feats.tessellationShader)
 		printf("doesn't support tessellation shader... bad..\n");
 	score += vk->dv_props.limits.maxImageDimension2D;
+	printf("size of pushConstants : %u\n", vk->dv_props.limits.maxPushConstantsSize);
 	printf("score: %d\n", score);
 	if (!vk->dv_feats.geometryShader)
 		printf("doesn't support geometry shader... bad..\n");

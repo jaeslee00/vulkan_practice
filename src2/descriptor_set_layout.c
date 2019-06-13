@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 15:17:39 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/11 14:57:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/13 19:00:01 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	create_descriptor_set_layout(t_vulkan *vk)
 	ubo_binding.binding = 0;
 	ubo_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	ubo_binding.descriptorCount = 1;
-	ubo_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+	ubo_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // | VK_SHADER_STAGE_FRAGMENT_BIT;
 	ubo_binding.pImmutableSamplers = NULL;
 
 	VkDescriptorSetLayoutBinding	sampler_binding = {};
