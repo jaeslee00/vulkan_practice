@@ -6,13 +6,13 @@
 #    By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 00:05:36 by jaelee            #+#    #+#              #
-#    Updated: 2019/06/11 19:42:42 by jaelee           ###   ########.fr        #
+#    Updated: 2019/06/28 10:50:20 by jaelee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 
-NAME = triangle
+NAME = planet
 
 SRCS = main.c \
 		initialization.c \
@@ -37,6 +37,7 @@ SRCS = main.c \
 		free_resources.c \
 		get_triangle.c \
 		cube_sphere.c \
+		noise_filter.c \
 		buffer_handlers.c \
 		ubo_handler.c \
 		vtx_buffer_description.c \
@@ -51,14 +52,17 @@ OBJS = $(patsubst %.c, obj/%.o, $(SRCS))
 SHADER = shader
 CC = gcc
 
-CFLAGS :=
+CFLAGS := -O3
+
 
 GLFW_FLAGS = -framework Cocoa -framework IOKit \
 		  		-framework CoreFoundation -framework CoreVideo
 
 VK_SDK_PATH = /Users/jaelee/42/vv/vulkansdk/macOS
 
-GLFW_PATH = /sgoinfre/goinfre/Perso/jaelee/glfw
+GLFW_PATH = /Users/jaelee/.brew/Cellar/glfw/HEAD-3461d1c
+
+LDFLAGS = -L $(VK_SDK_PATH)/lib -lvulkan -L $(GLFW_PATH)/lib -lglfw -L libft -lft
 
 STB_INCLUDE_PATH = -I ./stb
 INCLUDES = ./include/visualizer.h \
@@ -68,14 +72,10 @@ INCLUDES = ./include/visualizer.h \
 
 INCLUDE_FOLDERS = -I $(VK_SDK_PATH)/include/vulkan -I $(GLFW_PATH)/include -I ./include -I ./libft/includes \
 
-LIBRARY_PATH = -L libft
-
 all: $(SHADER) $(NAME)
 
 $(NAME): $(OBJS) libft/libft.a
-	$(CC) -Wl,-search_paths_first -Wl,-headerpad_max_install_names $(OBJS) -o $@ \
-	-Wl,-rpath, $(VK_SDK_PATH)/lib $(GLFW_PATH)/src/libglfw3.a \
-	${VK_SDK_PATH}/lib/libvulkan.1.dylib $(STB_INCLUDE_PATH) $(GLFW_FLAGS) $(LIBRARY_PATH) -lft
+	$(CC) $(CFLAGS) $(INCLUDE_FOLDERS) $(LDFLAGS) $(OBJS) -o $(NAME)
 
 $(SHADER) :
 	/Users/jaelee/42/vv/vulkansdk/macOs/bin/glslangValidator -V /Users/jaelee/42/vv/shaders/triangle.vert
@@ -86,7 +86,7 @@ obj:
 	mkdir -p obj/la
 	mkdir -p obj/simplex_noise
 
-obj/%.o: src2/%.c $(INCLUDES) | obj
+obj/%.o: src/%.c $(INCLUDES) | obj
 	$(CC) $(CFLAGS) $(INCLUDE_FOLDERS) $(STB_INCLUDE_PATH) -c $< -o $@
 
 libft/libft.a: $(INCLUDES)

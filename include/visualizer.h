@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 21:42:45 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/13 23:27:39 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/28 10:58:59 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,13 @@
 # define HEIGHT 1300
 # define MAX_FRAMES_IN_FLIGHT 2
 # define PI 3.1415926535f
-# define NEAR_Z 0.001f
+# define NEAR_Z 0.01f
 # define FAR_Z 100.f
 # define FOV (PI / 3.f)
-# define QUADS 64.f
 # define DIMENSION 3
 # define TEXEL_DIMENSION 2
 # define COLOR_FORMAT 3
-# define RESOLUTION 1000
+# define RESOLUTION 900
 # define FT_FALSE 0
 # define FT_TRUE 1
 /* Initialization
@@ -67,6 +66,14 @@ Queue
 
 */
 
+clock_t	start_ubo;
+clock_t	end_ubo;
+
+clock_t	start_frame;
+clock_t	end_frame;
+
+
+
 typedef struct	s_vertex_info
 {
 	float	pos[DIMENSION];
@@ -86,7 +93,7 @@ typedef struct	s_noise_attr
 	float	freq;
 	float	freq_delta;
 	float	amplitude;
-	float	persistence;
+	float	amp_delta;
 	int		layers;
 }				t_noise_attr;
 
@@ -134,6 +141,9 @@ typedef struct	s_vulkan
 	VkDebugReportCallbackEXT	debug_callback; /*TODO Erase when finished */
 	VkDevice					logical_device; /* logical device */
 	VkSurfaceKHR				surf;
+
+	double						ubo_time;
+	double						frame_time;
 
 	/* Instance extensions */
 	uint32_t					enabled_extension_count;
@@ -204,6 +214,7 @@ typedef struct	s_vulkan
 	t_array						triangle; /*TODO MALLOC */
 	t_array						vtx; /*TODO MALLOC */
 	t_array						tri_faces;
+	t_array						tri_normals;
 
 	t_array						vtx_pairs;
 	t_tree						*pair_tree;
@@ -260,7 +271,7 @@ uint32_t		add_vertex(t_vulkan *vk, float *position, float r, float g, float b);
 void			add_color(float *pos, float *color);
 float			noise_filter(struct osn_context *ctx, float *pos, t_noise_attr *attr);
 void			create_cube(t_vulkan *vk, int resolution);
-void			create_cube_surface(t_vulkan *vk, int resolution, float *up_vec);
+void			create_cube_surface(t_vulkan *vk, int resolution, float *up_vec, int normalize);
 
 
 
