@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 19:53:42 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/26 17:29:15 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/30 21:52:54 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,7 @@ void	draw_frame(t_vulkan *vk)
 	presentInfo.pSwapchains = &vk->swapchain;
 	presentInfo.pImageIndices = &image_index;
 	presentInfo.pResults = NULL;
-	start_ubo = clock();
 	result = vkQueuePresentKHR(vk->present_queue, &presentInfo);
-	end_ubo = clock();
-	vk->ubo_time += (double)(end_ubo - start_ubo);
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 		recreate_swapchain(vk);
 	else if (result != VK_SUCCESS)

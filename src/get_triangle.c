@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 02:38:05 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/28 11:06:31 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/30 18:04:58 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ uint32_t	add_vertex(t_vulkan *vk, float *position, float r, float g, float b)
 	vtx_info.color[0] = r;
 	vtx_info.color[1] = g;
 	vtx_info.color[2] = b;
+	if (vk->vtx.length == 0)
+	{
+		vtx_info.color[0] = 1.0f;
+		vtx_info.color[1] = 0.0f;
+		vtx_info.color[2] = 0.0f;
+	}
 	array_push_back(&vk->vtx, &vtx_info);
 	return (vk->vtx.length - 1);
 }

@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/26 14:05:30 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/26 14:24:33 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/30 21:49:32 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define OVERLAP_TEST_H
 # include "vector.h"
 # include "libft.h"
-
+# include <math.h>
 # define OVERLAP 1
 # define NOT_OVERLAP 0
 
@@ -23,9 +23,7 @@ int		tri_box_overlap(float *box_center, float voxel_size, float *vtx0,
 
 /* test 1 */
 
-int		axis_x_aabb_test(float v0, float v1, float v2, float half_size);
-int		axis_y_aabb_test(float v0, float v1, float v2, float half_size);
-int		axis_z_aabb_test(float v0, float v1, float v2, float half_size);
+int		aabb_test(float v0, float v1, float v2, float half_size);
 
 /* test 2 */
 

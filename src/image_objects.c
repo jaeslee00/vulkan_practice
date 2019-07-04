@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 13:05:38 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/17 19:09:51 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/06/30 21:44:05 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	create_image(t_vulkan *vk, uint32_t width, uint32_t height, VkFormat format
 	create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 	ft_assert((vkCreateImage(vk->logical_device, &create_info, NULL, image) == VK_SUCCESS),
-		"failed to create image!\n", "create_depth_resource.c", 68);
+		"failed to create image!\n", "image_objects.c", 34);
 
 	VkMemoryRequirements	mem_requirements;
 	vkGetImageMemoryRequirements(vk->logical_device, *image, &mem_requirements);
@@ -42,7 +42,7 @@ void	create_image(t_vulkan *vk, uint32_t width, uint32_t height, VkFormat format
 	alloc_info.memoryTypeIndex = find_memory_type(vk, mem_requirements.memoryTypeBits, properties);
 
 	ft_assert(vkAllocateMemory(vk->logical_device, &alloc_info, NULL, image_memory) == VK_SUCCESS,
-		"failed to allocate image memory!\n", "create_depth_resource.c", 79);
+		"failed to allocate image memory!\n", "image_objects.c", 45);
 
 	vkBindImageMemory(vk->logical_device, *image, *image_memory, 0);
 }
@@ -69,6 +69,6 @@ VkImageView	create_imageview(t_vulkan *vk, VkImage image, uint32_t levels,
 
 	ft_assert((vkCreateImageView(vk->logical_device, &imageview_info, NULL,
 		&image_view) == VK_SUCCESS), "create imageview failed.\n",
-		"create_texture.c", 30);
+		"image_objects.c", 70);
 	return (image_view);
 }

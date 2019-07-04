@@ -6,7 +6,7 @@
 /*   By: jaelee <jaelee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 16:19:32 by jaelee            #+#    #+#             */
-/*   Updated: 2019/06/28 10:55:36 by jaelee           ###   ########.fr       */
+/*   Updated: 2019/07/03 21:54:09 by jaelee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	create_landscape(t_vulkan *vk)
 	t_vertex_info		*vtx;
 	t_noise_attr		attr;
 	float				elevation;
+
 	/* min and max elevation */
 	size_t				min_i;
 	size_t				max_i;
@@ -41,6 +42,7 @@ void	create_landscape(t_vulkan *vk)
 	{
 		elevation = noise_filter(ctx, vtx[vtx_index].pos, &attr);
 		vec3_scale(vtx[vtx_index].pos, elevation);
+		vec3_sub(vtx[vtx_index].pos, vtx[vtx_index].pos, (float[]){0.0f, -1.0f, 0.0f});
 		add_color(vtx[vtx_index].pos, vtx[vtx_index].color);
 		//ft_bzero(vtx[vtx_index].color, sizeof(float) * 3);
 		vtx_index++;
@@ -76,8 +78,10 @@ void	get_normals(t_array *tri_normals, t_array *tri_faces, t_array *vtx)
 		vtx1 = ((t_tri_vtx_indices*)tri_faces->ptr)[tri_index].v1;
 		vtx2 = ((t_tri_vtx_indices*)tri_faces->ptr)[tri_index].v2;
 		vtx3 = ((t_tri_vtx_indices*)tri_faces->ptr)[tri_index].v3;
-		vec3_sub(ba, ((t_vertex_info*)vtx->ptr)[vtx2].pos, ((t_vertex_info*)vtx->ptr)[vtx1].pos);
-		vec3_sub(bc, ((t_vertex_info*)vtx->ptr)[vtx2].pos, ((t_vertex_info*)vtx->ptr)[vtx3].pos);
+		vec3_sub(ba, ((t_vertex_info*)vtx->ptr)[vtx2].pos,
+			((t_vertex_info*)vtx->ptr)[vtx1].pos);
+		vec3_sub(bc, ((t_vertex_info*)vtx->ptr)[vtx2].pos,
+			((t_vertex_info*)vtx->ptr)[vtx3].pos);
 		vec3_cross(normal, ba, bc);
 		array_push_back(tri_normals, normal);
 		tri_index++;
@@ -112,9 +116,11 @@ void	create_cube_surface(t_vulkan *vk, int resolution, float *up_vec, int normal
 			if (i < resolution - 1 && j < resolution - 1)
 			{
 				array_push_back(&vk->tri_faces,
-					&(t_tri_vtx_indices[]){vtx_index, vtx_index + resolution, vtx_index + resolution + 1});
+					&(t_tri_vtx_indices[]){vtx_index, vtx_index + resolution,
+						vtx_index + resolution + 1});
 				array_push_back(&vk->tri_faces,
-					&(t_tri_vtx_indices[]){vtx_index, vtx_index + resolution + 1, vtx_index + 1});
+					&(t_tri_vtx_indices[]){vtx_index, vtx_index + resolution + 1,
+						vtx_index + 1});
 			}
 		}
 	}
@@ -126,13 +132,29 @@ void	create_cube(t_vulkan *vk, int resolution)
 	array_init(&vk->vtx, sizeof(t_vertex_info));
 	array_init(&vk->tri_faces, sizeof(t_tri_vtx_indices));
 	array_init(&vk->tri_normals, sizeof(float) * 3);
-	create_cube_surface(vk, resolution, (float[]){0.0, 0.0, 1.0f}, 1);
-	create_cube_surface(vk, resolution, (float[]){0.0, 0.0, -1.0f}, 1);
-	create_cube_surface(vk, resolution, (float[]){0.0, 1.0, 0.0f}, 1);
+	// create_cube_surface(vk, resolution, (float[]){0.0, 0.0, 1.0f}, 1);
+	// create_cube_surface(vk, resolution, (float[]){0.0, 0.0, -1.0f}, 1);
+	//create_cube_surface(vk, resolution, (float[]){0.0, 1.0, 0.0f}, 1);
 	create_cube_surface(vk, resolution, (float[]){0.0, -1.0, 0.0f}, 1);
-	create_cube_surface(vk, resolution, (float[]){1.0, 0.0, 0.0f}, 1);
-	create_cube_surface(vk, resolution, (float[]){-1.0, 0.0, 0.0f}, 1);
-	get_normals(&vk->tri_normals, &vk->tri_faces, &vk->vtx);
+	// create_cube_surface(vk, resolution, (float[]){1.0, 0.0, 0.0f}, 1);
+	// create_cube_surface(vk, resolution, (float[]){-1.0, 0.0, 0.0f}, 1);
+	// get_normals(&vk->tri_normals, &vk->tri_faces, &vk->vtx);
 	create_landscape(vk);
+	int res = 2;
+	create_cube_surface(vk, res, (float[]){0.0, 0.0, 1.0f}, 0);
+	create_cube_surface(vk, res, (float[]){0.0, 0.0, -1.0f}, 0);
+	create_cube_surface(vk, res, (float[]){0.0, 1.0, 0.0f}, 0);
+	create_cube_surface(vk, res, (float[]){0.0, -1.0, 0.0f}, 0);
+	create_cube_surface(vk, res, (float[]){1.0, 0.0, 0.0f}, 0);
+	create_cube_surface(vk, res, (float[]){-1.0, 0.0, 0.0f}, 0);
+	printf("%f %f %f\n", ((t_vertex_info*)vk->vtx.ptr)[0].pos[0],
+		((t_vertex_info*)vk->vtx.ptr)[0].pos[1],
+			((t_vertex_info*)vk->vtx.ptr)[0].pos[2]);
+	printf("%f %f %f\n", ((t_vertex_info*)vk->vtx.ptr)[1].pos[0],
+		((t_vertex_info*)vk->vtx.ptr)[1].pos[1],
+			((t_vertex_info*)vk->vtx.ptr)[1].pos[2]);
+	printf("%f %f %f\n", ((t_vertex_info*)vk->vtx.ptr)[2].pos[0],
+		((t_vertex_info*)vk->vtx.ptr)[2].pos[1],
+			((t_vertex_info*)vk->vtx.ptr)[2].pos[2]);
 }
-// 2 3 5 9 17
+
